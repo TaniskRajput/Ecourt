@@ -13,6 +13,9 @@ import com.ecourt.security.JwtService;
 import com.ecourt.dto.RegisterRequest;
 import com.ecourt.service.UserService;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -31,7 +34,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody LoginRequest request) {
+    public Map<String, Object> login(@RequestBody LoginRequest request) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -40,12 +43,21 @@ public class AuthController {
                 )
         );
 
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        if (authentication.isAuthenticated()) {
 
-        return new AuthResponse(
-                "Login Successful",
-                userDetails.getUsername(),
-                userDetails.getUser().getRole()
-        );
+            String token = jwtService.generateToken(request.getUsername());
+
+            CustomUserDetails userDetails =
+                    (CustomUserDetails) authentication.getPrincipal();
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", token);
+            response.put("username", userDetails.getUsername());
+            response.put("role", userDetails.getUser().getRole());
+
+            return response;
+        }
+
+        throw new RuntimeException("Invalid Credentials");
     }
 }

@@ -563,3 +563,148 @@ org.hibernate.PropertyValueException: not-null property references a null or tra
 2026-02-27T20:39:59.725+05:30  INFO 10471 --- [Ecourt] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
 2026-02-27T20:39:59.733+05:30  INFO 10471 --- [Ecourt] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2026-02-27T20:39:59.755+05:30  INFO 10471 --- [Ecourt] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-02-27T21:41:11.062+05:30  INFO 30554 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Starting EcourtApplication using Java 21.0.10 with PID 30554 (/home/tanisk/Downloads/Ecourt/target/classes started by tanisk in /home/tanisk/Downloads/Ecourt)
+2026-02-27T21:41:11.066+05:30  INFO 30554 --- [Ecourt] [main] com.ecourt.EcourtApplication             : No active profile set, falling back to 1 default profile: "default"
+2026-02-27T21:41:11.955+05:30  INFO 30554 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-27T21:41:12.056+05:30  INFO 30554 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 75 ms. Found 2 JPA repository interfaces.
+2026-02-27T21:41:12.792+05:30  INFO 30554 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-02-27T21:41:12.812+05:30  INFO 30554 --- [Ecourt] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-02-27T21:41:12.813+05:30  INFO 30554 --- [Ecourt] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-02-27T21:41:12.875+05:30  INFO 30554 --- [Ecourt] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1735 ms
+2026-02-27T21:41:13.065+05:30  INFO 30554 --- [Ecourt] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-02-27T21:41:13.147+05:30  INFO 30554 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.1.Final
+2026-02-27T21:41:13.776+05:30  INFO 30554 --- [Ecourt] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-27T21:41:13.817+05:30  INFO 30554 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-02-27T21:41:14.359+05:30  INFO 30554 --- [Ecourt] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@87220f1
+2026-02-27T21:41:14.361+05:30  INFO 30554 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-02-27T21:41:14.497+05:30  WARN 30554 --- [Ecourt] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-02-27T21:41:14.524+05:30  INFO 30554 --- [Ecourt] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/ecourt_db]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.45
+	Default catalog/schema: ecourt_db/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-02-27T21:41:15.817+05:30  INFO 30554 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-27T21:41:15.966+05:30  INFO 30554 --- [Ecourt] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-27T21:41:16.070+05:30  INFO 30554 --- [Ecourt] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-02-27T21:41:16.398+05:30  WARN 30554 --- [Ecourt] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-27T21:41:16.496+05:30  INFO 30554 --- [Ecourt] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-02-27T21:41:16.496+05:30  WARN 30554 --- [Ecourt] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-02-27T21:41:16.773+05:30 DEBUG 30554 --- [Ecourt] [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2026-02-27T21:41:17.164+05:30  INFO 30554 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-02-27T21:41:17.172+05:30  INFO 30554 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Started EcourtApplication in 6.797 seconds (process running for 7.472)
+2026-02-27T21:41:25.279+05:30  INFO 30554 --- [Ecourt] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-27T21:41:25.280+05:30  INFO 30554 --- [Ecourt] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-02-27T21:41:25.282+05:30  INFO 30554 --- [Ecourt] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-02-27T21:41:25.294+05:30 DEBUG 30554 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
+2026-02-27T21:41:25.304+05:30 DEBUG 30554 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-27T21:41:25.306+05:30 DEBUG 30554 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
+2026-02-27T21:41:26.401+05:30 DEBUG 30554 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2026-02-27T21:45:45.701+05:30  INFO 30554 --- [Ecourt] [SpringApplicationShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-02-27T21:45:45.705+05:30  INFO 30554 --- [Ecourt] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-02-27T21:45:45.712+05:30  INFO 30554 --- [Ecourt] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-02-27T21:45:45.716+05:30  INFO 30554 --- [Ecourt] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-02-27T21:45:45.727+05:30  INFO 30554 --- [Ecourt] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-02-27T21:46:02.431+05:30  INFO 31391 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Starting EcourtApplication using Java 21.0.10 with PID 31391 (/home/tanisk/Downloads/Ecourt/target/classes started by tanisk in /home/tanisk/Downloads/Ecourt)
+2026-02-27T21:46:02.434+05:30  INFO 31391 --- [Ecourt] [main] com.ecourt.EcourtApplication             : No active profile set, falling back to 1 default profile: "default"
+2026-02-27T21:46:03.318+05:30  INFO 31391 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-27T21:46:03.389+05:30  INFO 31391 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 58 ms. Found 2 JPA repository interfaces.
+2026-02-27T21:46:04.114+05:30  INFO 31391 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-02-27T21:46:04.133+05:30  INFO 31391 --- [Ecourt] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-02-27T21:46:04.134+05:30  INFO 31391 --- [Ecourt] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-02-27T21:46:04.192+05:30  INFO 31391 --- [Ecourt] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1681 ms
+2026-02-27T21:46:04.349+05:30  INFO 31391 --- [Ecourt] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-02-27T21:46:04.428+05:30  INFO 31391 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.1.Final
+2026-02-27T21:46:05.087+05:30  INFO 31391 --- [Ecourt] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-27T21:46:05.132+05:30  INFO 31391 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-02-27T21:46:05.632+05:30  INFO 31391 --- [Ecourt] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@87220f1
+2026-02-27T21:46:05.635+05:30  INFO 31391 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-02-27T21:46:05.704+05:30  WARN 31391 --- [Ecourt] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-02-27T21:46:05.727+05:30  INFO 31391 --- [Ecourt] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/ecourt_db]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.45
+	Default catalog/schema: ecourt_db/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-02-27T21:46:06.992+05:30  INFO 31391 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-27T21:46:07.107+05:30  INFO 31391 --- [Ecourt] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-27T21:46:07.201+05:30  INFO 31391 --- [Ecourt] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-02-27T21:46:07.553+05:30  WARN 31391 --- [Ecourt] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-27T21:46:07.657+05:30  INFO 31391 --- [Ecourt] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-02-27T21:46:07.657+05:30  WARN 31391 --- [Ecourt] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-02-27T21:46:07.930+05:30 DEBUG 31391 --- [Ecourt] [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2026-02-27T21:46:08.318+05:30  INFO 31391 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-02-27T21:46:08.325+05:30  INFO 31391 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Started EcourtApplication in 6.574 seconds (process running for 7.172)
+2026-02-27T21:46:24.729+05:30  INFO 31391 --- [Ecourt] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-27T21:46:24.730+05:30  INFO 31391 --- [Ecourt] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-02-27T21:46:24.732+05:30  INFO 31391 --- [Ecourt] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-02-27T21:46:24.745+05:30 DEBUG 31391 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
+2026-02-27T21:46:24.756+05:30 DEBUG 31391 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-02-27T21:46:24.759+05:30 DEBUG 31391 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
+2026-02-27T21:46:25.770+05:30 DEBUG 31391 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2026-02-27T21:50:53.147+05:30 DEBUG 31391 --- [Ecourt] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing POST /cases
+2026-02-27T21:50:53.252+05:30 DEBUG 31391 --- [Ecourt] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Secured POST /cases
+2026-02-27T21:54:41.004+05:30  INFO 31391 --- [Ecourt] [SpringApplicationShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-02-27T21:54:41.008+05:30  INFO 31391 --- [Ecourt] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-02-27T21:54:41.015+05:30  INFO 31391 --- [Ecourt] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-02-27T21:54:41.018+05:30  INFO 31391 --- [Ecourt] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-02-27T21:54:41.028+05:30  INFO 31391 --- [Ecourt] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-02-27T21:55:40.718+05:30  INFO 33068 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Starting EcourtApplication using Java 21.0.10 with PID 33068 (/home/tanisk/Downloads/Ecourt/target/classes started by tanisk in /home/tanisk/Downloads/Ecourt)
+2026-02-27T21:55:40.721+05:30  INFO 33068 --- [Ecourt] [main] com.ecourt.EcourtApplication             : No active profile set, falling back to 1 default profile: "default"
+2026-02-27T21:55:41.597+05:30  INFO 33068 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-27T21:55:41.691+05:30  INFO 33068 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 70 ms. Found 2 JPA repository interfaces.
+2026-02-27T21:55:42.351+05:30  INFO 33068 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-02-27T21:55:42.370+05:30  INFO 33068 --- [Ecourt] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-02-27T21:55:42.371+05:30  INFO 33068 --- [Ecourt] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-02-27T21:55:42.431+05:30  INFO 33068 --- [Ecourt] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1629 ms
+2026-02-27T21:55:42.621+05:30  INFO 33068 --- [Ecourt] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-02-27T21:55:42.677+05:30  INFO 33068 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.1.Final
+2026-02-27T21:55:43.236+05:30  INFO 33068 --- [Ecourt] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-27T21:55:43.277+05:30  INFO 33068 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-02-27T21:55:43.705+05:30  INFO 33068 --- [Ecourt] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@87220f1
+2026-02-27T21:55:43.707+05:30  INFO 33068 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-02-27T21:55:43.767+05:30  WARN 33068 --- [Ecourt] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-02-27T21:55:43.790+05:30  INFO 33068 --- [Ecourt] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/ecourt_db]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.45
+	Default catalog/schema: ecourt_db/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-02-27T21:55:44.751+05:30  INFO 33068 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-27T21:55:44.888+05:30  INFO 33068 --- [Ecourt] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-27T21:55:44.951+05:30  INFO 33068 --- [Ecourt] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-02-27T21:55:45.166+05:30  WARN 33068 --- [Ecourt] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-27T21:55:45.232+05:30  INFO 33068 --- [Ecourt] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-02-27T21:55:45.232+05:30  WARN 33068 --- [Ecourt] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-02-27T21:55:45.389+05:30 DEBUG 33068 --- [Ecourt] [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2026-02-27T21:55:45.634+05:30  INFO 33068 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-02-27T21:55:45.639+05:30  INFO 33068 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Started EcourtApplication in 5.543 seconds (process running for 6.104)
+2026-02-27T21:55:53.406+05:30  INFO 33068 --- [Ecourt] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-27T21:55:53.407+05:30  INFO 33068 --- [Ecourt] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-02-27T21:55:53.410+05:30  INFO 33068 --- [Ecourt] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2026-02-27T21:55:53.421+05:30 DEBUG 33068 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing POST /cases
+2026-02-27T21:55:54.140+05:30 DEBUG 33068 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured POST /cases
+2026-02-27T21:56:05.684+05:30 DEBUG 33068 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing POST /cases
+2026-02-27T21:56:05.696+05:30 DEBUG 33068 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured POST /cases
+2026-02-27T21:57:28.544+05:30 DEBUG 33068 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /cases/CNR2002
+2026-02-27T21:57:28.553+05:30 DEBUG 33068 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured GET /cases/CNR2002
+2026-02-27T21:57:44.353+05:30 DEBUG 33068 --- [Ecourt] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /cases/CNR2001
+2026-02-27T21:57:44.364+05:30 DEBUG 33068 --- [Ecourt] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Secured GET /cases/CNR2001

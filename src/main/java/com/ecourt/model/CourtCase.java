@@ -1,7 +1,6 @@
 package com.ecourt.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "cases")
@@ -19,7 +18,7 @@ public class CourtCase {
 
     private String status; // PENDING / CLOSED
 
-    private LocalDate filedDate;
+    private String filedDate;
 
     // getters setters
 
@@ -37,6 +36,6 @@ public class CourtCase {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-    public LocalDate getFiledDate() { return filedDate; }
-    public void setFiledDate(LocalDate filedDate) { this.filedDate = filedDate; }
+    public String getFiledDate() { return filedDate; }
+    public void setFiledDate(String filedDate) { this.filedDate = filedDate; }
 }
