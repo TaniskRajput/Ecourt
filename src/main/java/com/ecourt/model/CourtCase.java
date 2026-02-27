@@ -6,7 +6,6 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "cases")
 public class CourtCase {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

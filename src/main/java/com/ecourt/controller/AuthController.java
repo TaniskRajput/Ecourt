@@ -1,6 +1,8 @@
 package com.ecourt.controller;
 
+import com.ecourt.dto.AuthResponse;
 import com.ecourt.dto.LoginRequest;
+import com.ecourt.security.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,15 +25,13 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-    // REGISTER
     @PostMapping("/register")
     public String register(@RequestBody RegisterRequest request) {
         return userService.register(request);
     }
 
-    // LOGIN
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest request) {
+    public AuthResponse login(@RequestBody LoginRequest request) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -40,11 +40,12 @@ public class AuthController {
                 )
         );
 
-        if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(request.getUsername());
-        }
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-        return "Invalid Credentials";
+        return new AuthResponse(
+                "Login Successful",
+                userDetails.getUsername(),
+                userDetails.getUser().getRole()
+        );
     }
-
 }

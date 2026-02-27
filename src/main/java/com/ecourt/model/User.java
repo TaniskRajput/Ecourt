@@ -22,7 +22,6 @@ public class User {
     @Column(nullable = false)
     private String role;   // USER or ADMIN
 
-    // ---------------- GETTERS & SETTERS ----------------
 
     public Long getId() {
         return id;

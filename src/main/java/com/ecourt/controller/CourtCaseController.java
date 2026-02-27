@@ -17,7 +17,6 @@ public class CourtCaseController {
     public String addCase(@RequestBody CourtCase courtCase) {
         return caseService.addCase(courtCase);
     }
-
     // USER
     @GetMapping("/{caseNumber}")
     public CourtCase getCase(@PathVariable String caseNumber) {
