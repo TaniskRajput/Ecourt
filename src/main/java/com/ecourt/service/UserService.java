@@ -26,7 +26,7 @@ public class UserService {
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setEmail(request.getEmail());
-        user.setRole("USER");
+        user.setRole(request.getRole() != null ? request.getRole() : "CLIENT");
 
         userRepository.save(user);
 
@@ -48,6 +48,5 @@ public class UserService {
 
         return "Login successful";
     }
-
 
 }

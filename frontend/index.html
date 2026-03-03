@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Court Case Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="overlay"></div>
+    <div class="container glass-panel">
+
+        <header>
+            <h1>⚖️ E-Court Portal</h1>
+            <p>Access and Manage Your Cases Securely</p>
+        </header>
+
+        <!-- Unauthenticated View -->
+        <div id="auth-section" class="active">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+                <button class="tab-btn" onclick="switchTab('register')">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form">
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="login-username" required placeholder="john_doe">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="primary-btn">Sign In</button>
+                <div class="message error" id="login-error"></div>
+            </form>
+
+            <!-- Register Form -->
+            <form id="register-form" style="display: none;">
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="reg-username" required placeholder="jane_doe">
+                </div>
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="reg-email" required placeholder="jane@example.com">
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="reg-password" required placeholder="••••••••">
+                </div>
+                <div class="input-group">
+                    <label>Role</label>
+                    <select id="reg-role">
+                        <option value="CLIENT">Client</option>
+                        <option value="LAWYER">Lawyer</option>
+                        <option value="JUDGE">Judge</option>
+                        <option value="ADMIN">Admin</option>
+                    </select>
+                </div>
+                <button type="submit" class="primary-btn">Create Account</button>
+                <div class="message success" id="reg-message"></div>
+                <div class="message error" id="reg-error"></div>
+            </form>
+        </div>
+
+        <!-- Authenticated Dashboard View -->
+        <div id="dashboard-section">
+            <div class="user-badge">
+                <span id="user-display"></span>
+                <span id="role-display" class="role-tag"></span>
+                <button onclick="logout()" class="logout-btn">Logout</button>
+            </div>
+
+            <!-- Client / Generic Case Retrieval Form -->
+            <div class="card">
+                <h3>🔍 View Case Details</h3>
+                <div class="input-group row">
+                    <input type="text" id="view-case-id" placeholder="Enter Case Number (e.g. CASE-001)">
+                    <button class="secondary-btn" onclick="viewCase()">Search</button>
+                </div>
+                <div id="case-result" class="result-box"></div>
+            </div>
+
+            <!-- Admin Only: User Management -->
+            <div id="admin-section" class="card" style="display: none;">
+                <h3>🛡️ User Management <span class="badge" style="background:var(--accent-color);color:#fff;">Admin
+                        Only</span></h3>
+                <button class="secondary-btn" onclick="loadAllUsers()">Load All Users</button>
+                <div id="users-result" class="result-box"></div>
+            </div>
+
+            <!-- Judge Only: Case Management -->
+            <div id="judge-section" class="card" style="display: none;">
+                <h3>🔨 Case Action <span class="badge">Judge Only</span></h3>
+                <div class="input-group">
+                    <label>Case Number to Modify</label>
+                    <input type="text" id="judge-case-id" placeholder="Enter Case Number">
+                </div>
+                <div class="input-group row">
+                    <button class="secondary-btn" onclick="assignJudge()">Assign To Me</button>
+                    <button class="update-btn" onclick="closeCase()">Close Case</button>
+                </div>
+                <div id="judge-message" class="message"></div>
+            </div>
+
+            <!-- Lawyer Only: File Case Form -->
+            <div id="lawyer-section" class="card" style="display: none;">
+                <h3>📜 Lawyer Case Management <span class="badge">Lawyer Only</span></h3>
+
+                <button class="secondary-btn" onclick="loadMyCases()" style="margin-bottom: 1rem;">View My Filed
+                    Cases</button>
+                <div id="my-cases-result" class="result-box" style="margin-bottom: 1.5rem;"></div>
+
+                <h4>File a New Case</h4>
+                <form id="file-case-form" style="margin-top: 1rem;">
+                    <div class="input-group">
+                        <label>Case Number</label>
+                        <input type="text" id="case-num" required placeholder="CASE-1234">
+                    </div>
+                    <div class="input-group">
+                        <label>Title</label>
+                        <input type="text" id="case-title" required placeholder="Property Dispute">
+                    </div>
+                    <div class="input-group">
+                        <label>Description</label>
+                        <textarea id="case-desc" required placeholder="Case details..."></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label>Client Username (Owner)</label>
+                        <input type="text" id="case-client" required placeholder="Client's exact username">
+                    </div>
+                    <button type="submit" class="primary-btn update-btn">File Case</button>
+                    <div class="message" id="file-message"></div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loader" class="loader-overlay" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

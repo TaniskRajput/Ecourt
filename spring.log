@@ -1,19 +1,113 @@
-2026-02-27T09:32:44.554+05:30  INFO 106284 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Starting EcourtApplication using Java 21.0.10 with PID 106284 (/home/tanisk/Downloads/Ecourt/target/classes started by tanisk in /home/tanisk/Downloads/Ecourt)
-2026-02-27T09:32:44.557+05:30  INFO 106284 --- [Ecourt] [main] com.ecourt.EcourtApplication             : No active profile set, falling back to 1 default profile: "default"
-2026-02-27T09:32:45.008+05:30  INFO 106284 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-02-27T09:32:45.068+05:30  INFO 106284 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 52 ms. Found 2 JPA repository interfaces.
-2026-02-27T09:32:45.468+05:30  INFO 106284 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
-2026-02-27T09:32:45.480+05:30  INFO 106284 --- [Ecourt] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-02-27T09:32:45.480+05:30  INFO 106284 --- [Ecourt] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
-2026-02-27T09:32:45.515+05:30  INFO 106284 --- [Ecourt] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 914 ms
-2026-02-27T09:32:45.620+05:30  INFO 106284 --- [Ecourt] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
-2026-02-27T09:32:45.652+05:30  INFO 106284 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.1.Final
-2026-02-27T09:32:45.959+05:30  INFO 106284 --- [Ecourt] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-02-27T09:32:45.983+05:30  INFO 106284 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-02-27T09:32:46.238+05:30  INFO 106284 --- [Ecourt] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@294ebe11
-2026-02-27T09:32:46.239+05:30  INFO 106284 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-02-27T09:32:46.277+05:30  WARN 106284 --- [Ecourt] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-02-27T09:32:46.292+05:30  INFO 106284 --- [Ecourt] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2026-03-04T00:16:28.751+05:30  INFO 54843 --- [Ecourt] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-04T00:16:28.759+05:30  INFO 54843 --- [Ecourt] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-03-04T00:16:28.764+05:30  INFO 54843 --- [Ecourt] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 5 ms
+2026-03-04T00:16:28.784+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
+2026-03-04T00:16:28.897+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T00:16:28.900+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
+2026-03-04T00:16:30.024+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.a.dao.DaoAuthenticationProvider    : Failed to authenticate since password does not match stored value
+2026-03-04T00:16:30.025+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.authentication.ProviderManager     : Authentication failed with provider DaoAuthenticationProvider since Bad credentials
+2026-03-04T00:16:30.168+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.a.dao.DaoAuthenticationProvider    : Failed to authenticate since password does not match stored value
+2026-03-04T00:16:30.168+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.authentication.ProviderManager     : Authentication failed with provider DaoAuthenticationProvider since Bad credentials
+2026-03-04T00:16:30.169+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.authentication.ProviderManager     : Denying authentication since all attempted providers failed
+2026-03-04T00:16:30.175+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-03-04T00:16:30.182+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-03-04T00:16:30.183+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /error
+2026-03-04T00:16:30.244+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T00:16:47.346+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
+2026-03-04T00:16:47.349+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T00:16:47.349+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
+2026-03-04T00:16:47.511+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-3] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2026-03-04T00:17:02.937+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
+2026-03-04T00:17:02.945+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T00:17:02.946+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
+2026-03-04T00:17:03.094+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-4] o.s.s.a.dao.DaoAuthenticationProvider    : Failed to authenticate since password does not match stored value
+2026-03-04T00:17:03.095+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-4] o.s.s.authentication.ProviderManager     : Authentication failed with provider DaoAuthenticationProvider since Bad credentials
+2026-03-04T00:17:03.256+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-4] o.s.s.a.dao.DaoAuthenticationProvider    : Failed to authenticate since password does not match stored value
+2026-03-04T00:17:03.257+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-4] o.s.s.authentication.ProviderManager     : Authentication failed with provider DaoAuthenticationProvider since Bad credentials
+2026-03-04T00:17:03.257+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-4] o.s.s.authentication.ProviderManager     : Denying authentication since all attempted providers failed
+2026-03-04T00:17:03.260+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-4] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-03-04T00:17:03.261+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-03-04T00:17:03.261+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured GET /error
+2026-03-04T00:17:03.264+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T00:17:32.317+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
+2026-03-04T00:17:32.326+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-5] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T00:17:32.327+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
+2026-03-04T00:17:32.473+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-5] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2026-03-04T00:18:08.260+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing POST /cases
+2026-03-04T00:18:08.262+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T00:18:08.268+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-6] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-03-04T00:18:08.269+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-03-04T00:18:08.270+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured GET /error
+2026-03-04T00:18:08.274+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T00:18:18.395+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing POST /cases
+2026-03-04T00:18:18.398+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T00:18:18.399+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-7] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-03-04T00:18:18.400+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-03-04T00:18:18.400+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Secured GET /error
+2026-03-04T00:18:18.403+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T00:33:41.144+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /cases
+2026-03-04T00:33:41.154+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T00:33:41.155+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-10] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
+2026-03-04T00:33:41.156+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-03-04T00:33:41.156+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Secured GET /error
+2026-03-04T00:33:41.159+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T00:38:18.075+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /auth/register
+2026-03-04T00:38:18.083+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T00:38:18.084+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured GET /auth/register
+2026-03-04T00:38:18.091+05:30  WARN 54843 --- [Ecourt] [http-nio-8080-exec-3] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+2026-03-04T00:38:18.092+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-03-04T00:38:18.092+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured GET /error
+2026-03-04T00:38:18.095+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T00:42:39.649+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /auth/register
+2026-03-04T00:42:39.657+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T00:42:39.658+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured GET /auth/register
+2026-03-04T00:42:39.659+05:30  WARN 54843 --- [Ecourt] [http-nio-8080-exec-6] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+2026-03-04T00:42:39.659+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-03-04T00:42:39.660+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured GET /error
+2026-03-04T00:42:39.664+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:12:56.527+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing GET /auth/register
+2026-03-04T01:12:56.530+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-9] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:12:56.531+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Secured GET /auth/register
+2026-03-04T01:12:56.532+05:30  WARN 54843 --- [Ecourt] [http-nio-8080-exec-9] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+2026-03-04T01:12:56.533+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-03-04T01:12:56.533+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Secured GET /error
+2026-03-04T01:12:56.537+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-9] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:13:04.128+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing POST /auth/register
+2026-03-04T01:13:04.136+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:13:04.137+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Secured POST /auth/register
+2026-03-04T01:13:25.232+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing POST /auth/register
+2026-03-04T01:13:25.235+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:13:25.236+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured POST /auth/register
+2026-03-04T01:14:10.529+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing POST /auth/register
+2026-03-04T01:14:10.532+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:14:10.533+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured POST /auth/register
+2026-03-04T01:16:20.780+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing POST /auth/register
+2026-03-04T01:16:20.788+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-5] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:16:20.788+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Secured POST /auth/register
+2026-03-04T01:16:51.393+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing POST /auth/register
+2026-03-04T01:16:51.396+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:16:51.397+05:30 DEBUG 54843 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured POST /auth/register
+2026-03-04T01:18:25.671+05:30  INFO 54843 --- [Ecourt] [SpringApplicationShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-03-04T01:18:25.677+05:30  INFO 54843 --- [Ecourt] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-03-04T01:18:25.686+05:30  INFO 54843 --- [Ecourt] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-03-04T01:18:25.696+05:30  INFO 54843 --- [Ecourt] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-03-04T01:18:25.701+05:30  INFO 54843 --- [Ecourt] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-03-04T01:18:37.741+05:30  INFO 71045 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Starting EcourtApplication using Java 21.0.10 with PID 71045 (/home/tanisk/Downloads/Ecourt/target/classes started by tanisk in /home/tanisk/Downloads/Ecourt)
+2026-03-04T01:18:37.746+05:30  INFO 71045 --- [Ecourt] [main] com.ecourt.EcourtApplication             : No active profile set, falling back to 1 default profile: "default"
+2026-03-04T01:18:38.717+05:30  INFO 71045 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-04T01:18:38.820+05:30  INFO 71045 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 77 ms. Found 2 JPA repository interfaces.
+2026-03-04T01:18:39.664+05:30  INFO 71045 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-03-04T01:18:39.690+05:30  INFO 71045 --- [Ecourt] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-04T01:18:39.690+05:30  INFO 71045 --- [Ecourt] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-03-04T01:18:39.823+05:30  INFO 71045 --- [Ecourt] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1981 ms
+2026-03-04T01:18:40.066+05:30  INFO 71045 --- [Ecourt] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-03-04T01:18:40.148+05:30  INFO 71045 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.1.Final
+2026-03-04T01:18:40.662+05:30  INFO 71045 --- [Ecourt] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-04T01:18:40.694+05:30  INFO 71045 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-03-04T01:18:41.033+05:30  INFO 71045 --- [Ecourt] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@87220f1
+2026-03-04T01:18:41.036+05:30  INFO 71045 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-03-04T01:18:41.090+05:30  WARN 71045 --- [Ecourt] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-03-04T01:18:41.106+05:30  INFO 71045 --- [Ecourt] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [jdbc:mysql://localhost:3306/ecourt_db]
 	Database driver: MySQL Connector/J
 	Database dialect: MySQLDialect
@@ -25,240 +119,139 @@
 	Pool: DataSourceConnectionProvider
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2026-02-27T09:32:46.951+05:30  INFO 106284 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-02-27T09:32:47.005+05:30  INFO 106284 --- [Ecourt] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-02-27T09:32:47.061+05:30  INFO 106284 --- [Ecourt] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-02-27T09:32:47.246+05:30  WARN 106284 --- [Ecourt] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-02-27T09:32:47.312+05:30  INFO 106284 --- [Ecourt] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
-2026-02-27T09:32:47.312+05:30  WARN 106284 --- [Ecourt] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
-2026-02-27T09:32:47.453+05:30 DEBUG 106284 --- [Ecourt] [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter
-2026-02-27T09:32:47.689+05:30  INFO 106284 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
-2026-02-27T09:32:47.695+05:30  INFO 106284 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Started EcourtApplication in 3.461 seconds (process running for 3.713)
-2026-02-27T09:33:05.063+05:30  INFO 106284 --- [Ecourt] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-02-27T09:33:05.063+05:30  INFO 106284 --- [Ecourt] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-02-27T09:33:05.065+05:30  INFO 106284 --- [Ecourt] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
-2026-02-27T09:33:05.074+05:30 DEBUG 106284 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
-2026-02-27T09:33:05.080+05:30 DEBUG 106284 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
-2026-02-27T09:33:05.162+05:30 DEBUG 106284 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
-2026-02-27T09:33:05.164+05:30 ERROR 106284 --- [Ecourt] [http-nio-8080-exec-1] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Handler dispatch failed: java.lang.Error: Unresolved compilation problem: 
-	The method getUser() is undefined for the type CustomUserDetails
-] with root cause
-
-java.lang.Error: Unresolved compilation problem: 
-	The method getUser() is undefined for the type CustomUserDetails
-
-	at com.ecourt.controller.AuthController.login(AuthController.java:48) ~[classes/:na]
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
-	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:190) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:934) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:853) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:86) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:963) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:866) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1003) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:903) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:649) ~[tomcat-embed-core-11.0.15.jar:6.1]
-	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:874) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:710) ~[tomcat-embed-core-11.0.15.jar:6.1]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:128) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-11.0.15.jar:11.0.15]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:235) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:371) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:181) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at com.ecourt.security.JwtAuthFilter.doFilterInternal(JwtAuthFilter.java:35) ~[classes/:na]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:110) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:96) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:237) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:195) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:317) ~[spring-security-config-7.0.2.jar:7.0.2]
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:355) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:272) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:199) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:77) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1778) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:946) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:480) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:57) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
-
-2026-02-27T09:33:05.171+05:30 DEBUG 106284 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /error
-2026-02-27T09:33:05.172+05:30 DEBUG 106284 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /error
-2026-02-27T09:33:05.205+05:30 DEBUG 106284 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
-2026-02-27T09:35:21.125+05:30 DEBUG 106284 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
-2026-02-27T09:35:21.126+05:30 DEBUG 106284 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
-2026-02-27T09:35:21.128+05:30 DEBUG 106284 --- [Ecourt] [http-nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
-2026-02-27T09:35:21.129+05:30 ERROR 106284 --- [Ecourt] [http-nio-8080-exec-2] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Handler dispatch failed: java.lang.Error: Unresolved compilation problem: 
-	The method getUser() is undefined for the type CustomUserDetails
-] with root cause
-
-java.lang.Error: Unresolved compilation problem: 
-	The method getUser() is undefined for the type CustomUserDetails
-
-	at com.ecourt.controller.AuthController.login(AuthController.java:48) ~[classes/:na]
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
-	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:190) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:934) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:853) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:86) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:963) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:866) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1003) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:903) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:649) ~[tomcat-embed-core-11.0.15.jar:6.1]
-	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:874) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:710) ~[tomcat-embed-core-11.0.15.jar:6.1]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:128) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-11.0.15.jar:11.0.15]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:235) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:371) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:181) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at com.ecourt.security.JwtAuthFilter.doFilterInternal(JwtAuthFilter.java:35) ~[classes/:na]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:110) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:96) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:237) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:195) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:317) ~[spring-security-config-7.0.2.jar:7.0.2]
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:355) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:272) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:199) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:77) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1778) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:946) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:480) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:57) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
-
-2026-02-27T09:35:21.131+05:30 DEBUG 106284 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /error
-2026-02-27T09:35:21.132+05:30 DEBUG 106284 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /error
-2026-02-27T09:35:21.134+05:30 DEBUG 106284 --- [Ecourt] [http-nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
-2026-02-27T09:38:03.190+05:30  INFO 109142 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Starting EcourtApplication using Java 21.0.10 with PID 109142 (/home/tanisk/Downloads/Ecourt/target/classes started by tanisk in /home/tanisk/Downloads/Ecourt)
-2026-02-27T09:38:03.193+05:30  INFO 109142 --- [Ecourt] [main] com.ecourt.EcourtApplication             : No active profile set, falling back to 1 default profile: "default"
-2026-02-27T09:38:03.652+05:30  INFO 109142 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-02-27T09:38:03.717+05:30  INFO 109142 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 57 ms. Found 2 JPA repository interfaces.
-2026-02-27T09:38:04.108+05:30  INFO 109142 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
-2026-02-27T09:38:04.120+05:30  INFO 109142 --- [Ecourt] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-02-27T09:38:04.120+05:30  INFO 109142 --- [Ecourt] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
-2026-02-27T09:38:04.156+05:30  INFO 109142 --- [Ecourt] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 919 ms
-2026-02-27T09:38:04.260+05:30  INFO 109142 --- [Ecourt] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
-2026-02-27T09:38:04.294+05:30  INFO 109142 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.1.Final
-2026-02-27T09:38:04.602+05:30  INFO 109142 --- [Ecourt] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-02-27T09:38:04.629+05:30  INFO 109142 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-02-27T09:38:04.880+05:30  INFO 109142 --- [Ecourt] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@6fdc2db6
-2026-02-27T09:38:04.882+05:30  INFO 109142 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-02-27T09:38:04.918+05:30  WARN 109142 --- [Ecourt] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-02-27T09:38:04.934+05:30  INFO 109142 --- [Ecourt] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2026-03-04T01:18:41.936+05:30  INFO 71045 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-04T01:18:41.990+05:30  INFO 71045 --- [Ecourt] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-04T01:18:42.058+05:30  INFO 71045 --- [Ecourt] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-03-04T01:18:42.312+05:30  WARN 71045 --- [Ecourt] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-04T01:18:42.393+05:30  INFO 71045 --- [Ecourt] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-03-04T01:18:42.394+05:30  WARN 71045 --- [Ecourt] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-03-04T01:18:42.580+05:30 DEBUG 71045 --- [Ecourt] [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2026-03-04T01:18:42.889+05:30  INFO 71045 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-03-04T01:18:42.894+05:30  INFO 71045 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Started EcourtApplication in 5.923 seconds (process running for 6.556)
+2026-03-04T01:18:57.631+05:30  INFO 71045 --- [Ecourt] [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-04T01:18:57.631+05:30  INFO 71045 --- [Ecourt] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-03-04T01:18:57.633+05:30  INFO 71045 --- [Ecourt] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-03-04T01:18:57.647+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing POST /auth/register
+2026-03-04T01:18:57.752+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:18:57.754+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured POST /auth/register
+2026-03-04T01:20:01.619+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing POST /auth/register
+2026-03-04T01:20:01.621+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-5] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:20:01.622+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Secured POST /auth/register
+2026-03-04T01:21:05.433+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
+2026-03-04T01:21:05.436+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:21:05.436+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
+2026-03-04T01:21:05.731+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-8] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2026-03-04T01:24:29.301+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing POST /cases
+2026-03-04T01:24:29.556+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.w.access.AccessDeniedHandlerImpl   : Responding with 403 status code
+2026-03-04T01:24:29.589+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-03-04T01:24:29.590+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /error
+2026-03-04T01:24:29.658+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:24:39.261+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /cases
+2026-03-04T01:24:39.273+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /cases
+2026-03-04T01:24:39.289+05:30  WARN 71045 --- [Ecourt] [http-nio-8080-exec-2] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+2026-03-04T01:24:39.291+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-03-04T01:24:39.291+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /error
+2026-03-04T01:24:39.294+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:24:51.827+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /cases
+2026-03-04T01:24:51.838+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured GET /cases
+2026-03-04T01:24:51.839+05:30  WARN 71045 --- [Ecourt] [http-nio-8080-exec-3] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+2026-03-04T01:24:51.840+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-03-04T01:24:51.841+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured GET /error
+2026-03-04T01:24:51.844+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:25:46.880+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /auth/login
+2026-03-04T01:25:46.893+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured GET /auth/login
+2026-03-04T01:25:46.894+05:30  WARN 71045 --- [Ecourt] [http-nio-8080-exec-4] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+2026-03-04T01:25:46.895+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-03-04T01:25:46.896+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured GET /error
+2026-03-04T01:25:46.899+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:25:53.391+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
+2026-03-04T01:25:53.407+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
+2026-03-04T01:25:53.613+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-5] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2026-03-04T01:26:46.692+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing POST /cases
+2026-03-04T01:26:46.702+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured POST /cases
+2026-03-04T01:27:53.032+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing POST /cases/CNR2001
+2026-03-04T01:27:53.046+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Secured POST /cases/CNR2001
+2026-03-04T01:27:53.048+05:30  WARN 71045 --- [Ecourt] [http-nio-8080-exec-9] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported]
+2026-03-04T01:27:53.049+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-03-04T01:27:53.050+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Secured GET /error
+2026-03-04T01:27:53.054+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-9] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:28:08.477+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing POST /cases/EC-2026-001
+2026-03-04T01:28:08.487+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Secured POST /cases/EC-2026-001
+2026-03-04T01:28:08.488+05:30  WARN 71045 --- [Ecourt] [http-nio-8080-exec-10] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'POST' is not supported]
+2026-03-04T01:28:08.489+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-03-04T01:28:08.489+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Secured GET /error
+2026-03-04T01:28:08.492+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:28:13.845+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /cases/EC-2026-001
+2026-03-04T01:28:13.855+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /cases/EC-2026-001
+2026-03-04T01:28:19.642+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /cases/CNR2001
+2026-03-04T01:28:19.651+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /cases/CNR2001
+2026-03-04T01:28:31.760+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /cases/CNR2002
+2026-03-04T01:28:31.769+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured GET /cases/CNR2002
+2026-03-04T01:32:17.210+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
+2026-03-04T01:32:17.219+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
+2026-03-04T01:32:17.365+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-6] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2026-03-04T01:32:50.485+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
+2026-03-04T01:32:50.502+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
+2026-03-04T01:32:50.648+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-7] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2026-03-04T01:33:37.503+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /cases
+2026-03-04T01:33:37.511+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Secured GET /cases
+2026-03-04T01:33:37.513+05:30  WARN 71045 --- [Ecourt] [http-nio-8080-exec-8] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+2026-03-04T01:33:37.514+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-03-04T01:33:37.514+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Secured GET /error
+2026-03-04T01:33:37.518+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:33:43.604+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing GET /cases/CNR2003
+2026-03-04T01:33:43.613+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Secured GET /cases/CNR2003
+2026-03-04T01:33:43.632+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-9] o.s.s.w.access.AccessDeniedHandlerImpl   : Responding with 403 status code
+2026-03-04T01:33:43.633+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-03-04T01:33:43.634+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Secured GET /error
+2026-03-04T01:33:43.637+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-9] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:34:05.383+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /cases/EC-2026-001
+2026-03-04T01:34:05.392+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Secured GET /cases/EC-2026-001
+2026-03-04T01:34:05.401+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-10] o.s.s.w.access.AccessDeniedHandlerImpl   : Responding with 403 status code
+2026-03-04T01:34:05.402+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-03-04T01:34:05.402+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Secured GET /error
+2026-03-04T01:34:05.405+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:34:33.411+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing OPTIONS /auth/login
+2026-03-04T01:34:33.412+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:34:33.413+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured OPTIONS /auth/login
+2026-03-04T01:34:44.132+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing OPTIONS /auth/login
+2026-03-04T01:34:44.133+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:34:44.133+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured OPTIONS /auth/login
+2026-03-04T01:35:00.948+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing OPTIONS /auth/login
+2026-03-04T01:35:00.949+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:35:00.949+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured OPTIONS /auth/login
+2026-03-04T01:36:40.382+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
+2026-03-04T01:36:40.383+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:36:40.383+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
+2026-03-04T01:36:40.543+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-6] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2026-03-04T01:36:53.565+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
+2026-03-04T01:36:53.566+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:36:53.567+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
+2026-03-04T01:36:53.724+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-8] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2026-03-04T01:37:10.483+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing OPTIONS /auth/login
+2026-03-04T01:37:10.484+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:37:10.484+05:30 DEBUG 71045 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Secured OPTIONS /auth/login
+2026-03-04T01:37:25.904+05:30  INFO 71045 --- [Ecourt] [SpringApplicationShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-03-04T01:37:25.914+05:30  INFO 71045 --- [Ecourt] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-03-04T01:37:25.927+05:30  INFO 71045 --- [Ecourt] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-03-04T01:37:25.941+05:30  INFO 71045 --- [Ecourt] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-03-04T01:37:25.955+05:30  INFO 71045 --- [Ecourt] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-03-04T01:38:02.311+05:30  INFO 78975 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Starting EcourtApplication using Java 21.0.10 with PID 78975 (/home/tanisk/Downloads/Ecourt/target/classes started by tanisk in /home/tanisk/Downloads/Ecourt)
+2026-03-04T01:38:02.315+05:30  INFO 78975 --- [Ecourt] [main] com.ecourt.EcourtApplication             : No active profile set, falling back to 1 default profile: "default"
+2026-03-04T01:38:03.243+05:30  INFO 78975 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-04T01:38:03.324+05:30  INFO 78975 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 68 ms. Found 2 JPA repository interfaces.
+2026-03-04T01:38:04.104+05:30  INFO 78975 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-03-04T01:38:04.125+05:30  INFO 78975 --- [Ecourt] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-04T01:38:04.126+05:30  INFO 78975 --- [Ecourt] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-03-04T01:38:04.188+05:30  INFO 78975 --- [Ecourt] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1788 ms
+2026-03-04T01:38:04.355+05:30  INFO 78975 --- [Ecourt] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-03-04T01:38:04.436+05:30  INFO 78975 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.1.Final
+2026-03-04T01:38:05.071+05:30  INFO 78975 --- [Ecourt] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-04T01:38:05.119+05:30  INFO 78975 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-03-04T01:38:05.630+05:30  INFO 78975 --- [Ecourt] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@25823192
+2026-03-04T01:38:05.633+05:30  INFO 78975 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-03-04T01:38:05.708+05:30  WARN 78975 --- [Ecourt] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-03-04T01:38:05.732+05:30  INFO 78975 --- [Ecourt] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [jdbc:mysql://localhost:3306/ecourt_db]
 	Database driver: MySQL Connector/J
 	Database dialect: MySQLDialect
@@ -270,195 +263,98 @@ java.lang.Error: Unresolved compilation problem:
 	Pool: DataSourceConnectionProvider
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2026-02-27T09:38:05.597+05:30  INFO 109142 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-02-27T09:38:05.651+05:30  INFO 109142 --- [Ecourt] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-02-27T09:38:05.710+05:30  INFO 109142 --- [Ecourt] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-02-27T09:38:05.942+05:30  WARN 109142 --- [Ecourt] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-02-27T09:38:06.008+05:30  INFO 109142 --- [Ecourt] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
-2026-02-27T09:38:06.009+05:30  WARN 109142 --- [Ecourt] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
-2026-02-27T09:38:06.152+05:30 DEBUG 109142 --- [Ecourt] [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, ExceptionTranslationFilter, AuthorizationFilter
-2026-02-27T09:38:06.390+05:30  INFO 109142 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
-2026-02-27T09:38:06.395+05:30  INFO 109142 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Started EcourtApplication in 3.546 seconds (process running for 3.796)
-2026-02-27T09:38:20.450+05:30  INFO 109142 --- [Ecourt] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-02-27T09:38:20.451+05:30  INFO 109142 --- [Ecourt] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-02-27T09:38:20.454+05:30  INFO 109142 --- [Ecourt] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
-2026-02-27T09:38:20.463+05:30 DEBUG 109142 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing POST /auth/register
-2026-02-27T09:38:20.470+05:30 DEBUG 109142 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured POST /auth/register
-2026-02-27T09:38:20.946+05:30 DEBUG 109142 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
-2026-02-27T09:38:20.947+05:30 ERROR 109142 --- [Ecourt] [http-nio-8080-exec-1] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.dao.DataIntegrityViolationException: not-null property references a null or transient value for entity com.ecourt.model.User.email] with root cause
-
-org.hibernate.PropertyValueException: not-null property references a null or transient value for entity com.ecourt.model.User.email
-	at org.hibernate.engine.internal.Nullability.checkNullability(Nullability.java:120) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
-	at org.hibernate.action.internal.AbstractEntityInsertAction.nullifyTransientReferencesIfNotAlready(AbstractEntityInsertAction.java:120) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
-	at org.hibernate.action.internal.EntityIdentityInsertAction.execute(EntityIdentityInsertAction.java:67) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
-	at org.hibernate.engine.spi.ActionQueue.execute(ActionQueue.java:667) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
-	at org.hibernate.engine.spi.ActionQueue.addResolvedEntityInsertAction(ActionQueue.java:291) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
-	at org.hibernate.engine.spi.ActionQueue.addInsertAction(ActionQueue.java:270) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
-	at org.hibernate.engine.spi.ActionQueue.addAction(ActionQueue.java:322) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
-	at org.hibernate.event.internal.AbstractSaveEventListener.addInsertAction(AbstractSaveEventListener.java:371) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
-	at org.hibernate.event.internal.AbstractSaveEventListener.performSaveOrReplicate(AbstractSaveEventListener.java:285) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
-	at org.hibernate.event.internal.AbstractSaveEventListener.performSave(AbstractSaveEventListener.java:215) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
-	at org.hibernate.event.internal.AbstractSaveEventListener.saveWithGeneratedId(AbstractSaveEventListener.java:133) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
-	at org.hibernate.event.internal.DefaultPersistEventListener.entityIsTransient(DefaultPersistEventListener.java:145) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
-	at org.hibernate.event.internal.DefaultPersistEventListener.persist(DefaultPersistEventListener.java:89) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
-	at org.hibernate.event.internal.DefaultPersistEventListener.onPersist(DefaultPersistEventListener.java:73) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
-	at org.hibernate.event.internal.DefaultPersistEventListener.onPersist(DefaultPersistEventListener.java:49) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
-	at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:138) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
-	at org.hibernate.internal.SessionImpl.firePersist(SessionImpl.java:689) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
-	at org.hibernate.internal.SessionImpl.persist(SessionImpl.java:672) ~[hibernate-core-7.2.1.Final.jar:7.2.1.Final]
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
-	at org.springframework.orm.jpa.ExtendedEntityManagerCreator$ExtendedEntityManagerInvocationHandler.invoke(ExtendedEntityManagerCreator.java:362) ~[spring-orm-7.0.3.jar:7.0.3]
-	at jdk.proxy2/jdk.proxy2.$Proxy121.persist(Unknown Source) ~[na:na]
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
-	at org.springframework.orm.jpa.SharedEntityManagerCreator$SharedEntityManagerInvocationHandler.invoke(SharedEntityManagerCreator.java:317) ~[spring-orm-7.0.3.jar:7.0.3]
-	at jdk.proxy2/jdk.proxy2.$Proxy121.persist(Unknown Source) ~[na:na]
-	at org.springframework.data.jpa.repository.support.SimpleJpaRepository.save(SimpleJpaRepository.java:664) ~[spring-data-jpa-4.0.2.jar:4.0.2]
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
-	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:359) ~[spring-aop-7.0.3.jar:7.0.3]
-	at org.springframework.data.repository.core.support.RepositoryMethodInvoker$RepositoryFragmentMethodInvoker.lambda$new$0(RepositoryMethodInvoker.java:278) ~[spring-data-commons-4.0.2.jar:4.0.2]
-	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.doInvoke(RepositoryMethodInvoker.java:169) ~[spring-data-commons-4.0.2.jar:4.0.2]
-	at org.springframework.data.repository.core.support.RepositoryMethodInvoker.invoke(RepositoryMethodInvoker.java:158) ~[spring-data-commons-4.0.2.jar:4.0.2]
-	at org.springframework.data.repository.core.support.RepositoryComposition$RepositoryFragments.invoke(RepositoryComposition.java:545) ~[spring-data-commons-4.0.2.jar:4.0.2]
-	at org.springframework.data.repository.core.support.RepositoryComposition.invoke(RepositoryComposition.java:290) ~[spring-data-commons-4.0.2.jar:4.0.2]
-	at org.springframework.data.repository.core.support.RepositoryFactorySupport$ImplementationMethodExecutionInterceptor.invoke(RepositoryFactorySupport.java:690) ~[spring-data-commons-4.0.2.jar:4.0.2]
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-7.0.3.jar:7.0.3]
-	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.doInvoke(QueryExecutorMethodInterceptor.java:171) ~[spring-data-commons-4.0.2.jar:4.0.2]
-	at org.springframework.data.repository.core.support.QueryExecutorMethodInterceptor.invoke(QueryExecutorMethodInterceptor.java:146) ~[spring-data-commons-4.0.2.jar:4.0.2]
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-7.0.3.jar:7.0.3]
-	at org.springframework.data.projection.DefaultMethodInvokingMethodInterceptor.invoke(DefaultMethodInvokingMethodInterceptor.java:69) ~[spring-data-commons-4.0.2.jar:4.0.2]
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-7.0.3.jar:7.0.3]
-	at org.springframework.transaction.interceptor.TransactionInterceptor$1.proceedWithInvocation(TransactionInterceptor.java:133) ~[spring-tx-7.0.3.jar:7.0.3]
-	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:371) ~[spring-tx-7.0.3.jar:7.0.3]
-	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:130) ~[spring-tx-7.0.3.jar:7.0.3]
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-7.0.3.jar:7.0.3]
-	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:135) ~[spring-tx-7.0.3.jar:7.0.3]
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-7.0.3.jar:7.0.3]
-	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:166) ~[spring-data-jpa-4.0.2.jar:4.0.2]
-	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179) ~[spring-aop-7.0.3.jar:7.0.3]
-	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:222) ~[spring-aop-7.0.3.jar:7.0.3]
-	at jdk.proxy2/jdk.proxy2.$Proxy125.save(Unknown Source) ~[na:na]
-	at com.ecourt.service.UserService.register(UserService.java:31) ~[classes/:na]
-	at com.ecourt.controller.AuthController.register(AuthController.java:30) ~[classes/:na]
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
-	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:190) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:934) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:853) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:86) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:963) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:866) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1003) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:903) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:649) ~[tomcat-embed-core-11.0.15.jar:6.1]
-	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:874) ~[spring-webmvc-7.0.3.jar:7.0.3]
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:710) ~[tomcat-embed-core-11.0.15.jar:6.1]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:128) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-11.0.15.jar:11.0.15]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:235) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:371) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:181) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at com.ecourt.security.JwtAuthFilter.doFilterInternal(JwtAuthFilter.java:35) ~[classes/:na]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:110) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:96) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:380) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:237) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:195) ~[spring-security-web-7.0.2.jar:7.0.2]
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.filter.ServletRequestPathFilter.doFilter(ServletRequestPathFilter.java:52) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebSecurityConfiguration.java:317) ~[spring-security-config-7.0.2.jar:7.0.2]
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:355) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:272) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:199) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-7.0.3.jar:7.0.3]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:107) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:165) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:77) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:113) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:83) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:72) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:341) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:397) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1778) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:946) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:480) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:57) ~[tomcat-embed-core-11.0.15.jar:11.0.15]
-	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
-
-2026-02-27T09:38:20.955+05:30 DEBUG 109142 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /error
-2026-02-27T09:38:20.956+05:30 DEBUG 109142 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /error
-2026-02-27T09:38:20.986+05:30 DEBUG 109142 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
-2026-02-27T09:39:58.785+05:30 DEBUG 109142 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
-2026-02-27T09:39:58.822+05:30 DEBUG 109142 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
-2026-02-27T09:39:58.972+05:30 DEBUG 109142 --- [Ecourt] [http-nio-8080-exec-3] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
-2026-02-27T09:39:58.987+05:30 DEBUG 109142 --- [Ecourt] [http-nio-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
-2026-02-27T09:43:24.651+05:30  INFO 109142 --- [Ecourt] [SpringApplicationShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
-2026-02-27T09:43:24.658+05:30  INFO 109142 --- [Ecourt] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
-2026-02-27T09:43:24.664+05:30  INFO 109142 --- [Ecourt] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2026-02-27T09:43:24.667+05:30  INFO 109142 --- [Ecourt] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2026-02-27T09:43:24.675+05:30  INFO 109142 --- [Ecourt] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2026-02-27T09:48:15.090+05:30  INFO 113037 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Starting EcourtApplication using Java 21.0.10 with PID 113037 (/home/tanisk/Downloads/Ecourt/target/classes started by tanisk in /home/tanisk/Downloads/Ecourt)
-2026-02-27T09:48:15.093+05:30  INFO 113037 --- [Ecourt] [main] com.ecourt.EcourtApplication             : No active profile set, falling back to 1 default profile: "default"
-2026-02-27T09:48:15.595+05:30  INFO 113037 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-02-27T09:48:15.639+05:30  INFO 113037 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 37 ms. Found 2 JPA repository interfaces.
-2026-02-27T09:48:16.066+05:30  INFO 113037 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
-2026-02-27T09:48:16.078+05:30  INFO 113037 --- [Ecourt] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-02-27T09:48:16.078+05:30  INFO 113037 --- [Ecourt] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
-2026-02-27T09:48:16.113+05:30  INFO 113037 --- [Ecourt] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 977 ms
-2026-02-27T09:48:16.205+05:30  INFO 113037 --- [Ecourt] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
-2026-02-27T09:48:16.253+05:30  INFO 113037 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.1.Final
-2026-02-27T09:48:16.577+05:30  INFO 113037 --- [Ecourt] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-02-27T09:48:16.599+05:30  INFO 113037 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-02-27T09:48:16.845+05:30  INFO 113037 --- [Ecourt] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@64544ee4
-2026-02-27T09:48:16.846+05:30  INFO 113037 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-02-27T09:48:16.883+05:30  WARN 113037 --- [Ecourt] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-02-27T09:48:16.899+05:30  INFO 113037 --- [Ecourt] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2026-03-04T01:38:06.850+05:30  INFO 78975 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-04T01:38:06.922+05:30  INFO 78975 --- [Ecourt] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-04T01:38:07.000+05:30  INFO 78975 --- [Ecourt] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-03-04T01:38:07.268+05:30  WARN 78975 --- [Ecourt] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-04T01:38:07.354+05:30  INFO 78975 --- [Ecourt] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-03-04T01:38:07.355+05:30  WARN 78975 --- [Ecourt] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-03-04T01:38:07.550+05:30 DEBUG 78975 --- [Ecourt] [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, LogoutFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2026-03-04T01:38:07.857+05:30  INFO 78975 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-03-04T01:38:07.864+05:30  INFO 78975 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Started EcourtApplication in 6.229 seconds (process running for 6.738)
+2026-03-04T01:38:28.379+05:30  INFO 78975 --- [Ecourt] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-04T01:38:28.379+05:30  INFO 78975 --- [Ecourt] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-03-04T01:38:28.381+05:30  INFO 78975 --- [Ecourt] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2026-03-04T01:38:28.393+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing OPTIONS /auth/login
+2026-03-04T01:38:53.154+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing OPTIONS /auth/login
+2026-03-04T01:38:53.172+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
+2026-03-04T01:38:53.182+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:38:53.185+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
+2026-03-04T01:38:54.316+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-3] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2026-03-04T01:39:27.618+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing GET /auth/login
+2026-03-04T01:39:27.710+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Secured GET /auth/login
+2026-03-04T01:39:27.715+05:30  WARN 78975 --- [Ecourt] [http-nio-8080-exec-5] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'GET' is not supported]
+2026-03-04T01:39:27.722+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-03-04T01:39:27.723+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Secured GET /error
+2026-03-04T01:39:27.737+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-5] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:39:33.498+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
+2026-03-04T01:39:33.511+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
+2026-03-04T01:39:33.659+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-6] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2026-03-04T01:39:56.390+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing OPTIONS /auth/login
+2026-03-04T01:39:56.408+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
+2026-03-04T01:39:56.410+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-9] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:39:56.411+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
+2026-03-04T01:39:56.562+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-9] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2026-03-04T01:40:28.872+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing OPTIONS /cases/CNR2001
+2026-03-04T01:40:28.886+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /cases/CNR2001
+2026-03-04T01:40:28.906+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /cases/CNR2001
+2026-03-04T01:40:59.379+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing OPTIONS /cases/EC-2026-001
+2026-03-04T01:40:59.390+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /cases/EC-2026-001
+2026-03-04T01:40:59.408+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured GET /cases/EC-2026-001
+2026-03-04T01:41:57.857+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing OPTIONS /cases
+2026-03-04T01:41:57.872+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing POST /cases
+2026-03-04T01:41:57.890+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured POST /cases
+2026-03-04T01:42:28.466+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing OPTIONS /cases
+2026-03-04T01:42:28.477+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing POST /cases
+2026-03-04T01:42:28.490+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Secured POST /cases
+2026-03-04T01:42:42.079+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing OPTIONS /auth/login
+2026-03-04T01:42:42.093+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
+2026-03-04T01:42:42.095+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:42:42.095+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
+2026-03-04T01:42:42.244+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-10] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2026-03-04T01:42:53.835+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing OPTIONS /cases/case-1001
+2026-03-04T01:42:53.842+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /cases/case-1001
+2026-03-04T01:42:53.857+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /cases/case-1001
+2026-03-04T01:42:53.872+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-2] o.s.s.w.access.AccessDeniedHandlerImpl   : Responding with 403 status code
+2026-03-04T01:42:53.873+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-03-04T01:42:53.874+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /error
+2026-03-04T01:42:53.879+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:43:02.978+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing OPTIONS /cases/CASE-1001
+2026-03-04T01:43:02.987+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /cases/CASE-1001
+2026-03-04T01:43:03.003+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured GET /cases/CASE-1001
+2026-03-04T01:43:03.013+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-4] o.s.s.w.access.AccessDeniedHandlerImpl   : Responding with 403 status code
+2026-03-04T01:43:03.015+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-03-04T01:43:03.016+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured GET /error
+2026-03-04T01:43:03.019+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:43:20.014+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing OPTIONS /cases/CASE-1002
+2026-03-04T01:43:20.023+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /cases/CASE-1002
+2026-03-04T01:43:20.037+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured GET /cases/CASE-1002
+2026-03-04T01:43:34.716+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing OPTIONS /cases/CASE-1001
+2026-03-04T01:43:34.726+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /cases/CASE-1001
+2026-03-04T01:43:34.739+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Secured GET /cases/CASE-1001
+2026-03-04T01:43:34.746+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-8] o.s.s.w.access.AccessDeniedHandlerImpl   : Responding with 403 status code
+2026-03-04T01:43:34.747+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /error
+2026-03-04T01:43:34.748+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Secured GET /error
+2026-03-04T01:43:34.752+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:44:50.002+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing OPTIONS /cases/case-1002
+2026-03-04T01:44:50.012+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /cases/case-1002
+2026-03-04T01:44:50.031+05:30 DEBUG 78975 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /cases/case-1002
+2026-03-04T01:50:46.403+05:30  INFO 84439 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Starting EcourtApplication using Java 21.0.10 with PID 84439 (/home/tanisk/Downloads/Ecourt/target/classes started by tanisk in /home/tanisk/Downloads/Ecourt)
+2026-03-04T01:50:46.408+05:30  INFO 84439 --- [Ecourt] [main] com.ecourt.EcourtApplication             : No active profile set, falling back to 1 default profile: "default"
+2026-03-04T01:50:47.280+05:30  INFO 84439 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-04T01:50:47.389+05:30  INFO 84439 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 95 ms. Found 2 JPA repository interfaces.
+2026-03-04T01:50:48.188+05:30  INFO 84439 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-03-04T01:50:48.213+05:30  INFO 84439 --- [Ecourt] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-04T01:50:48.214+05:30  INFO 84439 --- [Ecourt] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-03-04T01:50:48.280+05:30  INFO 84439 --- [Ecourt] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1799 ms
+2026-03-04T01:50:48.451+05:30  INFO 84439 --- [Ecourt] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-03-04T01:50:48.522+05:30  INFO 84439 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.1.Final
+2026-03-04T01:50:49.007+05:30  INFO 84439 --- [Ecourt] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-04T01:50:49.042+05:30  INFO 84439 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-03-04T01:50:49.391+05:30  INFO 84439 --- [Ecourt] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1e7cfd49
+2026-03-04T01:50:49.393+05:30  INFO 84439 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-03-04T01:50:49.441+05:30  WARN 84439 --- [Ecourt] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-03-04T01:50:49.457+05:30  INFO 84439 --- [Ecourt] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [jdbc:mysql://localhost:3306/ecourt_db]
 	Database driver: MySQL Connector/J
 	Database dialect: MySQLDialect
@@ -470,241 +366,85 @@ org.hibernate.PropertyValueException: not-null property references a null or tra
 	Pool: DataSourceConnectionProvider
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2026-02-27T09:48:17.574+05:30  INFO 113037 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-02-27T09:48:17.623+05:30  INFO 113037 --- [Ecourt] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-02-27T09:48:17.677+05:30  INFO 113037 --- [Ecourt] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-02-27T09:48:17.861+05:30  WARN 113037 --- [Ecourt] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-02-27T09:48:17.962+05:30  INFO 113037 --- [Ecourt] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
-2026-02-27T09:48:17.963+05:30  WARN 113037 --- [Ecourt] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
-2026-02-27T09:48:18.139+05:30 DEBUG 113037 --- [Ecourt] [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
-2026-02-27T09:48:18.392+05:30  INFO 113037 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
-2026-02-27T09:48:18.397+05:30  INFO 113037 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Started EcourtApplication in 3.654 seconds (process running for 3.909)
-2026-02-27T09:51:30.391+05:30  INFO 113037 --- [Ecourt] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-02-27T09:51:30.392+05:30  INFO 113037 --- [Ecourt] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-02-27T09:51:30.394+05:30  INFO 113037 --- [Ecourt] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
-2026-02-27T09:51:30.403+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
-2026-02-27T09:51:30.445+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
-2026-02-27T09:51:30.447+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
-2026-02-27T09:51:30.952+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
-2026-02-27T09:51:44.880+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
-2026-02-27T09:51:44.882+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
-2026-02-27T09:51:44.883+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
-2026-02-27T09:51:44.958+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-3] o.s.s.a.dao.DaoAuthenticationProvider    : Failed to find user 'anish'
-2026-02-27T09:51:44.959+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-3] o.s.s.authentication.ProviderManager     : Authentication failed with provider DaoAuthenticationProvider since Bad credentials
-2026-02-27T09:51:45.032+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-3] o.s.s.a.dao.DaoAuthenticationProvider    : Failed to find user 'anish'
-2026-02-27T09:51:45.032+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-3] o.s.s.authentication.ProviderManager     : Authentication failed with provider DaoAuthenticationProvider since Bad credentials
-2026-02-27T09:51:45.033+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-3] o.s.s.authentication.ProviderManager     : Denying authentication since all attempted providers failed
-2026-02-27T09:51:45.037+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-3] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
-2026-02-27T09:51:45.042+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing GET /error
-2026-02-27T09:51:45.042+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured GET /error
-2026-02-27T09:51:45.054+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-3] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
-2026-02-27T09:51:51.422+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
-2026-02-27T09:51:51.424+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
-2026-02-27T09:51:51.424+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
-2026-02-27T09:51:51.499+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-4] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
-2026-02-27T09:52:02.992+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
-2026-02-27T09:52:02.999+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-5] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
-2026-02-27T09:52:03.000+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
-2026-02-27T09:52:03.077+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-5] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
-2026-02-27T09:52:21.152+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
-2026-02-27T09:52:21.152+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
-2026-02-27T09:52:21.153+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
-2026-02-27T09:52:21.227+05:30 DEBUG 113037 --- [Ecourt] [http-nio-8080-exec-6] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
-2026-02-27T11:43:22.571+05:30  INFO 113037 --- [Ecourt] [SpringApplicationShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
-2026-02-27T11:43:22.584+05:30  INFO 113037 --- [Ecourt] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
-2026-02-27T11:43:22.596+05:30  INFO 113037 --- [Ecourt] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2026-02-27T11:43:22.607+05:30  INFO 113037 --- [Ecourt] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2026-02-27T11:43:22.612+05:30  INFO 113037 --- [Ecourt] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2026-02-27T20:39:15.833+05:30  INFO 10471 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Starting EcourtApplication using Java 21.0.10 with PID 10471 (/home/tanisk/Downloads/Ecourt/target/classes started by tanisk in /home/tanisk/Downloads/Ecourt)
-2026-02-27T20:39:15.836+05:30  INFO 10471 --- [Ecourt] [main] com.ecourt.EcourtApplication             : No active profile set, falling back to 1 default profile: "default"
-2026-02-27T20:39:16.475+05:30  INFO 10471 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-02-27T20:39:16.537+05:30  INFO 10471 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 45 ms. Found 2 JPA repository interfaces.
-2026-02-27T20:39:17.041+05:30  INFO 10471 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
-2026-02-27T20:39:17.055+05:30  INFO 10471 --- [Ecourt] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-02-27T20:39:17.055+05:30  INFO 10471 --- [Ecourt] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
-2026-02-27T20:39:17.092+05:30  INFO 10471 --- [Ecourt] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1214 ms
-2026-02-27T20:39:17.214+05:30  INFO 10471 --- [Ecourt] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
-2026-02-27T20:39:17.275+05:30  INFO 10471 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.1.Final
-2026-02-27T20:39:17.679+05:30  INFO 10471 --- [Ecourt] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-02-27T20:39:17.707+05:30  INFO 10471 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-02-27T20:39:18.008+05:30  INFO 10471 --- [Ecourt] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@774013dc
-2026-02-27T20:39:18.010+05:30  INFO 10471 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-02-27T20:39:18.053+05:30  WARN 10471 --- [Ecourt] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-02-27T20:39:18.067+05:30  INFO 10471 --- [Ecourt] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [jdbc:mysql://localhost:3306/ecourt_db]
-	Database driver: MySQL Connector/J
-	Database dialect: MySQLDialect
-	Database version: 8.0.45
-	Default catalog/schema: ecourt_db/undefined
-	Autocommit mode: undefined/unknown
-	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
-	JDBC fetch size: none
-	Pool: DataSourceConnectionProvider
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2026-02-27T20:39:18.877+05:30  INFO 10471 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-02-27T20:39:18.927+05:30  INFO 10471 --- [Ecourt] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-02-27T20:39:18.983+05:30  INFO 10471 --- [Ecourt] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-02-27T20:39:19.205+05:30  WARN 10471 --- [Ecourt] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-02-27T20:39:19.272+05:30  INFO 10471 --- [Ecourt] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
-2026-02-27T20:39:19.273+05:30  WARN 10471 --- [Ecourt] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
-2026-02-27T20:39:19.473+05:30 DEBUG 10471 --- [Ecourt] [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
-2026-02-27T20:39:19.850+05:30  INFO 10471 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
-2026-02-27T20:39:19.857+05:30  INFO 10471 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Started EcourtApplication in 4.627 seconds (process running for 5.297)
-2026-02-27T20:39:46.033+05:30  INFO 10471 --- [Ecourt] [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-02-27T20:39:46.034+05:30  INFO 10471 --- [Ecourt] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-02-27T20:39:46.037+05:30  INFO 10471 --- [Ecourt] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
-2026-02-27T20:39:46.052+05:30 DEBUG 10471 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
-2026-02-27T20:39:46.063+05:30 DEBUG 10471 --- [Ecourt] [http-nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
-2026-02-27T20:39:46.065+05:30 DEBUG 10471 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
-2026-02-27T20:39:47.156+05:30 DEBUG 10471 --- [Ecourt] [http-nio-8080-exec-2] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
-2026-02-27T20:39:59.709+05:30  INFO 10471 --- [Ecourt] [SpringApplicationShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
-2026-02-27T20:39:59.715+05:30  INFO 10471 --- [Ecourt] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
-2026-02-27T20:39:59.725+05:30  INFO 10471 --- [Ecourt] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2026-02-27T20:39:59.733+05:30  INFO 10471 --- [Ecourt] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2026-02-27T20:39:59.755+05:30  INFO 10471 --- [Ecourt] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2026-02-27T21:41:11.062+05:30  INFO 30554 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Starting EcourtApplication using Java 21.0.10 with PID 30554 (/home/tanisk/Downloads/Ecourt/target/classes started by tanisk in /home/tanisk/Downloads/Ecourt)
-2026-02-27T21:41:11.066+05:30  INFO 30554 --- [Ecourt] [main] com.ecourt.EcourtApplication             : No active profile set, falling back to 1 default profile: "default"
-2026-02-27T21:41:11.955+05:30  INFO 30554 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-02-27T21:41:12.056+05:30  INFO 30554 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 75 ms. Found 2 JPA repository interfaces.
-2026-02-27T21:41:12.792+05:30  INFO 30554 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
-2026-02-27T21:41:12.812+05:30  INFO 30554 --- [Ecourt] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-02-27T21:41:12.813+05:30  INFO 30554 --- [Ecourt] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
-2026-02-27T21:41:12.875+05:30  INFO 30554 --- [Ecourt] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1735 ms
-2026-02-27T21:41:13.065+05:30  INFO 30554 --- [Ecourt] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
-2026-02-27T21:41:13.147+05:30  INFO 30554 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.1.Final
-2026-02-27T21:41:13.776+05:30  INFO 30554 --- [Ecourt] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-02-27T21:41:13.817+05:30  INFO 30554 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-02-27T21:41:14.359+05:30  INFO 30554 --- [Ecourt] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@87220f1
-2026-02-27T21:41:14.361+05:30  INFO 30554 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-02-27T21:41:14.497+05:30  WARN 30554 --- [Ecourt] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-02-27T21:41:14.524+05:30  INFO 30554 --- [Ecourt] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [jdbc:mysql://localhost:3306/ecourt_db]
-	Database driver: MySQL Connector/J
-	Database dialect: MySQLDialect
-	Database version: 8.0.45
-	Default catalog/schema: ecourt_db/undefined
-	Autocommit mode: undefined/unknown
-	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
-	JDBC fetch size: none
-	Pool: DataSourceConnectionProvider
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2026-02-27T21:41:15.817+05:30  INFO 30554 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-02-27T21:41:15.966+05:30  INFO 30554 --- [Ecourt] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-02-27T21:41:16.070+05:30  INFO 30554 --- [Ecourt] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-02-27T21:41:16.398+05:30  WARN 30554 --- [Ecourt] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-02-27T21:41:16.496+05:30  INFO 30554 --- [Ecourt] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
-2026-02-27T21:41:16.496+05:30  WARN 30554 --- [Ecourt] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
-2026-02-27T21:41:16.773+05:30 DEBUG 30554 --- [Ecourt] [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
-2026-02-27T21:41:17.164+05:30  INFO 30554 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
-2026-02-27T21:41:17.172+05:30  INFO 30554 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Started EcourtApplication in 6.797 seconds (process running for 7.472)
-2026-02-27T21:41:25.279+05:30  INFO 30554 --- [Ecourt] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-02-27T21:41:25.280+05:30  INFO 30554 --- [Ecourt] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-02-27T21:41:25.282+05:30  INFO 30554 --- [Ecourt] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
-2026-02-27T21:41:25.294+05:30 DEBUG 30554 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
-2026-02-27T21:41:25.304+05:30 DEBUG 30554 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
-2026-02-27T21:41:25.306+05:30 DEBUG 30554 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
-2026-02-27T21:41:26.401+05:30 DEBUG 30554 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
-2026-02-27T21:45:45.701+05:30  INFO 30554 --- [Ecourt] [SpringApplicationShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
-2026-02-27T21:45:45.705+05:30  INFO 30554 --- [Ecourt] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
-2026-02-27T21:45:45.712+05:30  INFO 30554 --- [Ecourt] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2026-02-27T21:45:45.716+05:30  INFO 30554 --- [Ecourt] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2026-02-27T21:45:45.727+05:30  INFO 30554 --- [Ecourt] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2026-02-27T21:46:02.431+05:30  INFO 31391 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Starting EcourtApplication using Java 21.0.10 with PID 31391 (/home/tanisk/Downloads/Ecourt/target/classes started by tanisk in /home/tanisk/Downloads/Ecourt)
-2026-02-27T21:46:02.434+05:30  INFO 31391 --- [Ecourt] [main] com.ecourt.EcourtApplication             : No active profile set, falling back to 1 default profile: "default"
-2026-02-27T21:46:03.318+05:30  INFO 31391 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-02-27T21:46:03.389+05:30  INFO 31391 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 58 ms. Found 2 JPA repository interfaces.
-2026-02-27T21:46:04.114+05:30  INFO 31391 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
-2026-02-27T21:46:04.133+05:30  INFO 31391 --- [Ecourt] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-02-27T21:46:04.134+05:30  INFO 31391 --- [Ecourt] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
-2026-02-27T21:46:04.192+05:30  INFO 31391 --- [Ecourt] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1681 ms
-2026-02-27T21:46:04.349+05:30  INFO 31391 --- [Ecourt] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
-2026-02-27T21:46:04.428+05:30  INFO 31391 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.1.Final
-2026-02-27T21:46:05.087+05:30  INFO 31391 --- [Ecourt] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-02-27T21:46:05.132+05:30  INFO 31391 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-02-27T21:46:05.632+05:30  INFO 31391 --- [Ecourt] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@87220f1
-2026-02-27T21:46:05.635+05:30  INFO 31391 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-02-27T21:46:05.704+05:30  WARN 31391 --- [Ecourt] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-02-27T21:46:05.727+05:30  INFO 31391 --- [Ecourt] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [jdbc:mysql://localhost:3306/ecourt_db]
-	Database driver: MySQL Connector/J
-	Database dialect: MySQLDialect
-	Database version: 8.0.45
-	Default catalog/schema: ecourt_db/undefined
-	Autocommit mode: undefined/unknown
-	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
-	JDBC fetch size: none
-	Pool: DataSourceConnectionProvider
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2026-02-27T21:46:06.992+05:30  INFO 31391 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-02-27T21:46:07.107+05:30  INFO 31391 --- [Ecourt] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-02-27T21:46:07.201+05:30  INFO 31391 --- [Ecourt] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-02-27T21:46:07.553+05:30  WARN 31391 --- [Ecourt] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-02-27T21:46:07.657+05:30  INFO 31391 --- [Ecourt] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
-2026-02-27T21:46:07.657+05:30  WARN 31391 --- [Ecourt] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
-2026-02-27T21:46:07.930+05:30 DEBUG 31391 --- [Ecourt] [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
-2026-02-27T21:46:08.318+05:30  INFO 31391 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
-2026-02-27T21:46:08.325+05:30  INFO 31391 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Started EcourtApplication in 6.574 seconds (process running for 7.172)
-2026-02-27T21:46:24.729+05:30  INFO 31391 --- [Ecourt] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-02-27T21:46:24.730+05:30  INFO 31391 --- [Ecourt] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-02-27T21:46:24.732+05:30  INFO 31391 --- [Ecourt] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
-2026-02-27T21:46:24.745+05:30 DEBUG 31391 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
-2026-02-27T21:46:24.756+05:30 DEBUG 31391 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
-2026-02-27T21:46:24.759+05:30 DEBUG 31391 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
-2026-02-27T21:46:25.770+05:30 DEBUG 31391 --- [Ecourt] [http-nio-8080-exec-1] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
-2026-02-27T21:50:53.147+05:30 DEBUG 31391 --- [Ecourt] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing POST /cases
-2026-02-27T21:50:53.252+05:30 DEBUG 31391 --- [Ecourt] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Secured POST /cases
-2026-02-27T21:54:41.004+05:30  INFO 31391 --- [Ecourt] [SpringApplicationShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
-2026-02-27T21:54:41.008+05:30  INFO 31391 --- [Ecourt] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
-2026-02-27T21:54:41.015+05:30  INFO 31391 --- [Ecourt] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
-2026-02-27T21:54:41.018+05:30  INFO 31391 --- [Ecourt] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2026-02-27T21:54:41.028+05:30  INFO 31391 --- [Ecourt] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2026-02-27T21:55:40.718+05:30  INFO 33068 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Starting EcourtApplication using Java 21.0.10 with PID 33068 (/home/tanisk/Downloads/Ecourt/target/classes started by tanisk in /home/tanisk/Downloads/Ecourt)
-2026-02-27T21:55:40.721+05:30  INFO 33068 --- [Ecourt] [main] com.ecourt.EcourtApplication             : No active profile set, falling back to 1 default profile: "default"
-2026-02-27T21:55:41.597+05:30  INFO 33068 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-02-27T21:55:41.691+05:30  INFO 33068 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 70 ms. Found 2 JPA repository interfaces.
-2026-02-27T21:55:42.351+05:30  INFO 33068 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
-2026-02-27T21:55:42.370+05:30  INFO 33068 --- [Ecourt] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-02-27T21:55:42.371+05:30  INFO 33068 --- [Ecourt] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
-2026-02-27T21:55:42.431+05:30  INFO 33068 --- [Ecourt] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1629 ms
-2026-02-27T21:55:42.621+05:30  INFO 33068 --- [Ecourt] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
-2026-02-27T21:55:42.677+05:30  INFO 33068 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.1.Final
-2026-02-27T21:55:43.236+05:30  INFO 33068 --- [Ecourt] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-02-27T21:55:43.277+05:30  INFO 33068 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-02-27T21:55:43.705+05:30  INFO 33068 --- [Ecourt] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@87220f1
-2026-02-27T21:55:43.707+05:30  INFO 33068 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-02-27T21:55:43.767+05:30  WARN 33068 --- [Ecourt] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-02-27T21:55:43.790+05:30  INFO 33068 --- [Ecourt] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
-	Database JDBC URL [jdbc:mysql://localhost:3306/ecourt_db]
-	Database driver: MySQL Connector/J
-	Database dialect: MySQLDialect
-	Database version: 8.0.45
-	Default catalog/schema: ecourt_db/undefined
-	Autocommit mode: undefined/unknown
-	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
-	JDBC fetch size: none
-	Pool: DataSourceConnectionProvider
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2026-02-27T21:55:44.751+05:30  INFO 33068 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-02-27T21:55:44.888+05:30  INFO 33068 --- [Ecourt] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-02-27T21:55:44.951+05:30  INFO 33068 --- [Ecourt] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-02-27T21:55:45.166+05:30  WARN 33068 --- [Ecourt] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-02-27T21:55:45.232+05:30  INFO 33068 --- [Ecourt] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
-2026-02-27T21:55:45.232+05:30  WARN 33068 --- [Ecourt] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
-2026-02-27T21:55:45.389+05:30 DEBUG 33068 --- [Ecourt] [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
-2026-02-27T21:55:45.634+05:30  INFO 33068 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
-2026-02-27T21:55:45.639+05:30  INFO 33068 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Started EcourtApplication in 5.543 seconds (process running for 6.104)
-2026-02-27T21:55:53.406+05:30  INFO 33068 --- [Ecourt] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-02-27T21:55:53.407+05:30  INFO 33068 --- [Ecourt] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-02-27T21:55:53.410+05:30  INFO 33068 --- [Ecourt] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
-2026-02-27T21:55:53.421+05:30 DEBUG 33068 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing POST /cases
-2026-02-27T21:55:54.140+05:30 DEBUG 33068 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured POST /cases
-2026-02-27T21:56:05.684+05:30 DEBUG 33068 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing POST /cases
-2026-02-27T21:56:05.696+05:30 DEBUG 33068 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured POST /cases
-2026-02-27T21:57:28.544+05:30 DEBUG 33068 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /cases/CNR2002
-2026-02-27T21:57:28.553+05:30 DEBUG 33068 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured GET /cases/CNR2002
-2026-02-27T21:57:44.353+05:30 DEBUG 33068 --- [Ecourt] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing GET /cases/CNR2001
-2026-02-27T21:57:44.364+05:30 DEBUG 33068 --- [Ecourt] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Secured GET /cases/CNR2001
+2026-03-04T01:50:50.238+05:30  INFO 84439 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-04T01:50:50.414+05:30  INFO 84439 --- [Ecourt] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-04T01:50:50.489+05:30  INFO 84439 --- [Ecourt] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-03-04T01:50:50.739+05:30  WARN 84439 --- [Ecourt] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-04T01:50:50.812+05:30  INFO 84439 --- [Ecourt] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-03-04T01:50:50.813+05:30  WARN 84439 --- [Ecourt] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-03-04T01:50:50.993+05:30 DEBUG 84439 --- [Ecourt] [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, LogoutFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2026-03-04T01:50:51.256+05:30  INFO 84439 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-03-04T01:50:51.260+05:30  INFO 84439 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Started EcourtApplication in 5.496 seconds (process running for 6.013)
+2026-03-04T01:59:01.940+05:30  INFO 84439 --- [Ecourt] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-04T01:59:01.941+05:30  INFO 84439 --- [Ecourt] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-03-04T01:59:01.945+05:30  INFO 84439 --- [Ecourt] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2026-03-04T01:59:01.964+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing OPTIONS /auth/login
+2026-03-04T01:59:02.026+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
+2026-03-04T01:59:02.035+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:59:02.037+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
+2026-03-04T01:59:03.224+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-2] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2026-03-04T01:59:15.138+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing OPTIONS /auth/login
+2026-03-04T01:59:15.152+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
+2026-03-04T01:59:15.156+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T01:59:15.157+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
+2026-03-04T01:59:15.306+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-4] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2026-03-04T01:59:21.666+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing OPTIONS /cases/lawyer
+2026-03-04T01:59:21.678+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /cases/lawyer
+2026-03-04T01:59:21.850+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured GET /cases/lawyer
+2026-03-04T02:03:54.820+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing OPTIONS /cases
+2026-03-04T02:03:54.830+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing POST /cases
+2026-03-04T02:03:54.851+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Secured POST /cases
+2026-03-04T02:04:00.767+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing OPTIONS /cases/lawyer
+2026-03-04T02:04:00.781+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /cases/lawyer
+2026-03-04T02:04:00.802+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /cases/lawyer
+2026-03-04T02:04:40.343+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing OPTIONS /cases
+2026-03-04T02:04:40.367+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing POST /cases
+2026-03-04T02:04:40.391+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured POST /cases
+2026-03-04T02:04:46.308+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing OPTIONS /cases/lawyer
+2026-03-04T02:04:46.316+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing GET /cases/lawyer
+2026-03-04T02:04:46.327+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Secured GET /cases/lawyer
+2026-03-04T02:06:03.737+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing OPTIONS /auth/register
+2026-03-04T02:06:03.748+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing POST /auth/register
+2026-03-04T02:06:03.750+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T02:06:03.751+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Secured POST /auth/register
+2026-03-04T02:06:20.747+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing OPTIONS /auth/login
+2026-03-04T02:06:20.757+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
+2026-03-04T02:06:20.759+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T02:06:20.760+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
+2026-03-04T02:06:20.925+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-10] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2026-03-04T02:06:42.237+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing OPTIONS /cases/case-1001
+2026-03-04T02:06:42.246+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /cases/case-1001
+2026-03-04T02:06:42.263+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /cases/case-1001
+2026-03-04T02:06:54.554+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing OPTIONS /cases/case-1001/assign
+2026-03-04T02:06:54.564+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing PUT /cases/case-1001/assign
+2026-03-04T02:06:54.577+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured PUT /cases/case-1001/assign
+2026-03-04T02:06:58.522+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing OPTIONS /cases/case-1001
+2026-03-04T02:06:58.529+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /cases/case-1001
+2026-03-04T02:06:58.538+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured GET /cases/case-1001
+2026-03-04T02:07:04.479+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing OPTIONS /cases/case-1001/status?status=CLOSED
+2026-03-04T02:07:04.490+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing PUT /cases/case-1001/status?status=CLOSED
+2026-03-04T02:07:04.506+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Secured PUT /cases/case-1001/status?status=CLOSED
+2026-03-04T02:07:06.689+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing OPTIONS /cases/case-1001
+2026-03-04T02:07:06.699+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /cases/case-1001
+2026-03-04T02:07:06.713+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Secured GET /cases/case-1001
+2026-03-04T02:07:11.947+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing OPTIONS /cases/case-1001/assign
+2026-03-04T02:07:11.957+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing PUT /cases/case-1001/assign
+2026-03-04T02:07:11.970+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured PUT /cases/case-1001/assign
+2026-03-04T02:07:13.923+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing OPTIONS /cases/case-1001
+2026-03-04T02:07:13.935+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing GET /cases/case-1001
+2026-03-04T02:07:13.948+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured GET /cases/case-1001
+2026-03-04T02:07:19.296+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing OPTIONS /cases/case-1001
+2026-03-04T02:07:19.309+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /cases/case-1001
+2026-03-04T02:07:19.322+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured GET /cases/case-1001
+2026-03-04T02:07:52.782+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing OPTIONS /auth/register
+2026-03-04T02:07:52.790+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing POST /auth/register
+2026-03-04T02:07:52.791+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T02:07:52.792+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Secured POST /auth/register
+2026-03-04T02:08:05.349+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing OPTIONS /auth/login
+2026-03-04T02:08:05.361+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
+2026-03-04T02:08:05.364+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-10] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T02:08:05.365+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
+2026-03-04T02:08:05.518+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-10] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2026-03-04T02:08:10.924+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing OPTIONS /admin/users
+2026-03-04T02:08:10.934+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /admin/users
+2026-03-04T02:08:10.953+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /admin/users
