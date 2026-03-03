@@ -165,7 +165,8 @@ document.getElementById('file-case-form').addEventListener('submit', async (e) =
         caseNumber: document.getElementById('case-num').value,
         title: document.getElementById('case-title').value,
         description: document.getElementById('case-desc').value,
-        clientUsername: document.getElementById('case-client').value
+        clientUsername: document.getElementById('case-client').value,
+        filedDate: document.getElementById('case-date').value
     };
 
     try {

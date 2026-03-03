@@ -448,3 +448,17 @@
 2026-03-04T02:08:10.924+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing OPTIONS /admin/users
 2026-03-04T02:08:10.934+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /admin/users
 2026-03-04T02:08:10.953+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /admin/users
+2026-03-04T02:16:46.062+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
+2026-03-04T02:16:46.064+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-4] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T02:16:46.064+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
+2026-03-04T02:16:46.268+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-4] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2026-03-04T02:16:46.295+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Securing POST /cases
+2026-03-04T02:16:46.305+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-6] o.s.security.web.FilterChainProxy        : Secured POST /cases
+2026-03-04T02:18:19.608+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing OPTIONS /auth/login
+2026-03-04T02:18:19.619+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Securing POST /auth/login
+2026-03-04T02:18:19.620+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2026-03-04T02:18:19.621+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-8] o.s.security.web.FilterChainProxy        : Secured POST /auth/login
+2026-03-04T02:18:19.784+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-8] o.s.s.a.dao.DaoAuthenticationProvider    : Authenticated user
+2026-03-04T02:18:28.764+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing OPTIONS /cases/lawyer
+2026-03-04T02:18:28.771+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /cases/lawyer
+2026-03-04T02:18:28.779+05:30 DEBUG 84439 --- [Ecourt] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Secured GET /cases/lawyer
