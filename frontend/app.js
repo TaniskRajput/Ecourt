@@ -1,34 +1,57 @@
 const API_URL = 'http://localhost:8080';
 
-// Check auth state on load
+// Initialize UI on load
 document.addEventListener('DOMContentLoaded', () => {
+    // If token exists, try to show dashboard directly
     const token = localStorage.getItem('jwt');
     if (token) {
         showDashboard();
+    } else {
+        showScreen('home'); // which effectively shows login for our logic to demo the system
     }
 });
-
-// Tab Switcher
-function switchTab(tab) {
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.getElementById('login-form').style.display = tab === 'login' ? 'block' : 'none';
-    document.getElementById('register-form').style.display = tab === 'register' ? 'block' : 'none';
-    event.target.classList.add('active');
-}
-
 function showLoader(show) {
     document.getElementById('loader').style.display = show ? 'flex' : 'none';
 }
 
 function updateMessage(id, msg, isError = false) {
     const el = document.getElementById(id);
+    if (!el) return;
     el.innerText = msg;
-    el.className = `message ${isError ? 'error' : 'success'}`;
+    el.className = `message ${isError ? 'error-msg' : 'success-msg'}`;
     setTimeout(() => el.innerText = '', 5000);
 }
 
-// ----- AUTHENTICATION ----- //
+// ----- TOP LEVEL SCREEN MANAGEMENT ----- //
+function showScreen(screenId) {
+    // Reset Views
+    document.getElementById('auth-container').style.display = 'flex';
+    document.getElementById('dashboard-container').style.display = 'none';
 
+    document.getElementById('login-box').style.display = 'none';
+    document.getElementById('register-box').style.display = 'none';
+    document.getElementById('logout-success-box').style.display = 'none';
+
+    // Top Nav buttons
+    const navAuth = document.getElementById('nav-auth-buttons');
+
+    if (screenId === 'home') screenId = 'login'; // Defaults 'home' button to showing login page.
+
+    if (screenId === 'login') {
+        document.getElementById('login-box').style.display = 'block';
+        navAuth.style.display = 'flex';
+    } else if (screenId === 'register') {
+        document.getElementById('register-box').style.display = 'block';
+        navAuth.style.display = 'flex';
+    } else if (screenId === 'logout') {
+        document.getElementById('logout-success-box').style.display = 'block';
+        navAuth.style.display = 'flex';
+    } else if (screenId === 'dashboard') {
+        showDashboard();
+    }
+}
+
+// ----- AUTHENTICATION API ----- //
 document.getElementById('register-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     showLoader(true);
@@ -51,7 +74,7 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
 
         if (text.includes('successfully')) {
             updateMessage('reg-message', 'Registration successful! Please login.', false);
-            setTimeout(() => switchTab('login'), 2000);
+            setTimeout(() => showScreen('login'), 2000);
         } else {
             updateMessage('reg-error', text, true);
         }
@@ -94,58 +117,100 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
 
 function logout() {
     localStorage.clear();
-    document.getElementById('dashboard-section').classList.remove('active');
-    document.getElementById('auth-section').classList.add('active');
+    // Clear dynamically listed cases, etc
+    document.getElementById('cases-tbody').innerHTML = '';
 
-    // reset generic fields
-    document.getElementById('case-result').style.display = 'none';
-    document.getElementById('file-case-form').reset();
-    document.getElementById('view-case-id').value = '';
-    document.getElementById('users-result').style.display = 'none';
-    document.getElementById('my-cases-result').style.display = 'none';
+    // Show the customized logout mockup layout
+    showScreen('logout');
 }
 
-// ----- DASHBOARD LOGIC ----- //
-
+// ----- DASHBOARD LAYOUT & ROUTING ----- //
 function showDashboard() {
-    document.getElementById('auth-section').classList.remove('active');
-    document.getElementById('dashboard-section').classList.add('active');
+    document.getElementById('auth-container').style.display = 'none';
+    document.getElementById('dashboard-container').style.display = 'flex';
 
-    // Restore data
+    // Hide auth buttons in the navbar when authenticated
+    document.getElementById('nav-auth-buttons').style.display = 'none';
+
+    setupRBACUI();
+    switchDashboardView('overview');
+}
+
+function setupRBACUI() {
     const role = localStorage.getItem('role') || 'Unknown User';
     const username = localStorage.getItem('username') || '';
 
-    document.getElementById('user-display').innerText = `Hello, ${username}`;
-    document.getElementById('role-display').innerText = role;
+    // Update banner text
+    document.getElementById('user-display-name').innerText = username;
+    document.getElementById('user-role-name').innerText = role;
 
-    // Apply RBAC UI Rules
+    // RBAC Nav Hiding/Showing
+    const navFile = document.getElementById('nav-lawyer-file');
+    const navAddCase = document.getElementById('nav-add-case');
+
     // Admin
     if (role === 'ADMIN') {
-        document.getElementById('admin-section').style.display = 'block';
+        document.getElementById('admin-user-mgmt').style.display = 'block';
+        navFile.style.display = 'flex'; // Let admins explore
+        navFile.classList.remove('disabled-menu');
+        document.getElementById('judge-case-actions').style.display = 'block';
     } else {
-        document.getElementById('admin-section').style.display = 'none';
+        document.getElementById('admin-user-mgmt').style.display = 'none';
     }
 
     // Judge
-    if (role === 'JUDGE' || role === 'ADMIN') {
-        document.getElementById('judge-section').style.display = 'block';
-    } else {
-        document.getElementById('judge-section').style.display = 'none';
+    if (role === 'JUDGE' && role !== 'ADMIN') {
+        document.getElementById('judge-case-actions').style.display = 'block';
+    } else if (role !== 'ADMIN') {
+        document.getElementById('judge-case-actions').style.display = 'none';
     }
 
-    // Only lawyers can see the filing panel completely safely
+    // Lawyer Specific Sidebar Hook (Mocking the UI mockup which has active "File Cases" etc)
     if (role === 'LAWYER' || role === 'ADMIN') {
-        document.getElementById('lawyer-section').style.display = 'block';
-        document.querySelector('.glass-panel').style.maxWidth = '700px';
+        navFile.style.display = 'flex';
+        navAddCase.style.display = 'flex';
+        navFile.classList.remove('disabled-menu');
     } else {
-        document.getElementById('lawyer-section').style.display = 'none';
-        document.querySelector('.glass-panel').style.maxWidth = '500px';
+        navFile.style.display = 'none';
+        navAddCase.style.display = 'none';
+    }
+
+    loadInitialData();
+}
+
+function switchDashboardView(viewId) {
+    // Hide all views
+    document.querySelectorAll('.dash-view').forEach(el => el.classList.remove('active'));
+
+    // De-activate all menu items
+    document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+
+    // Activate specific view
+    const viewEl = document.getElementById(`view-${viewId}`);
+    if (viewEl) viewEl.classList.add('active');
+
+    // Attempt to map and activate the menu item clicked based on inline onclicks mapped to viewIds
+    const menus = Array.from(document.querySelectorAll('.menu-item'));
+    for (let m of menus) {
+        if (m.getAttribute('onclick') && m.getAttribute('onclick').includes(viewId)) {
+            m.classList.add('active');
+            break;
+        }
     }
 }
 
-// ----- CASE MANAGEMENT (API Testing) ----- //
+// Customized Access Denied Error handling
+function showAccessDeniedModal() {
+    document.getElementById('access-denied-modal').style.display = 'flex';
+}
 
-// Helper for authorized fetches
+function closeAccessDeniedModal() {
+    document.getElementById('access-denied-modal').style.display = 'none';
+    switchDashboardView('overview');
+}
+
+
+// ----- API FETCH LAYER WITH ERROR HANDLING ----- //
 async function authFetch(url, options = {}) {
     const token = localStorage.getItem('jwt');
     const headers = {
@@ -153,8 +218,68 @@ async function authFetch(url, options = {}) {
         'Authorization': `Bearer ${token}`,
         ...options.headers
     };
-    return fetch(url, { ...options, headers });
+
+    const res = await fetch(url, { ...options, headers });
+
+    if (res.status === 403) {
+        showAccessDeniedModal();
+        throw new Error("403_FORBIDDEN");
+    } else if (res.status === 401) {
+        logout(); // Force logout on 401
+        throw new Error("401_UNAUTHORIZED");
+    }
+
+    return res;
 }
+
+// ----- DATA POPULATION ----- //
+
+async function loadInitialData() {
+    const role = localStorage.getItem('role');
+    const tbody = document.getElementById('cases-tbody');
+    tbody.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
+
+    try {
+        let res, data;
+        if (role === 'LAWYER') {
+            res = await authFetch(`${API_URL}/cases/lawyer`);
+            data = await res.json();
+            populateTable(data, tbody);
+        } else if (role === 'ADMIN' || role === 'JUDGE') {
+            // Usually an endpoint to get all cases would exist. Let's try getting someone's case or an array.
+            // If backend doesn't support 'GET /cases' for all, we'll keep the table empty with a note.
+            tbody.innerHTML = '<tr><td colspan="4">Use "Manage Cases" to search specific case IDs.</td></tr>';
+        } else {
+            tbody.innerHTML = '<tr><td colspan="4">Use "Manage Cases" to search for your case IDs.</td></tr>';
+        }
+
+    } catch (e) {
+        if (e.message !== "403_FORBIDDEN" && e.message !== "401_UNAUTHORIZED") {
+            tbody.innerHTML = `<tr><td colspan="4">Failed to load data.</td></tr>`;
+        }
+    }
+}
+
+function populateTable(cases, tbody) {
+    if (!cases || cases.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4">No cases found.</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = '';
+    cases.forEach(c => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${c.caseNumber}</td>
+            <td>${new Date(c.filedDate || Date.now()).toLocaleDateString()}</td>
+            <td>${c.judgeUsername || 'Unassigned'}</td>
+            <td>${c.status || 'PENDING'}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+// ----- OTHER FUNCTIONALITIES (MAPPED TO EXISTING BACKEND) ----- //
 
 // File Case
 document.getElementById('file-case-form').addEventListener('submit', async (e) => {
@@ -175,18 +300,19 @@ document.getElementById('file-case-form').addEventListener('submit', async (e) =
             body: JSON.stringify(payload)
         });
 
-        if (res.status === 403) throw new Error("403 Forbidden: You lack LAWYER permissions.");
-
         const text = await res.text();
         showLoader(false);
 
         updateMessage('file-message', text, !res.ok);
         if (res.ok) {
             document.getElementById('file-case-form').reset();
+            loadInitialData(); // Reload background table
         }
     } catch (err) {
         showLoader(false);
-        updateMessage('file-message', err.message, true);
+        if (err.message !== "403_FORBIDDEN" && err.message !== "401_UNAUTHORIZED") {
+            updateMessage('file-message', err.message, true);
+        }
     }
 });
 
@@ -204,40 +330,31 @@ async function viewCase() {
 
         resultBox.style.display = 'block';
 
-        if (res.status === 403) {
-            resultBox.innerText = `❌ Error 403: Forbidden\n\nRBAC Enforced: You are not authorized to view this case. Either you are not a Client/Lawyer/Admin, or you are a Client trying to view someone else's case!`;
-            resultBox.style.borderColor = '#ef4444';
-        } else if (res.status === 401) {
-            resultBox.innerText = "❌ Error 401: Unauthorized (Token expired/invalid)";
-            resultBox.style.borderColor = '#ef4444';
-        } else {
-            // Let's try to pretty print JSON if it's JSON
-            try {
-                const json = JSON.parse(data);
-                if (json == null) throw new Error("Not Found");
-
-                resultBox.innerText = JSON.stringify(json, null, 2);
-                resultBox.style.borderColor = '#22c55e';
-            } catch (e) {
-                if (data.includes("Case already exists") || !data) {
-                    resultBox.innerText = "Case not found.";
-                    resultBox.style.borderColor = '#f59e0b';
-                } else {
-                    resultBox.innerText = data;
-                }
+        try {
+            const json = JSON.parse(data);
+            if (json == null) throw new Error("Not Found");
+            resultBox.innerText = JSON.stringify(json, null, 2);
+            resultBox.style.borderLeftColor = '#22c55e';
+        } catch (e) {
+            if (data.includes("Case already exists") || !data) {
+                resultBox.innerText = "Case not found.";
+                resultBox.style.borderLeftColor = '#f59e0b';
+            } else {
+                resultBox.innerText = data;
             }
         }
+
     } catch (err) {
         showLoader(false);
-        resultBox.style.display = 'block';
-        resultBox.innerText = err.message;
-        resultBox.style.borderColor = '#ef4444';
+        if (err.message !== "403_FORBIDDEN" && err.message !== "401_UNAUTHORIZED") {
+            resultBox.style.display = 'block';
+            resultBox.innerText = err.message;
+            resultBox.style.borderLeftColor = '#ef4444';
+        }
     }
 }
 
-// ----- PHASE 2 FEATURES ----- //
-
-// Admin: Load All Users
+// Admin Users
 async function loadAllUsers() {
     const resultBox = document.getElementById('users-result');
     showLoader(true);
@@ -247,41 +364,19 @@ async function loadAllUsers() {
         showLoader(false);
 
         resultBox.style.display = 'block';
-        if (res.status === 403) throw new Error("403 Forbidden: You lack ADMIN permissions.");
-
         resultBox.innerText = JSON.stringify(data, null, 2);
-        resultBox.style.borderColor = '#22c55e';
+        resultBox.style.borderLeftColor = '#22c55e';
     } catch (err) {
         showLoader(false);
-        resultBox.style.display = 'block';
-        resultBox.innerText = err.message;
-        resultBox.style.borderColor = '#ef4444';
+        if (err.message !== "403_FORBIDDEN" && err.message !== "401_UNAUTHORIZED") {
+            resultBox.style.display = 'block';
+            resultBox.innerText = err.message;
+            resultBox.style.borderLeftColor = '#ef4444';
+        }
     }
 }
 
-// Lawyer: Load My Filed Cases
-async function loadMyCases() {
-    const resultBox = document.getElementById('my-cases-result');
-    showLoader(true);
-    try {
-        const res = await authFetch(`${API_URL}/cases/lawyer`);
-        const data = await res.json();
-        showLoader(false);
-
-        resultBox.style.display = 'block';
-        if (res.status === 403) throw new Error("403 Forbidden: You lack LAWYER permissions.");
-
-        resultBox.innerText = data.length > 0 ? JSON.stringify(data, null, 2) : "You have not filed any cases yet.";
-        resultBox.style.borderColor = '#22c55e';
-    } catch (err) {
-        showLoader(false);
-        resultBox.style.display = 'block';
-        resultBox.innerText = err.message;
-        resultBox.style.borderColor = '#ef4444';
-    }
-}
-
-// Judge: Assign Case
+// Judge Assign
 async function assignJudge() {
     const caseId = document.getElementById('judge-case-id').value;
     if (!caseId) return;
@@ -293,11 +388,11 @@ async function assignJudge() {
         updateMessage('judge-message', text, !res.ok);
     } catch (err) {
         showLoader(false);
-        updateMessage('judge-message', err.message, true);
+        if (err.message !== "403_FORBIDDEN") updateMessage('judge-message', err.message, true);
     }
 }
 
-// Judge: Close Case
+// Judge Close
 async function closeCase() {
     const caseId = document.getElementById('judge-case-id').value;
     if (!caseId) return;
@@ -309,6 +404,6 @@ async function closeCase() {
         updateMessage('judge-message', text, !res.ok);
     } catch (err) {
         showLoader(false);
-        updateMessage('judge-message', err.message, true);
+        if (err.message !== "403_FORBIDDEN") updateMessage('judge-message', err.message, true);
     }
 }
