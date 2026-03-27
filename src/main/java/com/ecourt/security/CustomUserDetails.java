@@ -1,6 +1,5 @@
 package com.ecourt.security;
 
-import com.ecourt.dto.AuthResponse;
 import com.ecourt.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

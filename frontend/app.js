@@ -2,14 +2,19 @@ const API_URL = 'http://localhost:8080';
 
 // Initialize UI on load
 document.addEventListener('DOMContentLoaded', () => {
-    // If token exists, try to show dashboard directly
     const token = localStorage.getItem('jwt');
-    if (token) {
+    const role = localStorage.getItem('role');
+
+    if (token && role) {
         showDashboard();
     } else {
-        showScreen('home'); // which effectively shows login for our logic to demo the system
+        localStorage.removeItem('jwt');
+        localStorage.removeItem('role');
+        localStorage.removeItem('username');
+        showScreen('home');
     }
 });
+
 function showLoader(show) {
     document.getElementById('loader').style.display = show ? 'flex' : 'none';
 }
@@ -20,6 +25,18 @@ function updateMessage(id, msg, isError = false) {
     el.innerText = msg;
     el.className = `message ${isError ? 'error-msg' : 'success-msg'}`;
     setTimeout(() => el.innerText = '', 5000);
+}
+
+async function readErrorMessage(res, fallback) {
+    const text = await res.text();
+    if (!text) return fallback;
+
+    try {
+        const json = JSON.parse(text);
+        return json.message || fallback;
+    } catch (err) {
+        return text;
+    }
 }
 
 // ----- TOP LEVEL SCREEN MANAGEMENT ----- //
@@ -69,15 +86,16 @@ document.getElementById('register-form').addEventListener('submit', async (e) =>
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
-        const text = await res.text();
         showLoader(false);
 
-        if (text.includes('successfully')) {
-            updateMessage('reg-message', 'Registration successful! Please login.', false);
-            setTimeout(() => showScreen('login'), 2000);
-        } else {
-            updateMessage('reg-error', text, true);
+        if (!res.ok) {
+            const message = await readErrorMessage(res, 'Registration failed.');
+            updateMessage('reg-error', message, true);
+            return;
         }
+
+        updateMessage('reg-message', 'Registration successful! Please login.', false);
+        setTimeout(() => showScreen('login'), 2000);
     } catch (err) {
         showLoader(false);
         updateMessage('reg-error', 'Server error. Is the backend running?', true);
@@ -100,7 +118,9 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
             body: JSON.stringify(payload)
         });
 
-        if (!res.ok) throw new Error("Invalid credentials");
+        if (!res.ok) {
+            throw new Error(await readErrorMessage(res, 'Invalid credentials'));
+        }
 
         const data = await res.json();
         localStorage.setItem('jwt', data.token);
@@ -111,7 +131,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
         showDashboard();
     } catch (err) {
         showLoader(false);
-        updateMessage('login-error', 'Login failed. Check credentials.', true);
+        updateMessage('login-error', err.message || 'Login failed. Check credentials.', true);
     }
 });
 
@@ -140,33 +160,18 @@ function setupRBACUI() {
     const role = localStorage.getItem('role') || 'Unknown User';
     const username = localStorage.getItem('username') || '';
 
-    // Update banner text
     document.getElementById('user-display-name').innerText = username;
     document.getElementById('user-role-name').innerText = role;
 
-    // RBAC Nav Hiding/Showing
+    const adminUserMgmt = document.getElementById('admin-user-mgmt');
+    const judgeCaseActions = document.getElementById('judge-case-actions');
     const navFile = document.getElementById('nav-lawyer-file');
     const navAddCase = document.getElementById('nav-add-case');
 
-    // Admin
-    if (role === 'ADMIN') {
-        document.getElementById('admin-user-mgmt').style.display = 'block';
-        navFile.style.display = 'flex'; // Let admins explore
-        navFile.classList.remove('disabled-menu');
-        document.getElementById('judge-case-actions').style.display = 'block';
-    } else {
-        document.getElementById('admin-user-mgmt').style.display = 'none';
-    }
+    adminUserMgmt.style.display = role === 'ADMIN' ? 'block' : 'none';
+    judgeCaseActions.style.display = role === 'JUDGE' ? 'block' : 'none';
 
-    // Judge
-    if (role === 'JUDGE' && role !== 'ADMIN') {
-        document.getElementById('judge-case-actions').style.display = 'block';
-    } else if (role !== 'ADMIN') {
-        document.getElementById('judge-case-actions').style.display = 'none';
-    }
-
-    // Lawyer Specific Sidebar Hook (Mocking the UI mockup which has active "File Cases" etc)
-    if (role === 'LAWYER' || role === 'ADMIN') {
+    if (role === 'LAWYER') {
         navFile.style.display = 'flex';
         navAddCase.style.display = 'flex';
         navFile.classList.remove('disabled-menu');
@@ -240,15 +245,16 @@ async function loadInitialData() {
     tbody.innerHTML = '<tr><td colspan="4">Loading...</td></tr>';
 
     try {
-        let res, data;
+        let res;
+        let data;
         if (role === 'LAWYER') {
             res = await authFetch(`${API_URL}/cases/lawyer`);
             data = await res.json();
             populateTable(data, tbody);
         } else if (role === 'ADMIN' || role === 'JUDGE') {
-            // Usually an endpoint to get all cases would exist. Let's try getting someone's case or an array.
-            // If backend doesn't support 'GET /cases' for all, we'll keep the table empty with a note.
-            tbody.innerHTML = '<tr><td colspan="4">Use "Manage Cases" to search specific case IDs.</td></tr>';
+            res = await authFetch(`${API_URL}/cases/all`);
+            data = await res.json();
+            populateTable(data, tbody);
         } else {
             tbody.innerHTML = '<tr><td colspan="4">Use "Manage Cases" to search for your case IDs.</td></tr>';
         }
@@ -260,6 +266,13 @@ async function loadInitialData() {
     }
 }
 
+function formatCaseDate(dateValue) {
+    if (!dateValue) return 'N/A';
+
+    const parsedDate = new Date(dateValue);
+    return Number.isNaN(parsedDate.getTime()) ? dateValue : parsedDate.toLocaleDateString();
+}
+
 function populateTable(cases, tbody) {
     if (!cases || cases.length === 0) {
         tbody.innerHTML = '<tr><td colspan="4">No cases found.</td></tr>';
@@ -269,12 +282,16 @@ function populateTable(cases, tbody) {
     tbody.innerHTML = '';
     cases.forEach(c => {
         const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${c.caseNumber}</td>
-            <td>${new Date(c.filedDate || Date.now()).toLocaleDateString()}</td>
-            <td>${c.judgeUsername || 'Unassigned'}</td>
-            <td>${c.status || 'PENDING'}</td>
-        `;
+        [
+            c.caseNumber || 'N/A',
+            formatCaseDate(c.filedDate),
+            c.judgeUsername || 'Unassigned',
+            c.status || 'PENDING'
+        ].forEach(value => {
+            const td = document.createElement('td');
+            td.textContent = value;
+            tr.appendChild(td);
+        });
         tbody.appendChild(tr);
     });
 }
@@ -299,15 +316,17 @@ document.getElementById('file-case-form').addEventListener('submit', async (e) =
             method: 'POST',
             body: JSON.stringify(payload)
         });
-
-        const text = await res.text();
         showLoader(false);
 
-        updateMessage('file-message', text, !res.ok);
-        if (res.ok) {
-            document.getElementById('file-case-form').reset();
-            loadInitialData(); // Reload background table
+        if (!res.ok) {
+            const message = await readErrorMessage(res, 'Unable to file case.');
+            updateMessage('file-message', message, true);
+            return;
         }
+
+        updateMessage('file-message', await res.text(), false);
+        document.getElementById('file-case-form').reset();
+        loadInitialData();
     } catch (err) {
         showLoader(false);
         if (err.message !== "403_FORBIDDEN" && err.message !== "401_UNAUTHORIZED") {
@@ -325,25 +344,18 @@ async function viewCase() {
     showLoader(true);
     try {
         const res = await authFetch(`${API_URL}/cases/${caseId}`);
-        const data = await res.text();
         showLoader(false);
-
         resultBox.style.display = 'block';
 
-        try {
-            const json = JSON.parse(data);
-            if (json == null) throw new Error("Not Found");
-            resultBox.innerText = JSON.stringify(json, null, 2);
-            resultBox.style.borderLeftColor = '#22c55e';
-        } catch (e) {
-            if (data.includes("Case already exists") || !data) {
-                resultBox.innerText = "Case not found.";
-                resultBox.style.borderLeftColor = '#f59e0b';
-            } else {
-                resultBox.innerText = data;
-            }
+        if (!res.ok) {
+            resultBox.innerText = await readErrorMessage(res, 'Case not found.');
+            resultBox.style.borderLeftColor = res.status === 404 ? '#f59e0b' : '#ef4444';
+            return;
         }
 
+        const data = await res.json();
+        resultBox.innerText = JSON.stringify(data, null, 2);
+        resultBox.style.borderLeftColor = '#22c55e';
     } catch (err) {
         showLoader(false);
         if (err.message !== "403_FORBIDDEN" && err.message !== "401_UNAUTHORIZED") {
@@ -360,9 +372,16 @@ async function loadAllUsers() {
     showLoader(true);
     try {
         const res = await authFetch(`${API_URL}/admin/users`);
-        const data = await res.json();
         showLoader(false);
 
+        if (!res.ok) {
+            resultBox.style.display = 'block';
+            resultBox.innerText = await readErrorMessage(res, 'Unable to load users.');
+            resultBox.style.borderLeftColor = '#ef4444';
+            return;
+        }
+
+        const data = await res.json();
         resultBox.style.display = 'block';
         resultBox.innerText = JSON.stringify(data, null, 2);
         resultBox.style.borderLeftColor = '#22c55e';
@@ -383,12 +402,20 @@ async function assignJudge() {
     showLoader(true);
     try {
         const res = await authFetch(`${API_URL}/cases/${caseId}/assign`, { method: 'PUT' });
-        const text = await res.text();
         showLoader(false);
-        updateMessage('judge-message', text, !res.ok);
+
+        if (!res.ok) {
+            updateMessage('judge-message', await readErrorMessage(res, 'Unable to assign case.'), true);
+            return;
+        }
+
+        updateMessage('judge-message', await res.text(), false);
+        loadInitialData();
     } catch (err) {
         showLoader(false);
-        if (err.message !== "403_FORBIDDEN") updateMessage('judge-message', err.message, true);
+        if (err.message !== "403_FORBIDDEN" && err.message !== "401_UNAUTHORIZED") {
+            updateMessage('judge-message', err.message, true);
+        }
     }
 }
 
@@ -399,11 +426,19 @@ async function closeCase() {
     showLoader(true);
     try {
         const res = await authFetch(`${API_URL}/cases/${caseId}/status?status=CLOSED`, { method: 'PUT' });
-        const text = await res.text();
         showLoader(false);
-        updateMessage('judge-message', text, !res.ok);
+
+        if (!res.ok) {
+            updateMessage('judge-message', await readErrorMessage(res, 'Unable to close case.'), true);
+            return;
+        }
+
+        updateMessage('judge-message', await res.text(), false);
+        loadInitialData();
     } catch (err) {
         showLoader(false);
-        if (err.message !== "403_FORBIDDEN") updateMessage('judge-message', err.message, true);
+        if (err.message !== "403_FORBIDDEN" && err.message !== "401_UNAUTHORIZED") {
+            updateMessage('judge-message', err.message, true);
+        }
     }
 }

@@ -1,8 +1,7 @@
 package com.ecourt.controller;
 
-import com.ecourt.model.User;
+import com.ecourt.dto.UserSummaryResponse;
 import com.ecourt.service.AdminService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -10,11 +9,14 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminController {
 
-    @Autowired
-    private AdminService adminService;
+    private final AdminService adminService;
+
+    public AdminController(AdminService adminService) {
+        this.adminService = adminService;
+    }
 
     @GetMapping("/users")
-    public List<User> getAllUsers() {
+    public List<UserSummaryResponse> getAllUsers() {
         return adminService.getAllUsers();
     }
 }
