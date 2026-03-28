@@ -2,31 +2,32 @@ package com.ecourt.controller;
 
 import com.ecourt.dto.AuthResponse;
 import com.ecourt.dto.LoginRequest;
+import com.ecourt.dto.RegisterRequest;
 import com.ecourt.security.CustomUserDetails;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import com.ecourt.security.JwtService;
-
-import com.ecourt.dto.RegisterRequest;
 import com.ecourt.service.UserService;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+    private final UserService userService;
 
-    @Autowired
-    private UserService userService;
+    public AuthController(
+            AuthenticationManager authenticationManager,
+            JwtService jwtService,
+            UserService userService
+    ) {
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+        this.userService = userService;
+    }
 
     @PostMapping("/register")
     public String register(@RequestBody RegisterRequest request) {
@@ -34,7 +35,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public Map<String, Object> login(@RequestBody LoginRequest request) {
+    public AuthResponse login(@RequestBody LoginRequest request) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -43,21 +44,9 @@ public class AuthController {
                 )
         );
 
-        if (authentication.isAuthenticated()) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String token = jwtService.generateToken(userDetails.getUsername());
 
-            String token = jwtService.generateToken(request.getUsername());
-
-            CustomUserDetails userDetails =
-                    (CustomUserDetails) authentication.getPrincipal();
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("token", token);
-            response.put("username", userDetails.getUsername());
-            response.put("role", userDetails.getUser().getRole());
-
-            return response;
-        }
-
-        throw new RuntimeException("Invalid Credentials");
+        return new AuthResponse(token, userDetails.getUsername(), userDetails.getUser().getRole());
     }
 }

@@ -79,7 +79,7 @@
 
                     <form id="login-form">
                         <div class="input-container">
-                            <input type="text" id="login-username" placeholder="Username / Email" required>
+                            <input type="text" id="login-username" placeholder="Username" required>
                         </div>
                         <div class="input-container">
                             <input type="password" id="login-password" placeholder="Password" required>
@@ -101,15 +101,8 @@
 
                 <form id="register-form" class="reg-form">
                     <div class="input-container">
-                        <input type="text" id="reg-name" placeholder="Full Name" required>
-                    </div>
-                    <div class="input-container">
-                        <input type="text" id="reg-mobile" placeholder="Mobile Number" required>
-                    </div>
-                    <div class="input-container">
                         <input type="text" id="reg-username" placeholder="Username" required>
                     </div>
-                    <!-- Combined email and role for simplification vs UI mockup, or we keep original requirement -->
                     <div class="input-container">
                         <input type="email" id="reg-email" placeholder="Email Address" required>
                     </div>
@@ -121,7 +114,6 @@
                         <select id="reg-role" required>
                             <option value="CLIENT">Client</option>
                             <option value="LAWYER">Lawyer</option>
-                            <option value="JUDGE">Judge</option>
                         </select>
                     </div>
                     <button type="submit" class="auth-submit-btn dark-btn">Register</button>

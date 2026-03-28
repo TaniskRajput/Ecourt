@@ -1,17 +1,20 @@
 package com.ecourt.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 import com.ecourt.model.CourtCase;
 import com.ecourt.service.CourtCaseService;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/cases")
 public class CourtCaseController {
 
-    @Autowired
-    private CourtCaseService caseService;
+    private final CourtCaseService caseService;
+
+    public CourtCaseController(CourtCaseService caseService) {
+        this.caseService = caseService;
+    }
 
     // LAWYER
     @PostMapping
@@ -23,6 +26,11 @@ public class CourtCaseController {
     @GetMapping("/lawyer")
     public List<CourtCase> getCasesForLawyer() {
         return caseService.getCasesForLawyer();
+    }
+
+    @GetMapping("/all")
+    public List<CourtCase> getAllCases() {
+        return caseService.getAllCases();
     }
 
     // USER / GENERIC
