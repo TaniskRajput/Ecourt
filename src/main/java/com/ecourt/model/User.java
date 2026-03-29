@@ -22,7 +22,10 @@ public class User {
     private String email;
 
     @Column(nullable = false)
-    private String role;   // USER or ADMIN
+    private String role;
+
+    @Column(nullable = false)
+    private boolean active = true;
 
 
     public Long getId() {
@@ -63,5 +66,13 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

@@ -155,14 +155,14 @@
                     <li class="menu-item active" onclick="switchDashboardView('overview')">
                         <span class="menu-icon">◉</span> Dashboard
                     </li>
-                    <li class="menu-item disabled-menu" id="nav-add-case">
+                    <li class="menu-item disabled-menu" id="nav-add-case" onclick="switchDashboardView('file-case')">
                         <!-- Indented -->
                         <span class="menu-icon">⌂</span> <span class="indent-text">Add Case</span>
                     </li>
                     <li class="menu-item disabled-menu" id="nav-lawyer-file" onclick="switchDashboardView('file-case')">
                         <span class="menu-icon">▲</span> <span class="indent-text">File New Case</span>
                     </li>
-                    <li class="menu-item" onclick="switchDashboardView('manage-cases')">
+                    <li class="menu-item" id="nav-manage-cases" onclick="switchDashboardView('manage-cases')">
                         <span class="menu-icon">▤</span> Manage Cases
                     </li>
                     <li class="menu-item" onclick="switchDashboardView('hearings')">
@@ -206,7 +206,7 @@
                             <thead>
                                 <tr>
                                     <th>Case Number</th>
-                                    <th>Time</th>
+                                    <th>Title</th>
                                     <th>Judge</th>
                                     <th>Status</th>
                                 </tr>
@@ -236,10 +236,6 @@
                     <div class="dash-form-card">
                         <form id="file-case-form">
                             <div class="input-container">
-                                <label>Case Number</label>
-                                <input type="text" id="case-num" required placeholder="CASE-1234">
-                            </div>
-                            <div class="input-container">
                                 <label>Title</label>
                                 <input type="text" id="case-title" required placeholder="Property Dispute">
                             </div>
@@ -248,12 +244,8 @@
                                 <textarea id="case-desc" required placeholder="Case details..." rows="3"></textarea>
                             </div>
                             <div class="input-container">
-                                <label>Client Username</label>
-                                <input type="text" id="case-client" required placeholder="Client's exact username">
-                            </div>
-                            <div class="input-container">
-                                <label>Filing Date</label>
-                                <input type="date" id="case-date" required>
+                                <label>Client Username (required for admin/lawyer filing)</label>
+                                <input type="text" id="case-client" placeholder="Client's exact username">
                             </div>
                             <button type="submit" class="auth-submit-btn dark-btn">File Case</button>
                             <div class="message" id="file-message"></div>

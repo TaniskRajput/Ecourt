@@ -45,11 +45,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/index.html", "/style.css", "/app.js", "/favicon.ico").permitAll()
                         .requestMatchers("/auth/**", "/error", "/h2-console/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/cases").hasRole("LAWYER")
-                        .requestMatchers(HttpMethod.GET, "/cases/lawyer").hasRole("LAWYER")
+                        .requestMatchers(HttpMethod.POST, "/cases").hasAnyRole("CLIENT", "ADMIN", "LAWYER")
+                        .requestMatchers(HttpMethod.POST, "/cases/*/documents").hasAnyRole("CLIENT", "LAWYER", "JUDGE", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/cases/my").hasAnyRole("CLIENT", "LAWYER", "JUDGE")
                         .requestMatchers(HttpMethod.GET, "/cases/all").hasAnyRole("JUDGE", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/cases/**").hasAnyRole("CLIENT", "LAWYER", "JUDGE", "ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/cases/**").hasRole("JUDGE")
+                        .requestMatchers(HttpMethod.PUT, "/cases/**").hasAnyRole("JUDGE", "ADMIN")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(

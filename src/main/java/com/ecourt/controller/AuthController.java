@@ -2,8 +2,10 @@ package com.ecourt.controller;
 
 import com.ecourt.dto.AuthResponse;
 import com.ecourt.dto.LoginRequest;
+import com.ecourt.dto.MessageResponse;
 import com.ecourt.dto.RegisterRequest;
 import com.ecourt.security.CustomUserDetails;
+import jakarta.validation.Valid;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,12 +32,12 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(@RequestBody RegisterRequest request) {
-        return userService.register(request);
+    public MessageResponse register(@Valid @RequestBody RegisterRequest request) {
+        return new MessageResponse(userService.register(request));
     }
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody LoginRequest request) {
+    public AuthResponse login(@Valid @RequestBody LoginRequest request) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

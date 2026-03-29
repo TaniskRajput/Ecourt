@@ -1,4 +1,6 @@
-const API_URL = 'http://localhost:8080';
+const API_URL = window.location.port === '8080'
+    ? window.location.origin
+    : 'http://localhost:8080';
 
 // Initialize UI on load
 document.addEventListener('DOMContentLoaded', () => {
@@ -36,6 +38,17 @@ async function readErrorMessage(res, fallback) {
         return json.message || fallback;
     } catch (err) {
         return text;
+    }
+}
+
+async function readJsonSafely(res) {
+    const text = await res.text();
+    if (!text) return null;
+
+    try {
+        return JSON.parse(text);
+    } catch (err) {
+        return null;
     }
 }
 
@@ -167,17 +180,23 @@ function setupRBACUI() {
     const judgeCaseActions = document.getElementById('judge-case-actions');
     const navFile = document.getElementById('nav-lawyer-file');
     const navAddCase = document.getElementById('nav-add-case');
+    const navManageCases = document.getElementById('nav-manage-cases');
 
     adminUserMgmt.style.display = role === 'ADMIN' ? 'block' : 'none';
     judgeCaseActions.style.display = role === 'JUDGE' ? 'block' : 'none';
 
-    if (role === 'LAWYER') {
+    if (role === 'CLIENT' || role === 'LAWYER' || role === 'ADMIN') {
         navFile.style.display = 'flex';
-        navAddCase.style.display = 'flex';
+        navAddCase.style.display = 'list-item';
         navFile.classList.remove('disabled-menu');
+        navAddCase.classList.remove('disabled-menu');
     } else {
         navFile.style.display = 'none';
         navAddCase.style.display = 'none';
+    }
+
+    if (navManageCases) {
+        navManageCases.style.display = 'list-item';
     }
 
     loadInitialData();
@@ -247,16 +266,14 @@ async function loadInitialData() {
     try {
         let res;
         let data;
-        if (role === 'LAWYER') {
-            res = await authFetch(`${API_URL}/cases/lawyer`);
-            data = await res.json();
-            populateTable(data, tbody);
-        } else if (role === 'ADMIN' || role === 'JUDGE') {
+        if (role === 'ADMIN') {
             res = await authFetch(`${API_URL}/cases/all`);
             data = await res.json();
             populateTable(data, tbody);
         } else {
-            tbody.innerHTML = '<tr><td colspan="4">Use "Manage Cases" to search for your case IDs.</td></tr>';
+            res = await authFetch(`${API_URL}/cases/my`);
+            data = await res.json();
+            populateTable(data, tbody);
         }
 
     } catch (e) {
@@ -284,7 +301,7 @@ function populateTable(cases, tbody) {
         const tr = document.createElement('tr');
         [
             c.caseNumber || 'N/A',
-            formatCaseDate(c.filedDate),
+            c.title || 'Untitled',
             c.judgeUsername || 'Unassigned',
             c.status || 'PENDING'
         ].forEach(value => {
@@ -303,13 +320,16 @@ document.getElementById('file-case-form').addEventListener('submit', async (e) =
     e.preventDefault();
     showLoader(true);
 
+    const role = localStorage.getItem('role');
     const payload = {
-        caseNumber: document.getElementById('case-num').value,
         title: document.getElementById('case-title').value,
-        description: document.getElementById('case-desc').value,
-        clientUsername: document.getElementById('case-client').value,
-        filedDate: document.getElementById('case-date').value
+        description: document.getElementById('case-desc').value
     };
+
+    const clientUsername = document.getElementById('case-client').value.trim();
+    if ((role === 'ADMIN' || role === 'LAWYER') && clientUsername) {
+        payload.clientUsername = clientUsername;
+    }
 
     try {
         const res = await authFetch(`${API_URL}/cases`, {
@@ -324,7 +344,12 @@ document.getElementById('file-case-form').addEventListener('submit', async (e) =
             return;
         }
 
-        updateMessage('file-message', await res.text(), false);
+        const data = await readJsonSafely(res);
+        const successMessage = data?.caseNumber
+            ? `Case filed successfully: ${data.caseNumber}`
+            : 'Case filed successfully.';
+
+        updateMessage('file-message', successMessage, false);
         document.getElementById('file-case-form').reset();
         loadInitialData();
     } catch (err) {
@@ -409,7 +434,8 @@ async function assignJudge() {
             return;
         }
 
-        updateMessage('judge-message', await res.text(), false);
+        const data = await readJsonSafely(res);
+        updateMessage('judge-message', data?.message || 'Judge assigned successfully.', false);
         loadInitialData();
     } catch (err) {
         showLoader(false);
@@ -433,7 +459,8 @@ async function closeCase() {
             return;
         }
 
-        updateMessage('judge-message', await res.text(), false);
+        const data = await readJsonSafely(res);
+        updateMessage('judge-message', data?.message || 'Case closed successfully.', false);
         loadInitialData();
     } catch (err) {
         showLoader(false);

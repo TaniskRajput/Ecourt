@@ -1,13 +1,19 @@
 package com.ecourt.repository;
 
-import java.util.Optional;
-import java.util.List;
-import org.springframework.data.jpa.repository.JpaRepository;
 import com.ecourt.model.CourtCase;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public interface CourtCaseRepository extends JpaRepository<CourtCase, Long> {
+import java.util.List;
+import java.util.Optional;
+
+public interface CourtCaseRepository extends JpaRepository<CourtCase, Long>, JpaSpecificationExecutor<CourtCase> {
 
     Optional<CourtCase> findByCaseNumber(String caseNumber);
 
     List<CourtCase> findByLawyerUsername(String lawyerUsername);
+
+    List<CourtCase> findByClientUsername(String clientUsername);
+
+    List<CourtCase> findByJudgeUsername(String judgeUsername);
 }

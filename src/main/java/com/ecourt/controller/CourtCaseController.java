@@ -1,10 +1,22 @@
 package com.ecourt.controller;
 
-import com.ecourt.model.CourtCase;
+import com.ecourt.dto.CaseAuditEventResponse;
+import com.ecourt.dto.CaseCreateRequest;
+import com.ecourt.dto.CaseDocumentResponse;
+import com.ecourt.dto.CaseListResponse;
+import com.ecourt.dto.CaseResponse;
+import com.ecourt.dto.MessageResponse;
 import com.ecourt.service.CourtCaseService;
+import jakarta.validation.Valid;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/cases")
@@ -16,38 +28,99 @@ public class CourtCaseController {
         this.caseService = caseService;
     }
 
-    // LAWYER
     @PostMapping
-    public String addCase(@RequestBody CourtCase courtCase) {
-        return caseService.addCase(courtCase);
+    public ResponseEntity<CaseResponse> addCase(@Valid @RequestBody CaseCreateRequest request) {
+        return ResponseEntity.ok(caseService.addCase(request));
     }
 
-    // LAWYER (Get ALL their cases)
-    @GetMapping("/lawyer")
-    public List<CourtCase> getCasesForLawyer() {
-        return caseService.getCasesForLawyer();
+    @GetMapping("/my")
+    public List<CaseResponse> getMyCases() {
+        return caseService.getCasesForCurrentUser();
     }
 
     @GetMapping("/all")
-    public List<CourtCase> getAllCases() {
+    public List<CaseResponse> getAllCases() {
         return caseService.getAllCases();
     }
 
-    // USER / GENERIC
+    @GetMapping("/search")
+    public CaseListResponse searchCases(
+            @RequestParam(defaultValue = "my") String scope,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String clientUsername,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String judgeUsername,
+            @RequestParam(required = false) String lawyerUsername,
+            @RequestParam(required = false) LocalDate filedDate,
+            @RequestParam(required = false) LocalDate filedFrom,
+            @RequestParam(required = false) LocalDate filedTo,
+            @RequestParam(required = false) String query
+    ) {
+        return caseService.searchCases(
+                scope,
+                page,
+                size,
+                clientUsername,
+                status,
+                judgeUsername,
+                lawyerUsername,
+                filedDate,
+                filedFrom,
+                filedTo,
+                query
+        );
+    }
+
     @GetMapping("/{caseNumber}")
-    public CourtCase getCase(@PathVariable String caseNumber) {
+    public CaseResponse getCase(@PathVariable String caseNumber) {
         return caseService.getCase(caseNumber);
     }
 
-    // JUDGE
     @PutMapping("/{caseNumber}/assign")
-    public String assignJudge(@PathVariable String caseNumber) {
-        return caseService.assignJudge(caseNumber);
+    public MessageResponse assignJudge(
+            @PathVariable String caseNumber,
+            @RequestParam(required = false) String judgeUsername
+    ) {
+        return new MessageResponse(caseService.assignJudge(caseNumber, judgeUsername));
     }
 
-    // JUDGE
     @PutMapping("/{caseNumber}/status")
-    public String updateCaseStatus(@PathVariable String caseNumber, @RequestParam String status) {
-        return caseService.updateCaseStatus(caseNumber, status);
+    public MessageResponse updateCaseStatus(@PathVariable String caseNumber, @RequestParam String status) {
+        return new MessageResponse(caseService.updateCaseStatus(caseNumber, status));
+    }
+
+    @PostMapping(path = "/{caseNumber}/documents", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<CaseDocumentResponse> uploadDocument(
+            @PathVariable String caseNumber,
+            @RequestParam("file") MultipartFile file
+    ) {
+        return ResponseEntity.ok(caseService.uploadDocument(caseNumber, file));
+    }
+
+    @GetMapping("/{caseNumber}/documents")
+    public List<CaseDocumentResponse> getDocuments(@PathVariable String caseNumber) {
+        return caseService.getDocuments(caseNumber);
+    }
+
+    @GetMapping("/{caseNumber}/audit")
+    public List<CaseAuditEventResponse> getAuditEvents(@PathVariable String caseNumber) {
+        return caseService.getAuditEvents(caseNumber);
+    }
+
+    @GetMapping("/{caseNumber}/documents/{documentId}/download")
+    public ResponseEntity<Resource> downloadDocument(
+            @PathVariable String caseNumber,
+            @PathVariable Long documentId
+    ) {
+        var download = caseService.downloadDocument(caseNumber, documentId);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(download.contentType()))
+                .header(
+                        HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + download.originalFilename() + "\""
+                )
+                .body(download.resource());
     }
 }

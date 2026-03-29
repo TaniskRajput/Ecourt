@@ -2,6 +2,11 @@ package com.ecourt.model;
 
 import jakarta.persistence.*;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "cases")
 public class CourtCase {
@@ -14,17 +19,42 @@ public class CourtCase {
 
     private String title;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
-    private String status; // PENDING / CLOSED
+    @Column(nullable = false)
+    private String status;
 
-    private String filedDate;
+    @Column(nullable = false)
+    private LocalDate filedDate;
 
+    @Column(nullable = false)
     private String clientUsername;
 
     private String lawyerUsername;
 
     private String judgeUsername;
+
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @Column(nullable = false)
+    private Instant updatedAt;
+
+    @OneToMany(mappedBy = "courtCase", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CaseDocument> documents = new ArrayList<>();
+
+    @PrePersist
+    void onCreate() {
+        Instant now = Instant.now();
+        createdAt = now;
+        updatedAt = now;
+    }
+
+    @PreUpdate
+    void onUpdate() {
+        updatedAt = Instant.now();
+    }
 
     // getters setters
 
@@ -64,11 +94,11 @@ public class CourtCase {
         this.status = status;
     }
 
-    public String getFiledDate() {
+    public LocalDate getFiledDate() {
         return filedDate;
     }
 
-    public void setFiledDate(String filedDate) {
+    public void setFiledDate(LocalDate filedDate) {
         this.filedDate = filedDate;
     }
 
@@ -94,5 +124,22 @@ public class CourtCase {
 
     public void setJudgeUsername(String judgeUsername) {
         this.judgeUsername = judgeUsername;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public List<CaseDocument> getDocuments() {
+        return documents;
+    }
+
+    public void addDocument(CaseDocument document) {
+        documents.add(document);
+        document.setCourtCase(this);
     }
 }
