@@ -3,6 +3,30 @@ package com.ecourt.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+/**
+ * Database Entity representing a System User.
+ * 
+ * WHY IT IS USED:
+ * This file maps directly to the `users` table in the SQL database using JPA
+ * (Hibernate).
+ * It acts as the central security and identity record for every person who logs
+ * into the
+ * E-Court platform (Admins, Judges, Lawyers, Clients). By centralizing user
+ * data,
+ * Spring Security can authenticate users against this table, and other entities
+ * (like Cases)
+ * can confidently link to validated usernames.
+ *
+ * KEY RESPONSIBILITIES (FUNCTIONS):
+ * - id: Uniquely identifies the user internally.
+ * - username / email: Enforced as unique constraints to prevent duplicate
+ * signups.
+ * - password: Never sent back to the frontend (protected by @JsonIgnore) and
+ * always stored as a BCrypt hash.
+ * - role: Drives the RBAC (Role-Based Access Control) engine (e.g., "JUDGE").
+ * - active: A soft-delete flag allowing Admins to disable logins without
+ * destroying historical data.
+ */
 @Entity
 @Table(name = "users")
 public class User {
@@ -27,6 +51,9 @@ public class User {
     @Column(nullable = false)
     private boolean active = true;
 
+    @org.hibernate.annotations.CreationTimestamp
+    @Column(updatable = false)
+    private java.time.Instant createdAt;
 
     public Long getId() {
         return id;
@@ -74,5 +101,13 @@ public class User {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public java.time.Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(java.time.Instant createdAt) {
+        this.createdAt = createdAt;
     }
 }

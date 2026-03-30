@@ -15,10 +15,35 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import org.springframework.data.domain.Sort;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+/**
+ * Business Logic Service for Administrator Operations.
+ * 
+ * WHY IT IS USED:
+ * This service isolates the complex business rules required for administering
+ * the platform.
+ * Instead of muddying the controller with database logic, this file uses JPA
+ * CriteriaBuilder
+ * to dynamically generate SQL queries based on the admin's search parameters.
+ * It also enforces
+ * critical security features, such as preventing administrators from
+ * accidentally demoting or
+ * deactivating their own accounts.
+ *
+ * FUNCTIONS OVERVIEW:
+ * - getUsers: Dynamically builds a database query based on role/status filters
+ * and returns a secure, paginated DTO.
+ * - createUser: Provisions a new system user directly securely.
+ * - updateUserRole: Reassigns a user's permission level while blocking
+ * self-demotion.
+ * - updateUserStatus: Activates or suspends a user gracefully.
+ * - validatePage / validateSize: Ensures pagination limits cannot be abused to
+ * crash the database.
+ */
 @Service
 public class AdminService {
 
@@ -31,31 +56,29 @@ public class AdminService {
     }
 
     public UserListResponse getUsers(String role, Boolean active, String query, int page, int size) {
-        Pageable pageable = PageRequest.of(validatePage(page), validateSize(size));
+        Pageable pageable = PageRequest.of(validatePage(page), validateSize(size), Sort.by(Sort.Direction.DESC, "id"));
         Page<UserSummaryResponse> result = userRepository.findAll((root, criteriaQuery, criteriaBuilder) -> {
-                    List<Predicate> predicates = new ArrayList<>();
+            List<Predicate> predicates = new ArrayList<>();
 
-                    if (role != null && !role.trim().isEmpty()) {
-                        predicates.add(criteriaBuilder.equal(
-                                criteriaBuilder.upper(root.get("role")),
-                                role.trim().toUpperCase(Locale.ROOT)
-                        ));
-                    }
+            if (role != null && !role.trim().isEmpty()) {
+                predicates.add(criteriaBuilder.equal(
+                        criteriaBuilder.upper(root.get("role")),
+                        role.trim().toUpperCase(Locale.ROOT)));
+            }
 
-                    if (active != null) {
-                        predicates.add(criteriaBuilder.equal(root.get("active"), active));
-                    }
+            if (active != null) {
+                predicates.add(criteriaBuilder.equal(root.get("active"), active));
+            }
 
-                    if (query != null && !query.trim().isEmpty()) {
-                        String pattern = "%" + query.trim().toLowerCase(Locale.ROOT) + "%";
-                        predicates.add(criteriaBuilder.or(
-                                criteriaBuilder.like(criteriaBuilder.lower(root.get("username")), pattern),
-                                criteriaBuilder.like(criteriaBuilder.lower(root.get("email")), pattern)
-                        ));
-                    }
+            if (query != null && !query.trim().isEmpty()) {
+                String pattern = "%" + query.trim().toLowerCase(Locale.ROOT) + "%";
+                predicates.add(criteriaBuilder.or(
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("username")), pattern),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("email")), pattern)));
+            }
 
-                    return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
-                }, pageable)
+            return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
+        }, pageable)
                 .map(UserSummaryResponse::from);
 
         return new UserListResponse(
@@ -63,8 +86,7 @@ public class AdminService {
                 result.getNumber(),
                 result.getSize(),
                 result.getTotalElements(),
-                result.getTotalPages()
-        );
+                result.getTotalPages());
     }
 
     public UserSummaryResponse createUser(AdminCreateUserRequest request) {
@@ -72,8 +94,7 @@ public class AdminService {
                 request.getUsername(),
                 request.getEmail(),
                 request.getPassword(),
-                request.getRole()
-        ));
+                request.getRole()));
     }
 
     public UserSummaryResponse updateUserRole(Long userId, String role, String actorUsername) {

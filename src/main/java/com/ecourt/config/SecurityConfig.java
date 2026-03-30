@@ -6,9 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -23,16 +22,12 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
-    private final AuthenticationProvider authenticationProvider;
     private final String allowedOrigins;
 
     public SecurityConfig(
             JwtAuthFilter jwtAuthFilter,
-            AuthenticationProvider authenticationProvider,
-            @Value("${app.cors.allowed-origins}") String allowedOrigins
-    ) {
+            @Value("${app.cors.allowed-origins}") String allowedOrigins) {
         this.jwtAuthFilter = jwtAuthFilter;
-        this.authenticationProvider = authenticationProvider;
         this.allowedOrigins = allowedOrigins;
     }
 
@@ -46,7 +41,8 @@ public class SecurityConfig {
                         .requestMatchers("/", "/index.html", "/style.css", "/app.js", "/favicon.ico").permitAll()
                         .requestMatchers("/auth/**", "/error", "/h2-console/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/cases").hasAnyRole("CLIENT", "ADMIN", "LAWYER")
-                        .requestMatchers(HttpMethod.POST, "/cases/*/documents").hasAnyRole("CLIENT", "LAWYER", "JUDGE", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/cases/*/documents")
+                        .hasAnyRole("CLIENT", "LAWYER", "JUDGE", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/cases/my").hasAnyRole("CLIENT", "LAWYER", "JUDGE")
                         .requestMatchers(HttpMethod.GET, "/cases/all").hasAnyRole("JUDGE", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/cases/**").hasAnyRole("CLIENT", "LAWYER", "JUDGE", "ADMIN")
@@ -64,15 +60,9 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // ⭐ ADD THIS
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-
-        AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
-
-        builder.authenticationProvider(authenticationProvider);
-
-        return builder.build();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 
     @Bean

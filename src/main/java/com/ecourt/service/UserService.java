@@ -11,6 +11,30 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Locale;
 import java.util.Set;
 
+/**
+ * Business Logic Service for User Identity Management.
+ * 
+ * WHY IT IS USED:
+ * This file handles the provisioning and validation of all user accounts on the
+ * platform. It focuses
+ * strictly on security rules—hashing passwords using BCrypt, enforcing strong
+ * password complexity,
+ * normalizing string cases across the application (e.g., standardizing emails),
+ * and verifying that
+ * database constraints like "unique email" are gracefully handled and
+ * translated into 409 Conflict errors
+ * rather than hard SQL crashes.
+ *
+ * FUNCTIONS OVERVIEW:
+ * - register: The public endpoint handler for new signups. Enforces that public
+ * users can only be CLIENTs or LAWYERs.
+ * - createManagedUser: Bypasses the public restriction, allowing Admins to
+ * create internal JUDGE or ADMIN staff.
+ * - normalizeAdminManagedRole: Ensures that roles requested by clients match
+ * known, safe internal strings.
+ * - validatePassword: A strict RegEx/logic checker to enforce alphanumeric,
+ * 8-character-minimum passwords.
+ */
 @Service
 public class UserService {
 
@@ -34,8 +58,7 @@ public class UserService {
         if (!SELF_SERVICE_ROLES.contains(role)) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "Self-registration only supports CLIENT or LAWYER accounts."
-            );
+                    "Self-registration only supports CLIENT or LAWYER accounts.");
         }
 
         if (userRepository.findByUsername(username).isPresent()) {
@@ -80,8 +103,7 @@ public class UserService {
         if (!ADMIN_MANAGED_ROLES.contains(normalizedRole)) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "Role must be one of CLIENT, LAWYER, ADMIN, or JUDGE."
-            );
+                    "Role must be one of CLIENT, LAWYER, ADMIN, or JUDGE.");
         }
         return normalizedRole;
     }
@@ -102,8 +124,7 @@ public class UserService {
                 || password.chars().noneMatch(Character::isDigit)) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "Password must be at least 8 characters and include both letters and numbers."
-            );
+                    "Password must be at least 8 characters and include both letters and numbers.");
         }
         return password;
     }

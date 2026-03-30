@@ -13,6 +13,24 @@ import com.ecourt.security.JwtService;
 import com.ecourt.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * REST Controller responsible for User Authentication.
+ * 
+ * WHY IT IS USED:
+ * This file provides publicly accessible endpoints that allow users to register
+ * for the platform
+ * and authenticate themselves. It acts as the gateway to the E-Court system,
+ * intercepting initial
+ * access requests and delegating to the AuthenticationManager to verify
+ * credentials before
+ * issuing JSON Web Tokens (JWTs) for subsequent authenticated API calls.
+ *
+ * FUNCTIONS OVERVIEW:
+ * - register: Accepts new user details, validates them, and creates a new
+ * CLIENT or LAWYER account.
+ * - login: Authenticates existing credentials against the database and returns
+ * a signed JWT alongside basic user info.
+ */
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -24,8 +42,7 @@ public class AuthController {
     public AuthController(
             AuthenticationManager authenticationManager,
             JwtService jwtService,
-            UserService userService
-    ) {
+            UserService userService) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.userService = userService;
@@ -42,9 +59,7 @@ public class AuthController {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
-                        request.getPassword()
-                )
-        );
+                        request.getPassword()));
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         String token = jwtService.generateToken(userDetails.getUsername());

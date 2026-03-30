@@ -1,6 +1,5 @@
 package com.ecourt.service;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -11,18 +10,46 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Locale;
 import java.util.UUID;
 
+/**
+ * Local-filesystem implementation of {@link StorageService}.
+ * 
+ * WHY IT IS USED:
+ * This service entirely decouples physical file management (like uploading
+ * evidentiary PDFs) from
+ * the CourtCaseService. By implementing the StorageService interface, it allows
+ * the rest of the
+ * application to securely save, load, and delete files without knowing where
+ * they actually go.
+ * Currently, it saves flies to a local directory defined in
+ * `app.storage.upload-dir`, but the
+ * interface design means it can easily be swapped for an AWS S3 or Azure Blob
+ * implementation
+ * in the future without touching any core case logic.
+ *
+ * FUNCTIONS OVERVIEW:
+ * - init: Ensures the target upload directory actually exists on the host OS
+ * when the app boots.
+ * - store: Validates the file isn't empty, strips malicious path injections
+ * (e.g. "../"), assigns a unique UUID filename, and writes the bytes to disk.
+ * - load: Resolves the physical path of a requested file.
+ * - loadAsResource: Wraps the physical file in a Spring `Resource` object so it
+ * can be streamed securely to the frontend downloader.
+ * - delete: Removes the physical file from the operating system to clean up
+ * storage if a case is purged.
+ */
 @Service
-public class DocumentStorageService {
+public class LocalStorageService implements StorageService {
 
     private final Path uploadRoot;
 
-    public DocumentStorageService(@Value("${app.storage.upload-dir}") String uploadDir) {
-        this.uploadRoot = Path.of(uploadDir).toAbsolutePath().normalize();
+    public LocalStorageService(StorageProperties properties) {
+        this.uploadRoot = Path.of(properties.getUploadDir()).toAbsolutePath().normalize();
         try {
             Files.createDirectories(this.uploadRoot);
         } catch (IOException exception) {
@@ -30,6 +57,7 @@ public class DocumentStorageService {
         }
     }
 
+    @Override
     public StoredFile store(MultipartFile file) {
         String originalFilename = sanitizeFilename(file.getOriginalFilename());
         String extension = extractExtension(originalFilename);
@@ -49,6 +77,7 @@ public class DocumentStorageService {
         return new StoredFile(originalFilename, storedFilename, contentType, file.getSize());
     }
 
+    @Override
     public Resource loadAsResource(String storedFilename) {
         Path file = uploadRoot.resolve(storedFilename).normalize();
         if (!file.startsWith(uploadRoot)) {
@@ -61,6 +90,19 @@ public class DocumentStorageService {
         }
 
         return resource;
+    }
+
+    @Override
+    public void delete(String storedFilename) {
+        Path file = uploadRoot.resolve(storedFilename).normalize();
+        if (!file.startsWith(uploadRoot)) {
+            return; // ignore invalid paths silently
+        }
+        try {
+            Files.deleteIfExists(file);
+        } catch (IOException exception) {
+            // Log but don't fail — deletion is best-effort
+        }
     }
 
     private String sanitizeFilename(String filename) {
@@ -77,13 +119,5 @@ public class DocumentStorageService {
             return "";
         }
         return filename.substring(lastDot).toLowerCase(Locale.ROOT);
-    }
-
-    public record StoredFile(
-            String originalFilename,
-            String storedFilename,
-            String contentType,
-            long sizeBytes
-    ) {
     }
 }

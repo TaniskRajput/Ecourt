@@ -7,6 +7,29 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Database Entity representing a Legal Court Case.
+ * 
+ * WHY IT IS USED:
+ * This file maps directly to the `cases` table in the database. It is the
+ * absolute core
+ * data structure of the application. Everything in the E-Court system revolves
+ * around
+ * this entity. It strictly tracks the workflow state of a legal dispute and
+ * binds
+ * different user roles (Client, Lawyer, Judge) together into a single
+ * contextual record.
+ *
+ * KEY RESPONSIBILITIES (FUNCTIONS):
+ * - caseNumber: A guaranteed unique, human-readable UUID tracking number
+ * generated upon creation.
+ * - status: Tied strictly to the CaseStatus Enum, preventing the database from
+ * ever entering an invalid workflow state.
+ * - clientUsername / lawyerUsername / judgeUsername: Links the case securely to
+ * the involved parties.
+ * - auditEvents / documents: Maintains one-to-many JPA relationships, letting
+ * Hibernate automatically fetch a case's full history and file attachments.
+ */
 @Entity
 @Table(name = "cases")
 public class CourtCase {
@@ -22,8 +45,9 @@ public class CourtCase {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status;
+    private CaseStatus status;
 
     @Column(nullable = false)
     private LocalDate filedDate;
@@ -49,6 +73,9 @@ public class CourtCase {
         Instant now = Instant.now();
         createdAt = now;
         updatedAt = now;
+        if (status == null) {
+            status = CaseStatus.FILED;
+        }
     }
 
     @PreUpdate
@@ -86,11 +113,11 @@ public class CourtCase {
         this.description = description;
     }
 
-    public String getStatus() {
+    public CaseStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(CaseStatus status) {
         this.status = status;
     }
 

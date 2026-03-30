@@ -19,6 +19,27 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * REST Controller responsible for Administrator-level operations.
+ * 
+ * WHY IT IS USED:
+ * This file serves as the API entry point for the Admin dashboard. It is
+ * strictly secured
+ * to users with the "ADMIN" role (enforced via endpoint configuration in
+ * SecurityConfig).
+ * It allows admins to oversee the entire user base, manage staff roles (e.g.,
+ * promoting a user to JUDGE),
+ * and instantly deactivate malicious or obsolete accounts.
+ *
+ * FUNCTIONS OVERVIEW:
+ * - getUsers: Fetches a paginated, searchable, and filterable list of all
+ * registered users, sorted by newest first.
+ * - createUser: Allows admins to directly provision new accounts (e.g.,
+ * creating a new JUDGE account).
+ * - updateUserRole: Modifies a user's role (e.g., CLIENT -> LAWYER).
+ * - updateUserStatus: Activates or deactivates a user account, preventing them
+ * from logging in.
+ */
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
@@ -35,8 +56,7 @@ public class AdminController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String role,
             @RequestParam(required = false) Boolean active,
-            @RequestParam(required = false) String query
-    ) {
+            @RequestParam(required = false) String query) {
         return adminService.getUsers(role, active, query, page, size);
     }
 
@@ -50,8 +70,7 @@ public class AdminController {
     public UserSummaryResponse updateUserRole(
             @PathVariable Long userId,
             @Valid @RequestBody UpdateUserRoleRequest request,
-            Authentication authentication
-    ) {
+            Authentication authentication) {
         return adminService.updateUserRole(userId, request.getRole(), authentication.getName());
     }
 
@@ -59,8 +78,7 @@ public class AdminController {
     public UserSummaryResponse updateUserStatus(
             @PathVariable Long userId,
             @RequestBody UpdateUserStatusRequest request,
-            Authentication authentication
-    ) {
+            Authentication authentication) {
         return adminService.updateUserStatus(userId, request.isActive(), authentication.getName());
     }
 }

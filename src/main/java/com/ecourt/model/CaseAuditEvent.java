@@ -13,6 +13,28 @@ import jakarta.persistence.Table;
 
 import java.time.Instant;
 
+/**
+ * Database Entity representing a Historical Audit Log.
+ * 
+ * WHY IT IS USED:
+ * This file maps to the `case_audit_events` table and creates a permanent,
+ * append-only
+ * ledger of every action taken against a Court Case. By decoupling audit events
+ * into
+ * their own table linked to the case, the system can provide a transparent,
+ * legally
+ * sound history of who changed what and when, which is critical for a judicial
+ * platform.
+ *
+ * KEY RESPONSIBILITIES (FUNCTIONS):
+ * - eventType: Categorizes the action (e.g., "STATUS_CHANGE",
+ * "DOCUMENT_UPLOADED", "JUDGE_ASSIGNED").
+ * - actorUsername: Confirms exactly who performed the action to prevent
+ * repudiation.
+ * - details: Contains the granular JSON-like string of what explicitly changed.
+ * - occurredAt: Irrevocably stamped by the JVM before saving, marked as
+ * `updatable = false` to prevent tampering.
+ */
 @Entity
 @Table(name = "case_audit_events")
 public class CaseAuditEvent {

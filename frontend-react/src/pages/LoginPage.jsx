@@ -1,0 +1,85 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { login as loginApi } from '../services/api';
+import { useAuth } from '../context/AuthContext';
+
+export default function LoginPage() {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+    const { loginUser } = useAuth();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+        setLoading(true);
+        try {
+            const res = await loginApi(username, password);
+            loginUser(res.data);
+            navigate('/dashboard');
+        } catch (err) {
+            setError(err.response?.data?.message || err.response?.data || 'Login failed. Check credentials.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="auth-container">
+            <motion.div
+                className="auth-box center-box"
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
+            >
+                <h2>USER LOGIN</h2>
+                <p className="subtitle">Access your case information securely</p>
+
+                <div className="auth-form-container">
+                    <div className="auth-icon">
+                        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="64" height="64" rx="32" fill="#EBF4FB" />
+                            <path d="M32 15V45" stroke="#71A0CD" strokeWidth="2" strokeLinecap="round" />
+                            <path d="M22 45H42" stroke="#71A0CD" strokeWidth="2" strokeLinecap="round" />
+                            <path d="M32 20L15 28L49 28" stroke="#71A0CD" strokeWidth="2" strokeLinejoin="round" />
+                            <path d="M15 28L15 35C15 38 18 41 22 41C26 41 29 38 29 35L29 28" stroke="#71A0CD" strokeWidth="2" />
+                            <path d="M49 28L49 35C49 38 46 41 42 41C38 41 35 38 35 35L35 28" stroke="#71A0CD" strokeWidth="2" />
+                        </svg>
+                    </div>
+
+                    <form onSubmit={handleSubmit}>
+                        <div className="input-container">
+                            <input
+                                type="text"
+                                placeholder="Username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="input-container">
+                            <input
+                                type="password"
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <button type="submit" className="auth-submit-btn" disabled={loading}>
+                            {loading ? 'Logging in...' : 'Login'}
+                        </button>
+                        {error && <div className="error-msg">{error}</div>}
+                    </form>
+                </div>
+
+                <div className="auth-footer">
+                    New user? <a href="#" onClick={(e) => { e.preventDefault(); navigate('/register'); }}>Register here</a>
+                </div>
+            </motion.div>
+        </div>
+    );
+}

@@ -4,6 +4,29 @@ import jakarta.persistence.*;
 
 import java.time.Instant;
 
+/**
+ * Database Entity representing an uploaded Evidentiary Document.
+ * 
+ * WHY IT IS USED:
+ * This file maps to the `case_documents` table and acts as the metadata bridge
+ * between
+ * the database and the physical file system (managed by StorageService). It
+ * prevents the
+ * physical storage drive from becoming a messy dump of files by recording
+ * exactly who
+ * uploaded what, when it was uploaded, and which specific Court Case it belongs
+ * to.
+ *
+ * KEY RESPONSIBILITIES (FUNCTIONS):
+ * - originalFilename: Stores the human-readable name of the file uploaded by
+ * the user.
+ * - storedFilename: A secure, collision-free UUID used to actually locate the
+ * file on disk.
+ * - uploadedBy: Tracks the strict username of the uploader for security and
+ * auditing.
+ * - onCreate: A JPA @PrePersist hook that automatically stamps the exact server
+ * time the file was saved.
+ */
 @Entity
 @Table(name = "case_documents")
 public class CaseDocument {

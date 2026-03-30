@@ -8,7 +8,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@300;400;600;800&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=3">
+    <link rel="stylesheet" href="style.css?v=4">
 </head>
 
 <body>
@@ -156,11 +156,14 @@
                         <span class="menu-icon">◉</span> Dashboard
                     </li>
                     <li class="menu-item disabled-menu" id="nav-add-case" onclick="switchDashboardView('file-case')">
-                        <!-- Indented -->
                         <span class="menu-icon">⌂</span> <span class="indent-text">Add Case</span>
                     </li>
                     <li class="menu-item disabled-menu" id="nav-lawyer-file" onclick="switchDashboardView('file-case')">
                         <span class="menu-icon">▲</span> <span class="indent-text">File New Case</span>
+                    </li>
+                    <li class="menu-item" id="nav-search-cases"
+                        onclick="switchDashboardView('search-cases'); searchCases();">
+                        <span class="menu-icon">🔍</span> Search Cases
                     </li>
                     <li class="menu-item" id="nav-manage-cases" onclick="switchDashboardView('manage-cases')">
                         <span class="menu-icon">▤</span> Manage Cases
@@ -186,12 +189,16 @@
                     <div class="stats-row">
                         <div class="stat-card blue-card">
                             <div class="stat-title">Total Cases</div>
-                            <div class="stat-value">1,450</div>
+                            <div class="stat-value" id="stat-total">—</div>
                         </div>
                         <div class="stat-card light-blue-card">
-                            <div class="stat-title">Pending Cases</div>
-                            <div class="stat-value">8,900</div>
-                            <div class="stat-subtitle">Today's Hearings</div>
+                            <div class="stat-title">Pending / Filed</div>
+                            <div class="stat-value" id="stat-pending">—</div>
+                        </div>
+                        <div class="stat-card"
+                            style="flex:1;padding:20px;border-radius:8px;text-align:center;background:#ede9fe;">
+                            <div class="stat-title">Closed</div>
+                            <div class="stat-value" id="stat-closed">—</div>
                         </div>
                     </div>
 
@@ -200,31 +207,21 @@
                         Welcome <span id="user-display-name">User</span> (<span id="user-role-name">Role</span>)
                     </div>
 
-                    <!-- Sample Data Table to match mockup structure -->
+                    <!-- Cases Table with clickable rows -->
                     <div class="table-container fade-in">
-                        <table class="data-table">
+                        <table class="data-table clickable-rows">
                             <thead>
                                 <tr>
                                     <th>Case Number</th>
                                     <th>Title</th>
+                                    <th>Client</th>
                                     <th>Judge</th>
+                                    <th>Filed Date</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody id="cases-tbody">
                                 <!-- JS population based on roles -->
-                                <tr>
-                                    <td>CASE-1001</td>
-                                    <td>10:30 AM</td>
-                                    <td>Judge Smith</td>
-                                    <td>Pending</td>
-                                </tr>
-                                <tr>
-                                    <td>CASE-1002</td>
-                                    <td>11:45 AM</td>
-                                    <td>Unassigned</td>
-                                    <td>Review</td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -253,13 +250,127 @@
                     </div>
                 </div>
 
-                <!-- Manage/Search Cases -->
-                <div id="view-manage-cases" class="dash-view">
+                <!-- Search Cases (Full) -->
+                <div id="view-search-cases" class="dash-view">
                     <h3>Search Cases</h3>
                     <div class="dash-form-card">
+                        <!-- Scope toggle -->
+                        <div class="filter-actions">
+                            <div class="scope-toggle">
+                                <input type="radio" name="search-scope" id="scope-my" value="my" checked>
+                                <label for="scope-my">My Cases</label>
+                                <input type="radio" name="search-scope" id="scope-all" value="all">
+                                <label for="scope-all" id="scope-all-label">All Cases</label>
+                            </div>
+                        </div>
+
+                        <!-- Filters -->
+                        <div class="filter-grid">
+                            <div>
+                                <label>Search (number / title)</label>
+                                <input type="text" id="search-query" placeholder="e.g. CASE-2025-0001">
+                            </div>
+                            <div>
+                                <label>Status</label>
+                                <select id="search-status">
+                                    <option value="">All Statuses</option>
+                                    <option value="FILED">Filed</option>
+                                    <option value="IN_REVIEW">In Review</option>
+                                    <option value="ASSIGNED">Assigned</option>
+                                    <option value="HEARING">Hearing</option>
+                                    <option value="CLOSED">Closed</option>
+                                    <option value="DISMISSED">Dismissed</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Client Username</label>
+                                <input type="text" id="search-client" placeholder="Client username">
+                            </div>
+                            <div>
+                                <label>Judge Username</label>
+                                <input type="text" id="search-judge" placeholder="Judge username">
+                            </div>
+                            <div>
+                                <label>Lawyer Username</label>
+                                <input type="text" id="search-lawyer" placeholder="Lawyer username">
+                            </div>
+                            <div>
+                                <label>Exact Filed Date</label>
+                                <input type="date" id="search-filed-date">
+                            </div>
+                            <div>
+                                <label>Filed From</label>
+                                <input type="date" id="search-filed-from">
+                            </div>
+                            <div>
+                                <label>Filed To</label>
+                                <input type="date" id="search-filed-to">
+                            </div>
+                        </div>
+
+                        <div class="filter-actions">
+                            <button class="auth-submit-btn" style="width:auto;padding:10px 30px;"
+                                onclick="searchCases(0)">Search</button>
+                            <button class="outline-btn" style="padding:10px 20px;font-size:0.9rem;"
+                                onclick="clearSearchFilters()">Clear Filters</button>
+                        </div>
+
+                        <!-- Search Results Table -->
+                        <div class="table-container">
+                            <table class="data-table clickable-rows">
+                                <thead>
+                                    <tr>
+                                        <th>Case Number</th>
+                                        <th>Title</th>
+                                        <th>Client</th>
+                                        <th>Judge</th>
+                                        <th>Filed Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="search-results-tbody">
+                                    <tr>
+                                        <td colspan="6" style="text-align:center;">Use the filters above to search
+                                            cases.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="pagination-bar" id="search-pagination" style="display:none;">
+                            <div class="page-info" id="search-page-info">Page 1 of 1</div>
+                            <div class="page-controls">
+                                <select class="page-size-select" id="search-page-size" onchange="searchCases(0)">
+                                    <option value="5">5 / page</option>
+                                    <option value="10" selected>10 / page</option>
+                                    <option value="20">20 / page</option>
+                                    <option value="50">50 / page</option>
+                                </select>
+                                <button onclick="searchCases(currentSearchPage - 1)" id="search-prev-btn" disabled>←
+                                    Prev</button>
+                                <button onclick="searchCases(currentSearchPage + 1)" id="search-next-btn" disabled>Next
+                                    →</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Case Detail View -->
+                <div id="view-case-detail" class="dash-view">
+                    <div class="back-link" onclick="goBackFromDetail()">← Back</div>
+                    <div id="case-detail-content">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Manage Cases (original quick-search + admin/judge hooks) -->
+                <div id="view-manage-cases" class="dash-view">
+                    <h3>Quick Case Lookup</h3>
+                    <div class="dash-form-card">
                         <div class="search-row">
-                            <input type="text" id="view-case-id" placeholder="Enter Case ID">
-                            <button class="auth-submit-btn" onclick="viewCase()">Search</button>
+                            <input type="text" id="view-case-id" placeholder="Enter Case Number">
+                            <button class="auth-submit-btn" onclick="viewCase()">Lookup</button>
                         </div>
                         <div id="case-result" class="result-box"></div>
                     </div>
@@ -337,7 +448,7 @@
         <div class="spinner"></div>
     </div>
 
-    <script src="app.js?v=3"></script>
+    <script src="app.js?v=4"></script>
 </body>
 
 </html>

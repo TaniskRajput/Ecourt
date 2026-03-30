@@ -1,6 +1,7 @@
 package com.ecourt.config;
 
 import com.ecourt.model.CourtCase;
+import com.ecourt.model.CaseStatus;
 import com.ecourt.model.User;
 import com.ecourt.repository.CourtCaseRepository;
 import com.ecourt.repository.UserRepository;
@@ -20,12 +21,13 @@ public class H2DemoDataConfig {
     CommandLineRunner seedH2DemoData(
             UserRepository userRepository,
             CourtCaseRepository courtCaseRepository,
-            PasswordEncoder passwordEncoder
-    ) {
+            PasswordEncoder passwordEncoder) {
         return args -> {
             ensureUser(userRepository, passwordEncoder, "alisha", "alisha@ecourt.local", "alisha", "ADMIN");
-            ensureUser(userRepository, passwordEncoder, "clientdemo", "clientdemo@ecourt.local", "clientdemo", "CLIENT");
-            ensureUser(userRepository, passwordEncoder, "lawyerdemo", "lawyerdemo@ecourt.local", "lawyerdemo", "LAWYER");
+            ensureUser(userRepository, passwordEncoder, "clientdemo", "clientdemo@ecourt.local", "clientdemo",
+                    "CLIENT");
+            ensureUser(userRepository, passwordEncoder, "lawyerdemo", "lawyerdemo@ecourt.local", "lawyerdemo",
+                    "LAWYER");
             ensureUser(userRepository, passwordEncoder, "judgedemo", "judgedemo@ecourt.local", "judgedemo", "JUDGE");
 
             if (courtCaseRepository.count() == 0) {
@@ -33,7 +35,7 @@ public class H2DemoDataConfig {
                 courtCase.setCaseNumber("ECOURT-DEMO-0001");
                 courtCase.setTitle("Demo Property Dispute");
                 courtCase.setDescription("Sample case seeded for the H2 demo profile.");
-                courtCase.setStatus("PENDING");
+                courtCase.setStatus(CaseStatus.FILED);
                 courtCase.setFiledDate(LocalDate.now());
                 courtCase.setClientUsername("clientdemo");
                 courtCase.setLawyerUsername("lawyerdemo");
@@ -49,8 +51,7 @@ public class H2DemoDataConfig {
             String username,
             String email,
             String rawPassword,
-            String role
-    ) {
+            String role) {
         if (userRepository.findByUsername(username).isPresent()) {
             return;
         }

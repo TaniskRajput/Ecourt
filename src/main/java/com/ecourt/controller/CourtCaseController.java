@@ -18,6 +18,35 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.time.LocalDate;
 
+/**
+ * REST Controller responsible for Case Management Operations.
+ * 
+ * WHY IT IS USED:
+ * This file is the core API for interacting with legal cases. It provides
+ * role-based access to
+ * view, search, and modify cases. Clients, Lawyers, Judges, and Admins all
+ * interact with cases
+ * through these REST endpoints, which delegate complex state-machine
+ * validations and document
+ * storage operations to the underlying CourtCaseService.
+ *
+ * FUNCTIONS OVERVIEW:
+ * - addCase: Submits a new legal case into the system (initial status: FILED).
+ * - getMyCases: Retrieves all cases associated with the currently authenticated
+ * user.
+ * - getAllCases: Retrieves the entire registry of active cases (usually for
+ * Admins).
+ * - searchCases: Provides advanced paginated searching and filtering of cases.
+ * - getCase: Retrieves full details of a specific case by its unique tracking
+ * number.
+ * - assignJudge: Allows Admins to assign a specific Judge to oversee a case.
+ * - updateCaseStatus: Advances the case through the workflow state machine
+ * (e.g., SCRUTINY -> HEARING).
+ * - uploadDocument / getDocuments / downloadDocument: Manages physical file
+ * attachments for a case.
+ * - getAuditEvents: Retrieves an immutable trail of historical status jumps and
+ * document associations.
+ */
 @RestController
 @RequestMapping("/cases")
 public class CourtCaseController {
@@ -55,8 +84,7 @@ public class CourtCaseController {
             @RequestParam(required = false) LocalDate filedDate,
             @RequestParam(required = false) LocalDate filedFrom,
             @RequestParam(required = false) LocalDate filedTo,
-            @RequestParam(required = false) String query
-    ) {
+            @RequestParam(required = false) String query) {
         return caseService.searchCases(
                 scope,
                 page,
@@ -68,8 +96,7 @@ public class CourtCaseController {
                 filedDate,
                 filedFrom,
                 filedTo,
-                query
-        );
+                query);
     }
 
     @GetMapping("/{caseNumber}")
@@ -80,8 +107,7 @@ public class CourtCaseController {
     @PutMapping("/{caseNumber}/assign")
     public MessageResponse assignJudge(
             @PathVariable String caseNumber,
-            @RequestParam(required = false) String judgeUsername
-    ) {
+            @RequestParam(required = false) String judgeUsername) {
         return new MessageResponse(caseService.assignJudge(caseNumber, judgeUsername));
     }
 
@@ -93,8 +119,7 @@ public class CourtCaseController {
     @PostMapping(path = "/{caseNumber}/documents", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CaseDocumentResponse> uploadDocument(
             @PathVariable String caseNumber,
-            @RequestParam("file") MultipartFile file
-    ) {
+            @RequestParam("file") MultipartFile file) {
         return ResponseEntity.ok(caseService.uploadDocument(caseNumber, file));
     }
 
@@ -111,16 +136,14 @@ public class CourtCaseController {
     @GetMapping("/{caseNumber}/documents/{documentId}/download")
     public ResponseEntity<Resource> downloadDocument(
             @PathVariable String caseNumber,
-            @PathVariable Long documentId
-    ) {
+            @PathVariable Long documentId) {
         var download = caseService.downloadDocument(caseNumber, documentId);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(download.contentType()))
                 .header(
                         HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"" + download.originalFilename() + "\""
-                )
+                        "attachment; filename=\"" + download.originalFilename() + "\"")
                 .body(download.resource());
     }
 }

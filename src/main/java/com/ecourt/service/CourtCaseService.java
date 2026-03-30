@@ -8,6 +8,7 @@ import com.ecourt.dto.CaseResponse;
 import com.ecourt.model.CaseAuditEvent;
 import com.ecourt.model.CaseDocument;
 import com.ecourt.model.CourtCase;
+import com.ecourt.model.CaseStatus;
 import com.ecourt.model.User;
 import com.ecourt.repository.CaseAuditEventRepository;
 import com.ecourt.repository.CaseDocumentRepository;
@@ -31,33 +32,60 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.UUID;
 
+/**
+ * Business Logic Service for Core Case Management and Workflow Engine.
+ * 
+ * WHY IT IS USED:
+ * This is the intellectual heart of the E-Court application. It encapsulates
+ * all domain rules
+ * for what happens to a legal profile during its lifecycle. It enforces the
+ * Advanced Workflow Engine
+ * State Machine (CaseStatus Enum), preventing illegal status jumps. It handles
+ * all role-based
+ * security validations at the service level (e.g., ensuring a Lawyer cannot
+ * magically become a Judge
+ * on their own case), integrates with the generic StorageService for documents,
+ * and automatically
+ * writes immutable audit logs whenever important actions occur.
+ *
+ * FUNCTIONS OVERVIEW:
+ * - addCase: Provisions a new case entity, assigns a unique tracking UUID, and
+ * logs the 'Created' event.
+ * - getCasesForCurrentUser / searchCases: Dynamically generates scope-aware JPA
+ * Queries based on the caller's role.
+ * - assignJudge: Validates that the target assignee actually holds the 'JUDGE'
+ * role before linking them.
+ * - updateCaseStatus: The core State Machine engine. Checks
+ * 'previousStatus.canTransitionTo()', throws errors on violation, updates, and
+ * writes an Audit log.
+ * - uploadDocument: Persists the physical binary via StorageService, records
+ * the metadata in the DB, and fires an Audit event.
+ * - downloadDocument: Retrieves a document from the underlying storage adapter
+ * securely.
+ */
 @Service
 @Transactional
 public class CourtCaseService {
-
-    private static final Set<String> ALLOWED_STATUSES = Set.of("PENDING", "IN_PROGRESS", "CLOSED");
 
     private final CourtCaseRepository caseRepository;
     private final CaseAuditEventRepository caseAuditEventRepository;
     private final CaseDocumentRepository caseDocumentRepository;
     private final UserRepository userRepository;
-    private final DocumentStorageService documentStorageService;
+    private final StorageService storageService;
 
     public CourtCaseService(
             CourtCaseRepository caseRepository,
             CaseAuditEventRepository caseAuditEventRepository,
             CaseDocumentRepository caseDocumentRepository,
             UserRepository userRepository,
-            DocumentStorageService documentStorageService
-    ) {
+            StorageService storageService) {
         this.caseRepository = caseRepository;
         this.caseAuditEventRepository = caseAuditEventRepository;
         this.caseDocumentRepository = caseDocumentRepository;
         this.userRepository = userRepository;
-        this.documentStorageService = documentStorageService;
+        this.storageService = storageService;
     }
 
     public CaseResponse addCase(CaseCreateRequest request) {
@@ -78,10 +106,10 @@ public class CourtCaseService {
         courtCase.setFiledDate(LocalDate.now());
         courtCase.setLawyerUsername("LAWYER".equals(role) ? auth.getName() : null);
         courtCase.setJudgeUsername(null);
-        courtCase.setStatus("PENDING");
+        courtCase.setStatus(CaseStatus.FILED);
 
         CourtCase savedCase = caseRepository.save(courtCase);
-        recordAuditEvent(savedCase, auth.getName(), "CASE_CREATED", "Case created with status PENDING.");
+        recordAuditEvent(savedCase, auth.getName(), "CASE_CREATED", "Case created with status FILED.");
         return toResponse(savedCase);
     }
 
@@ -104,24 +132,23 @@ public class CourtCaseService {
             LocalDate filedDate,
             LocalDate filedFrom,
             LocalDate filedTo,
-            String query
-    ) {
+            String query) {
         Authentication auth = requireAuthentication();
         SearchScope resolvedScope = resolveSearchScope(scope, auth);
         Pageable pageable = PageRequest.of(validatePage(page), validateSize(size), Sort.by(
                 Sort.Order.desc("filedDate"),
-                Sort.Order.desc("createdAt")
-        ));
+                Sort.Order.desc("createdAt")));
 
         if (filedDate != null && (filedFrom != null || filedTo != null)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Use either filedDate or filedFrom/filedTo filters, not both.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Use either filedDate or filedFrom/filedTo filters, not both.");
         }
 
         if (filedFrom != null && filedTo != null && filedFrom.isAfter(filedTo)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "filedFrom must be on or before filedTo.");
         }
 
-        String normalizedStatus = hasText(status) ? normalizeStatus(status) : null;
+        CaseStatus normalizedStatus = hasText(status) ? normalizeStatus(status) : null;
         String normalizedClientUsername = hasText(clientUsername) ? clientUsername.trim() : null;
         String normalizedJudgeUsername = hasText(judgeUsername) ? judgeUsername.trim() : null;
         String normalizedLawyerUsername = hasText(lawyerUsername) ? lawyerUsername.trim() : null;
@@ -171,8 +198,7 @@ public class CourtCaseService {
                 String pattern = "%" + normalizedQuery + "%";
                 predicates.add(criteriaBuilder.or(
                         criteriaBuilder.like(criteriaBuilder.lower(root.get("caseNumber")), pattern),
-                        criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), pattern)
-                ));
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), pattern)));
             }
 
             return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
@@ -183,8 +209,7 @@ public class CourtCaseService {
                 result.getNumber(),
                 result.getSize(),
                 result.getTotalElements(),
-                result.getTotalPages()
-        );
+                result.getTotalPages());
     }
 
     @Transactional(readOnly = true)
@@ -216,7 +241,8 @@ public class CourtCaseService {
                     .toList();
         }
 
-        throw new AccessDeniedException("Access denied: This endpoint is only available for client, lawyer, or judge accounts.");
+        throw new AccessDeniedException(
+                "Access denied: This endpoint is only available for client, lawyer, or judge accounts.");
     }
 
     public String assignJudge(String caseNumber, String requestedJudgeUsername) {
@@ -235,7 +261,7 @@ public class CourtCaseService {
             throw new AccessDeniedException("Access denied: Only admins or judges can assign judges to cases.");
         }
 
-        if ("CLOSED".equalsIgnoreCase(courtCase.getStatus())) {
+        if (CaseStatus.CLOSED == courtCase.getStatus()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Closed cases cannot be reassigned.");
         }
 
@@ -248,8 +274,8 @@ public class CourtCaseService {
         }
 
         courtCase.setJudgeUsername(targetJudgeUsername);
-        if ("PENDING".equalsIgnoreCase(courtCase.getStatus())) {
-            courtCase.setStatus("IN_PROGRESS");
+        if (CaseStatus.FILED == courtCase.getStatus()) {
+            courtCase.setStatus(CaseStatus.SCRUTINY);
         }
         caseRepository.save(courtCase);
         return "Judge assigned successfully";
@@ -258,41 +284,31 @@ public class CourtCaseService {
     public String updateCaseStatus(String caseNumber, String status) {
         CourtCase courtCase = getCaseOrThrow(caseNumber);
         Authentication auth = requireAuthentication();
-        String previousStatus = courtCase.getStatus();
+        CaseStatus previousStatus = courtCase.getStatus();
 
-        if (hasRole(auth, "ADMIN")) {
-            String normalizedStatus = normalizeStatus(status);
-            courtCase.setStatus(normalizedStatus);
-            caseRepository.save(courtCase);
-            if (!previousStatus.equals(normalizedStatus)) {
-                recordAuditEvent(
-                        courtCase,
-                        auth.getName(),
-                        "CASE_STATUS_UPDATED",
-                        "Status changed from " + previousStatus + " to " + normalizedStatus + "."
-                );
+        if (!hasRole(auth, "ADMIN")) {
+            if (!hasRole(auth, "JUDGE")) {
+                throw new AccessDeniedException("Access denied: Only admins or assigned judges can update status.");
             }
-            return "Case status updated to " + normalizedStatus;
+            if (!auth.getName().equals(courtCase.getJudgeUsername())) {
+                throw new AccessDeniedException("Access denied: You are not assigned to this case.");
+            }
         }
 
-        if (!hasRole(auth, "JUDGE")) {
-            throw new AccessDeniedException("Access denied: Only admins or assigned judges can update status.");
+        CaseStatus normalizedStatus = normalizeStatus(status);
+        if (!previousStatus.canTransitionTo(normalizedStatus)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Invalid status transition from " + previousStatus + " to " + normalizedStatus + ".");
         }
 
-        if (!auth.getName().equals(courtCase.getJudgeUsername())) {
-            throw new AccessDeniedException("Access denied: You are not assigned to this case.");
-        }
-
-        String normalizedStatus = normalizeStatus(status);
         courtCase.setStatus(normalizedStatus);
         caseRepository.save(courtCase);
-        if (!previousStatus.equals(normalizedStatus)) {
+        if (previousStatus != normalizedStatus) {
             recordAuditEvent(
                     courtCase,
                     auth.getName(),
                     "CASE_STATUS_UPDATED",
-                    "Status changed from " + previousStatus + " to " + normalizedStatus + "."
-            );
+                    "Status changed from " + previousStatus + " to " + normalizedStatus + ".");
         }
         return "Case status updated to " + normalizedStatus;
     }
@@ -306,7 +322,7 @@ public class CourtCaseService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Document file is required.");
         }
 
-        DocumentStorageService.StoredFile storedFile = documentStorageService.store(file);
+        StorageService.StoredFile storedFile = storageService.store(file);
 
         CaseDocument document = new CaseDocument();
         document.setCourtCase(courtCase);
@@ -321,8 +337,7 @@ public class CourtCaseService {
                 courtCase,
                 auth.getName(),
                 "DOCUMENT_UPLOADED",
-                "Uploaded document: " + savedDocument.getOriginalFilename() + "."
-        );
+                "Uploaded document: " + savedDocument.getOriginalFilename() + ".");
         return toDocumentResponse(savedDocument);
     }
 
@@ -355,10 +370,9 @@ public class CourtCaseService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Document not found"));
 
         return new DocumentDownload(
-                documentStorageService.loadAsResource(document.getStoredFilename()),
+                storageService.loadAsResource(document.getStoredFilename()),
                 document.getOriginalFilename(),
-                document.getContentType()
-        );
+                document.getContentType());
     }
 
     private CourtCase getCaseOrThrow(String caseNumber) {
@@ -423,7 +437,8 @@ public class CourtCaseService {
     private String validateClientUsername(String username) {
         String normalized = normalizeRequired(username, "Client username is required");
         User client = userRepository.findByUsername(normalized)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Client username does not exist."));
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Client username does not exist."));
 
         if (!"CLIENT".equalsIgnoreCase(client.getRole())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Provided user is not a client.");
@@ -439,7 +454,8 @@ public class CourtCaseService {
     private String validateJudgeUsername(String username) {
         String normalized = normalizeRequired(username, "Judge username is required");
         User judge = userRepository.findByUsername(normalized)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Judge username does not exist."));
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Judge username does not exist."));
 
         if (!"JUDGE".equalsIgnoreCase(judge.getRole())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Provided user is not a judge.");
@@ -459,12 +475,13 @@ public class CourtCaseService {
         return value.trim();
     }
 
-    private String normalizeStatus(String status) {
-        String normalizedStatus = normalizeRequired(status, "Status is required").toUpperCase(Locale.ROOT);
-        if (!ALLOWED_STATUSES.contains(normalizedStatus)) {
+    private CaseStatus normalizeStatus(String status) {
+        String trimmed = normalizeRequired(status, "Status is required").toUpperCase(Locale.ROOT);
+        try {
+            return CaseStatus.valueOf(trimmed);
+        } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported status value.");
         }
-        return normalizedStatus;
     }
 
     private boolean hasText(String value) {
@@ -505,14 +522,16 @@ public class CourtCaseService {
     private String generateCaseNumber() {
         String candidate;
         do {
-            candidate = "ECOURT-" + LocalDate.now() + "-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase(Locale.ROOT);
+            candidate = "ECOURT-" + LocalDate.now() + "-"
+                    + UUID.randomUUID().toString().substring(0, 8).toUpperCase(Locale.ROOT);
         } while (caseRepository.findByCaseNumber(candidate).isPresent());
 
         return candidate;
     }
 
     private CaseResponse toResponse(CourtCase courtCase) {
-        List<CaseDocumentResponse> documents = caseDocumentRepository.findByCourtCaseIdOrderByUploadedAtDesc(courtCase.getId())
+        List<CaseDocumentResponse> documents = caseDocumentRepository
+                .findByCourtCaseIdOrderByUploadedAtDesc(courtCase.getId())
                 .stream()
                 .map(this::toDocumentResponse)
                 .toList();
@@ -528,8 +547,7 @@ public class CourtCaseService {
                 courtCase.getJudgeUsername(),
                 courtCase.getCreatedAt(),
                 courtCase.getUpdatedAt(),
-                documents
-        );
+                documents);
     }
 
     private CaseDocumentResponse toDocumentResponse(CaseDocument document) {
@@ -539,8 +557,7 @@ public class CourtCaseService {
                 document.getContentType(),
                 document.getSizeBytes(),
                 document.getUploadedBy(),
-                document.getUploadedAt()
-        );
+                document.getUploadedAt());
     }
 
     private CaseAuditEventResponse toAuditResponse(CaseAuditEvent event) {
@@ -549,8 +566,7 @@ public class CourtCaseService {
                 event.getEventType(),
                 event.getActorUsername(),
                 event.getDetails(),
-                event.getOccurredAt()
-        );
+                event.getOccurredAt());
     }
 
     private void recordAuditEvent(CourtCase courtCase, String actorUsername, String eventType, String details) {
@@ -565,8 +581,7 @@ public class CourtCaseService {
     public record DocumentDownload(
             org.springframework.core.io.Resource resource,
             String originalFilename,
-            String contentType
-    ) {
+            String contentType) {
     }
 
     private enum SearchScope {
