@@ -69,9 +69,24 @@ export default function ManageCases() {
         >
             <h3>Quick Case Lookup</h3>
             <div className="dash-form-card">
-                <div className="search-row">
-                    <input type="text" value={lookupId} onChange={(e) => setLookupId(e.target.value)} placeholder="Enter Case Number" />
-                    <button className="auth-submit-btn" onClick={handleLookup}>Lookup</button>
+                <div style={{ marginBottom: '1.2rem' }}>
+                    <label style={{ display: 'block', marginBottom: '10px', fontWeight: 600, color: 'var(--clr-text-secondary)', fontSize: '0.9rem' }}>
+                        Quick Case Number Lookup
+                    </label>
+                    <div style={{ display: 'flex', gap: '15px', alignItems: 'center', flexWrap: 'wrap' }}>
+                        <div className="premium-search-container" style={{ maxWidth: '400px' }}>
+                            <div className="premium-search-icon">🔍</div>
+                            <input
+                                type="text"
+                                className="premium-search-input"
+                                value={lookupId}
+                                onChange={(e) => setLookupId(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && handleLookup()}
+                                placeholder="Enter Case Number..."
+                            />
+                        </div>
+                        <button className="auth-submit-btn" style={{ width: 'auto', padding: '10px 25px', marginTop: 0 }} onClick={handleLookup}>Lookup</button>
+                    </div>
                 </div>
                 {lookupResult && lookupResult.type === 'error' && (
                     <motion.div className="result-box" style={{ borderLeftColor: '#ef4444', color: '#ef4444' }} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
