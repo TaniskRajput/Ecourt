@@ -4,6 +4,7 @@ const API_URL = window.location.port === '8080'
 
 // State
 let currentSearchPage = 0;
+let currentSearchMode = 'query';
 let lastDetailSource = 'overview'; // track where case-detail was opened from
 
 // Initialize UI on load
@@ -378,33 +379,79 @@ function populateTable(cases, tbody) {
 // =============================================
 //  CASE SEARCH (GET /cases/search)
 // =============================================
+function setSearchMode(mode) {
+    currentSearchMode = mode;
+
+    // Update Tab Buttons UI
+    const tabs = document.querySelectorAll('#search-tabs .filter-tag');
+    tabs.forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.getAttribute('onclick').includes(`'${mode}'`)) {
+            tab.classList.add('active');
+        }
+    });
+
+    // Update Input Visibility
+    document.getElementById('search-group-standard').style.display = (mode !== 'status' && mode !== 'date') ? 'block' : 'none';
+    document.getElementById('search-group-status').style.display = (mode === 'status') ? 'block' : 'none';
+    document.getElementById('search-group-date').style.display = (mode === 'date') ? 'block' : 'none';
+
+    // Update Label and Placeholder
+    const label = document.getElementById('search-label');
+    const input = document.getElementById('search-query');
+
+    // Clear all hidden and visible inputs when switching modes
+    input.value = '';
+    document.getElementById('search-status').value = '';
+    document.getElementById('search-client').value = '';
+    document.getElementById('search-judge').value = '';
+    document.getElementById('search-lawyer').value = '';
+    document.getElementById('search-filed-date').value = '';
+    document.getElementById('search-filed-from').value = '';
+    document.getElementById('search-filed-to').value = '';
+
+    const modeLabels = {
+        'query': 'Case Number / Title',
+        'client': 'Client Username',
+        'lawyer': 'Lawyer Username',
+        'judge': 'Judge Username',
+        'status': 'Case Status',
+        'date': 'Filed Date'
+    };
+
+    if (label) label.innerText = modeLabels[mode];
+    if (input) input.placeholder = `Search by ${modeLabels[mode]}...`;
+
+    input.focus();
+}
+
 async function searchCases(page) {
     if (page === undefined || page === null) page = 0;
     if (page < 0) page = 0;
 
     const scope = document.querySelector('input[name="search-scope"]:checked')?.value || 'my';
     const size = parseInt(document.getElementById('search-page-size')?.value || '10');
-    const query = document.getElementById('search-query')?.value.trim() || '';
-    const status = document.getElementById('search-status')?.value || '';
-    const client = document.getElementById('search-client')?.value.trim() || '';
-    const judge = document.getElementById('search-judge')?.value.trim() || '';
-    const lawyer = document.getElementById('search-lawyer')?.value.trim() || '';
-    const filedDate = document.getElementById('search-filed-date')?.value || '';
-    const filedFrom = document.getElementById('search-filed-from')?.value || '';
-    const filedTo = document.getElementById('search-filed-to')?.value || '';
 
     const params = new URLSearchParams();
     params.set('scope', scope);
     params.set('page', page);
     params.set('size', size);
-    if (query) params.set('query', query);
-    if (status) params.set('status', status);
-    if (client) params.set('clientUsername', client);
-    if (judge) params.set('judgeUsername', judge);
-    if (lawyer) params.set('lawyerUsername', lawyer);
-    if (filedDate) params.set('filedDate', filedDate);
-    if (filedFrom) params.set('filedFrom', filedFrom);
-    if (filedTo) params.set('filedTo', filedTo);
+
+    const val = document.getElementById('search-query').value.trim();
+
+    if (currentSearchMode === 'query' && val) params.set('query', val);
+    else if (currentSearchMode === 'client' && val) params.set('clientUsername', val);
+    else if (currentSearchMode === 'lawyer' && val) params.set('lawyerUsername', val);
+    else if (currentSearchMode === 'judge' && val) params.set('judgeUsername', val);
+    else if (currentSearchMode === 'status') {
+        const s = document.getElementById('search-status').value;
+        if (s) params.set('status', s);
+    } else if (currentSearchMode === 'date') {
+        const from = document.getElementById('search-filed-from').value;
+        const to = document.getElementById('search-filed-to').value;
+        if (from) params.set('filedFrom', from);
+        if (to) params.set('filedTo', to);
+    }
 
     const tbody = document.getElementById('search-results-tbody');
     tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Searching...</td></tr>';
@@ -482,14 +529,7 @@ function renderSearchResults(data) {
 }
 
 function clearSearchFilters() {
-    document.getElementById('search-query').value = '';
-    document.getElementById('search-status').value = '';
-    document.getElementById('search-client').value = '';
-    document.getElementById('search-judge').value = '';
-    document.getElementById('search-lawyer').value = '';
-    document.getElementById('search-filed-date').value = '';
-    document.getElementById('search-filed-from').value = '';
-    document.getElementById('search-filed-to').value = '';
+    setSearchMode('query');
     document.getElementById('scope-my').checked = true;
     document.getElementById('search-results-tbody').innerHTML =
         '<tr><td colspan="6" style="text-align:center;">Use the filters above to search cases.</td></tr>';

@@ -255,25 +255,49 @@
                     <h3>Search Cases</h3>
                     <div class="dash-form-card">
                         <!-- Scope toggle -->
-                        <div class="filter-actions">
+                        <div class="filter-actions" style="margin-bottom: 1.5rem;">
                             <div class="scope-toggle">
-                                <input type="radio" name="search-scope" id="scope-my" value="my" checked>
+                                <input type="radio" name="search-scope" id="scope-my" value="my" checked
+                                    onchange="searchCases(0)">
                                 <label for="scope-my">My Cases</label>
-                                <input type="radio" name="search-scope" id="scope-all" value="all">
+                                <input type="radio" name="search-scope" id="scope-all" value="all"
+                                    onchange="searchCases(0)">
                                 <label for="scope-all" id="scope-all-label">All Cases</label>
                             </div>
                         </div>
 
-                        <!-- Filters -->
-                        <div class="filter-grid">
-                            <div>
-                                <label>Search (number / title)</label>
-                                <input type="text" id="search-query" placeholder="e.g. CASE-2025-0001">
+                        <!-- Search By Tabs -->
+                        <div id="search-tabs"
+                            style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 2rem;">
+                            <button class="filter-tag active" onclick="setSearchMode('query')">🔍 Case Number /
+                                Title</button>
+                            <button class="filter-tag" onclick="setSearchMode('client')">👤 Client Username</button>
+                            <button class="filter-tag" onclick="setSearchMode('lawyer')">⚖️ Lawyer Username</button>
+                            <button class="filter-tag" onclick="setSearchMode('judge')">🏛️ Judge Username</button>
+                            <button class="filter-tag" onclick="setSearchMode('status')">📋 Case Status</button>
+                            <button class="filter-tag" onclick="setSearchMode('date')">📅 Filed Date</button>
+                        </div>
+
+                        <!-- Dynamic Input Area -->
+                        <div id="dynamic-search-area" style="margin-bottom: 1.5rem;">
+                            <div id="search-group-standard">
+                                <label
+                                    style="display: block; margin-bottom: 10px; font-weight: 600; color: var(--clr-text-secondary); font-size: 0.9rem;"
+                                    id="search-label">Case Number / Title</label>
+                                <div class="premium-search-container">
+                                    <div class="premium-search-icon">🔍</div>
+                                    <input type="text" id="search-query" class="premium-search-input"
+                                        placeholder="Search..." onkeydown="if(event.key==='Enter') searchCases(0)">
+                                </div>
                             </div>
-                            <div>
-                                <label>Status</label>
-                                <select id="search-status">
-                                    <option value="">All Statuses</option>
+
+                            <div id="search-group-status" style="display: none;">
+                                <label
+                                    style="display: block; margin-bottom: 10px; font-weight: 600; color: var(--clr-text-secondary); font-size: 0.9rem;">Select
+                                    Status</label>
+                                <select id="search-status" class="premium-search-input"
+                                    style="border: 2px solid var(--clr-border) !important; border-radius: 12px !important; background: #fff !important; padding: 10px 15px !important; width: 100%; max-width: 380px;">
+                                    <option value="">— Choose a Status —</option>
                                     <option value="FILED">Filed</option>
                                     <option value="IN_REVIEW">In Review</option>
                                     <option value="ASSIGNED">Assigned</option>
@@ -282,31 +306,30 @@
                                     <option value="DISMISSED">Dismissed</option>
                                 </select>
                             </div>
-                            <div>
-                                <label>Client Username</label>
-                                <input type="text" id="search-client" placeholder="Client username">
-                            </div>
-                            <div>
-                                <label>Judge Username</label>
-                                <input type="text" id="search-judge" placeholder="Judge username">
-                            </div>
-                            <div>
-                                <label>Lawyer Username</label>
-                                <input type="text" id="search-lawyer" placeholder="Lawyer username">
-                            </div>
-                            <div>
-                                <label>Exact Filed Date</label>
-                                <input type="date" id="search-filed-date">
-                            </div>
-                            <div>
-                                <label>Filed From</label>
-                                <input type="date" id="search-filed-from">
-                            </div>
-                            <div>
-                                <label>Filed To</label>
-                                <input type="date" id="search-filed-to">
+
+                            <div id="search-group-date" style="display: none;">
+                                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                                    <div style="flex: 1; min-width: 160px;">
+                                        <label style="display: block; margin-bottom: 6px; font-weight: 500;">Filed
+                                            From</label>
+                                        <input type="date" id="search-filed-from"
+                                            style="width: 100%; padding: 10px; border: 1px solid var(--clr-border); border-radius: 8px;">
+                                    </div>
+                                    <div style="flex: 1; min-width: 160px;">
+                                        <label style="display: block; margin-bottom: 6px; font-weight: 500;">Filed
+                                            To</label>
+                                        <input type="date" id="search-filed-to"
+                                            style="width: 100%; padding: 10px; border: 1px solid var(--clr-border); border-radius: 8px;">
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
+                        <!-- Hidden fields for other modes to keep app.js simple -->
+                        <input type="hidden" id="search-client">
+                        <input type="hidden" id="search-judge">
+                        <input type="hidden" id="search-lawyer">
+                        <input type="hidden" id="search-filed-date">
 
                         <div class="filter-actions">
                             <button class="auth-submit-btn" style="width:auto;padding:10px 30px;"
@@ -368,9 +391,21 @@
                 <div id="view-manage-cases" class="dash-view">
                     <h3>Quick Case Lookup</h3>
                     <div class="dash-form-card">
-                        <div class="search-row">
-                            <input type="text" id="view-case-id" placeholder="Enter Case Number">
-                            <button class="auth-submit-btn" onclick="viewCase()">Lookup</button>
+                        <div style="margin-bottom: 1.2rem;">
+                            <label
+                                style="display: block; margin-bottom: 10px; font-weight: 600; color: var(--clr-text-secondary); font-size: 0.9rem;">
+                                Quick Case Number Lookup
+                            </label>
+                            <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                                <div class="premium-search-container" style="max-width: 400px;">
+                                    <div class="premium-search-icon">🔍</div>
+                                    <input type="text" id="view-case-id" class="premium-search-input"
+                                        placeholder="Enter Case Number..."
+                                        onkeydown="if(event.key==='Enter') viewCase()">
+                                </div>
+                                <button class="auth-submit-btn" style="width: auto; padding: 10px 25px; margin-top: 0;"
+                                    onclick="viewCase()">Lookup</button>
+                            </div>
                         </div>
                         <div id="case-result" class="result-box"></div>
                     </div>
