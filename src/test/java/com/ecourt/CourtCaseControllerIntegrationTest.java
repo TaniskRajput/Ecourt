@@ -44,6 +44,9 @@ class CourtCaseControllerIntegrationTest {
   @Autowired
   private PasswordEncoder passwordEncoder;
 
+  @Autowired
+  private com.ecourt.repository.AuthOtpRepository authOtpRepository;
+
   @BeforeEach
   void setUp() {
     caseAuditEventRepository.deleteAll();
@@ -218,6 +221,125 @@ class CourtCaseControllerIntegrationTest {
   }
 
   @Test
+  void userCanRegisterOnlyAfterOtpVerification() throws Exception {
+    mockMvc.perform(post("/auth/register/request-otp")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+            {
+              "username": "otpclient",
+              "email": "otpclient@example.com",
+              "role": "CLIENT"
+            }
+            """))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.message").value("OTP sent to your email. Verify it to continue registration."));
+
+    String otpCode = authOtpRepository
+        .findTopByEmailAndPurposeOrderByCreatedAtDesc("otpclient@example.com", com.ecourt.model.OtpPurpose.REGISTRATION)
+        .orElseThrow()
+        .getOtpCode();
+
+    String verifyResponse = mockMvc.perform(post("/auth/register/verify-otp")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+            {
+              "email": "otpclient@example.com",
+              "otp": "%s"
+            }
+            """.formatted(otpCode)))
+        .andExpect(status().isOk())
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    String verificationTicket = com.jayway.jsonpath.JsonPath.read(verifyResponse, "$.verificationTicket");
+
+    mockMvc.perform(post("/auth/register/complete")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+            {
+              "username": "otpclient",
+              "email": "otpclient@example.com",
+              "role": "CLIENT",
+              "password": "Password123",
+              "confirmPassword": "Password123",
+              "verificationTicket": "%s"
+            }
+            """.formatted(verificationTicket)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.message").value("Registration completed successfully."));
+
+    mockMvc.perform(post("/auth/login")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+            {
+              "username": "otpclient@example.com",
+              "password": "Password123"
+            }
+            """))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.username").value("otpclient"))
+        .andExpect(jsonPath("$.role").value("CLIENT"));
+  }
+
+  @Test
+  void userCanResetPasswordAfterOtpVerification() throws Exception {
+    mockMvc.perform(post("/auth/password/request-reset")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+            {
+              "email": "client1@example.com"
+            }
+            """))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.message").value("Password reset OTP sent to your email."));
+
+    String otpCode = authOtpRepository
+        .findTopByEmailAndPurposeOrderByCreatedAtDesc("client1@example.com", com.ecourt.model.OtpPurpose.PASSWORD_RESET)
+        .orElseThrow()
+        .getOtpCode();
+
+    String verifyResponse = mockMvc.perform(post("/auth/password/verify-otp")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+            {
+              "email": "client1@example.com",
+              "otp": "%s"
+            }
+            """.formatted(otpCode)))
+        .andExpect(status().isOk())
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    String verificationTicket = com.jayway.jsonpath.JsonPath.read(verifyResponse, "$.verificationTicket");
+
+    mockMvc.perform(post("/auth/password/reset")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+            {
+              "email": "client1@example.com",
+              "password": "UpdatedPass456",
+              "confirmPassword": "UpdatedPass456",
+              "verificationTicket": "%s"
+            }
+            """.formatted(verificationTicket)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.message").value("Password reset successful."));
+
+    mockMvc.perform(post("/auth/login")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+            {
+              "username": "client1@example.com",
+              "password": "UpdatedPass456"
+            }
+            """))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.username").value("client1"));
+  }
+
+  @Test
   void adminCanAssignJudgeAndJudgeCanManageAssignedCase() throws Exception {
     String createResponse = mockMvc.perform(post("/cases")
         .with(user("admin1").roles("ADMIN"))
@@ -346,6 +468,8 @@ class CourtCaseControllerIntegrationTest {
         .param("status", "SCRUTINY")
         .param("judgeUsername", "judge1")
         .param("query", "Beta")
+        .param("sortBy", "caseNumber")
+        .param("direction", "asc")
         .param("page", "0")
         .param("size", "1"))
         .andExpect(status().isOk())
@@ -435,11 +559,51 @@ class CourtCaseControllerIntegrationTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].eventType").value("DOCUMENT_UPLOADED"))
         .andExpect(jsonPath("$[0].actorUsername").value("client1"))
-        .andExpect(jsonPath("$[1].eventType").value("CASE_STATUS_UPDATED"))
+        .andExpect(jsonPath("$[1].eventType").value("CASE_CLOSED"))
         .andExpect(jsonPath("$[1].actorUsername").value("judge1"))
         .andExpect(jsonPath("$[1].details").value("Status changed from SCRUTINY to CLOSED."))
-        .andExpect(jsonPath("$[2].eventType").value("CASE_CREATED"))
-        .andExpect(jsonPath("$[2].actorUsername").value("admin1"));
+        .andExpect(jsonPath("$[2].eventType").value("JUDGE_ASSIGNED"))
+        .andExpect(jsonPath("$[2].actorUsername").value("admin1"))
+        .andExpect(jsonPath("$[3].eventType").value("CASE_CREATED"))
+        .andExpect(jsonPath("$[3].actorUsername").value("admin1"));
+  }
+
+  @Test
+  void dashboardSummaryReflectsRoleScopedStatsAndRecentActions() throws Exception {
+    String createResponse = mockMvc.perform(post("/cases")
+        .with(user("admin1").roles("ADMIN"))
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+            {
+              "clientUsername": "client1",
+              "title": "Dashboard Matter",
+              "description": "Case used to verify dashboard summary"
+            }
+            """))
+        .andExpect(status().isOk())
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    String caseNumber = com.jayway.jsonpath.JsonPath.read(createResponse, "$.caseNumber");
+
+    mockMvc.perform(put("/cases/{caseNumber}/assign", caseNumber)
+        .with(user("admin1").roles("ADMIN"))
+        .param("judgeUsername", "judge1"))
+        .andExpect(status().isOk());
+
+    mockMvc.perform(get("/cases/dashboard")
+        .with(user("admin1").roles("ADMIN")))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.role").value("ADMIN"))
+        .andExpect(jsonPath("$.totalCases").value(1))
+        .andExpect(jsonPath("$.activeCases").value(1))
+        .andExpect(jsonPath("$.closedCases").value(0))
+        .andExpect(jsonPath("$.unassignedCases").value(0))
+        .andExpect(jsonPath("$.totalUsers").value(3))
+        .andExpect(jsonPath("$.activeJudges").value(1))
+        .andExpect(jsonPath("$.recentCases[0].caseNumber").value(caseNumber))
+        .andExpect(jsonPath("$.recentActions[0].eventType").value("JUDGE_ASSIGNED"));
   }
 
   private void saveUser(String username, String email, String role) {
@@ -447,8 +611,10 @@ class CourtCaseControllerIntegrationTest {
     user.setUsername(username);
     user.setEmail(email);
     user.setPassword(passwordEncoder.encode("Password123"));
+    user.setEmailVerified(true);
     user.setRole(role);
     user.setActive(true);
+    user.setAuthProvider("LOCAL");
     userRepository.save(user);
   }
 }

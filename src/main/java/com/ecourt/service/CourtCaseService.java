@@ -5,6 +5,7 @@ import com.ecourt.dto.CaseCreateRequest;
 import com.ecourt.dto.CaseDocumentResponse;
 import com.ecourt.dto.CaseListResponse;
 import com.ecourt.dto.CaseResponse;
+import com.ecourt.dto.DashboardSummaryResponse;
 import com.ecourt.model.CaseAuditEvent;
 import com.ecourt.model.CaseDocument;
 import com.ecourt.model.CourtCase;
@@ -30,8 +31,11 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -74,18 +78,21 @@ public class CourtCaseService {
     private final CaseDocumentRepository caseDocumentRepository;
     private final UserRepository userRepository;
     private final StorageService storageService;
+    private final NotificationService notificationService;
 
     public CourtCaseService(
             CourtCaseRepository caseRepository,
             CaseAuditEventRepository caseAuditEventRepository,
             CaseDocumentRepository caseDocumentRepository,
             UserRepository userRepository,
-            StorageService storageService) {
+            StorageService storageService,
+            NotificationService notificationService) {
         this.caseRepository = caseRepository;
         this.caseAuditEventRepository = caseAuditEventRepository;
         this.caseDocumentRepository = caseDocumentRepository;
         this.userRepository = userRepository;
         this.storageService = storageService;
+        this.notificationService = notificationService;
     }
 
     public CaseResponse addCase(CaseCreateRequest request) {
@@ -109,7 +116,21 @@ public class CourtCaseService {
         courtCase.setStatus(CaseStatus.FILED);
 
         CourtCase savedCase = caseRepository.save(courtCase);
-        recordAuditEvent(savedCase, auth.getName(), "CASE_CREATED", "Case created with status FILED.");
+        String details = switch (role) {
+            case "CLIENT" -> "Case created with status FILED by client " + auth.getName() + ".";
+            case "LAWYER" -> "Case created with status FILED by lawyer " + auth.getName()
+                    + " for client " + clientUsername + ".";
+            case "ADMIN" -> "Case created with status FILED by admin " + auth.getName()
+                    + " for client " + clientUsername + ".";
+            default -> "Case created with status FILED.";
+        };
+        recordAuditEvent(savedCase, auth.getName(), "CASE_CREATED", details);
+        notifyCaseParticipants(
+                savedCase,
+                auth.getName(),
+                "CASE_CREATED",
+                "Case filed: " + savedCase.getCaseNumber(),
+                buildCaseCreatedMessage(savedCase, role, auth.getName()));
         return toResponse(savedCase);
     }
 
@@ -118,6 +139,73 @@ public class CourtCaseService {
         return caseRepository.findAll().stream()
                 .map(this::toResponse)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public DashboardSummaryResponse getDashboardSummary() {
+        Authentication auth = requireAuthentication();
+        String role = getCurrentRole(auth);
+        List<CourtCase> visibleCases = getVisibleCases(auth, role);
+        List<CourtCase> assignedCases = "JUDGE".equals(role)
+                ? caseRepository.findByJudgeUsername(auth.getName())
+                : visibleCases;
+
+        long activeCases = visibleCases.stream()
+                .filter(courtCase -> courtCase.getStatus() != CaseStatus.CLOSED)
+                .count();
+        long closedCases = visibleCases.stream()
+                .filter(courtCase -> courtCase.getStatus() == CaseStatus.CLOSED)
+                .count();
+        long unassignedCases = visibleCases.stream()
+                .filter(courtCase -> !hasText(courtCase.getJudgeUsername()))
+                .count();
+        long pendingActions = switch (role) {
+            case "JUDGE" -> assignedCases.stream()
+                    .filter(courtCase -> courtCase.getStatus() != CaseStatus.CLOSED)
+                    .count();
+            case "ADMIN" -> visibleCases.stream()
+                    .filter(courtCase -> !hasText(courtCase.getJudgeUsername()) || courtCase.getStatus() != CaseStatus.CLOSED)
+                    .count();
+            default -> visibleCases.stream()
+                    .filter(courtCase -> courtCase.getStatus() != CaseStatus.CLOSED)
+                    .count();
+        };
+
+        List<CaseResponse> recentCases = visibleCases.stream()
+                .sorted(Comparator.comparing(CourtCase::getUpdatedAt).reversed())
+                .limit(6)
+                .map(this::toResponse)
+                .toList();
+
+        List<CaseAuditEventResponse> recentActions = visibleCases.stream()
+                .flatMap(courtCase -> caseAuditEventRepository.findByCourtCaseIdOrderByOccurredAtDesc(courtCase.getId())
+                        .stream())
+                .map(this::toAuditResponse)
+                .sorted(Comparator.comparing(CaseAuditEventResponse::occurredAt).reversed())
+                .limit(8)
+                .toList();
+
+        long totalUsers = 0;
+        long activeJudges = 0;
+        if ("ADMIN".equals(role)) {
+            List<User> users = userRepository.findAll();
+            totalUsers = users.size();
+            activeJudges = users.stream()
+                    .filter(user -> "JUDGE".equalsIgnoreCase(user.getRole()) && user.isActive())
+                    .count();
+        }
+
+        return new DashboardSummaryResponse(
+                role,
+                visibleCases.size(),
+                activeCases,
+                closedCases,
+                unassignedCases,
+                pendingActions,
+                totalUsers,
+                activeJudges,
+                recentCases,
+                recentActions);
     }
 
     @Transactional(readOnly = true)
@@ -132,12 +220,12 @@ public class CourtCaseService {
             LocalDate filedDate,
             LocalDate filedFrom,
             LocalDate filedTo,
-            String query) {
+            String query,
+            String sortBy,
+            String direction) {
         Authentication auth = requireAuthentication();
         SearchScope resolvedScope = resolveSearchScope(scope, auth);
-        Pageable pageable = PageRequest.of(validatePage(page), validateSize(size), Sort.by(
-                Sort.Order.desc("filedDate"),
-                Sort.Order.desc("createdAt")));
+        Pageable pageable = PageRequest.of(validatePage(page), validateSize(size), resolveSort(sortBy, direction));
 
         if (filedDate != null && (filedFrom != null || filedTo != null)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -198,7 +286,10 @@ public class CourtCaseService {
                 String pattern = "%" + normalizedQuery + "%";
                 predicates.add(criteriaBuilder.or(
                         criteriaBuilder.like(criteriaBuilder.lower(root.get("caseNumber")), pattern),
-                        criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), pattern)));
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), pattern),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("clientUsername")), pattern),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("lawyerUsername")), pattern),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("judgeUsername")), pattern)));
             }
 
             return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
@@ -215,7 +306,7 @@ public class CourtCaseService {
     @Transactional(readOnly = true)
     public CaseResponse getCase(String caseNumber) {
         CourtCase courtCase = getCaseOrThrow(caseNumber);
-        assertCaseAccess(courtCase, requireAuthentication());
+        assertCaseReadAccess(courtCase, requireAuthentication());
         return toResponse(courtCase);
     }
 
@@ -274,10 +365,25 @@ public class CourtCaseService {
         }
 
         courtCase.setJudgeUsername(targetJudgeUsername);
+        CaseStatus previousStatus = courtCase.getStatus();
         if (CaseStatus.FILED == courtCase.getStatus()) {
             courtCase.setStatus(CaseStatus.SCRUTINY);
         }
         caseRepository.save(courtCase);
+        String assignmentSource = hasRole(auth, "ADMIN")
+                ? "Judge " + targetJudgeUsername + " assigned by admin " + auth.getName() + "."
+                : "Judge " + targetJudgeUsername + " self-assigned this case.";
+        String statusNote = previousStatus != courtCase.getStatus()
+                ? " Status moved from " + previousStatus + " to " + courtCase.getStatus() + "."
+                : "";
+        recordAuditEvent(courtCase, auth.getName(), "JUDGE_ASSIGNED", assignmentSource + statusNote);
+        notifyCaseParticipants(
+                courtCase,
+                auth.getName(),
+                "JUDGE_ASSIGNED",
+                "Judge assigned for " + courtCase.getCaseNumber(),
+                "Case " + courtCase.getCaseNumber() + " was assigned to judge " + targetJudgeUsername
+                        + " by " + auth.getName() + ". Current status: " + courtCase.getStatus() + ".");
         return "Judge assigned successfully";
     }
 
@@ -304,11 +410,19 @@ public class CourtCaseService {
         courtCase.setStatus(normalizedStatus);
         caseRepository.save(courtCase);
         if (previousStatus != normalizedStatus) {
+            String eventType = normalizedStatus == CaseStatus.CLOSED ? "CASE_CLOSED" : "CASE_STATUS_UPDATED";
             recordAuditEvent(
                     courtCase,
                     auth.getName(),
-                    "CASE_STATUS_UPDATED",
+                    eventType,
                     "Status changed from " + previousStatus + " to " + normalizedStatus + ".");
+            notifyCaseParticipants(
+                    courtCase,
+                    auth.getName(),
+                    eventType,
+                    "Case status updated: " + courtCase.getCaseNumber(),
+                    "Case " + courtCase.getCaseNumber() + " moved from " + previousStatus + " to "
+                            + normalizedStatus + " by " + auth.getName() + ".");
         }
         return "Case status updated to " + normalizedStatus;
     }
@@ -338,13 +452,20 @@ public class CourtCaseService {
                 auth.getName(),
                 "DOCUMENT_UPLOADED",
                 "Uploaded document: " + savedDocument.getOriginalFilename() + ".");
+        notifyCaseParticipants(
+                courtCase,
+                auth.getName(),
+                "DOCUMENT_UPLOADED",
+                "New document on " + courtCase.getCaseNumber(),
+                auth.getName() + " uploaded \"" + savedDocument.getOriginalFilename() + "\" to case "
+                        + courtCase.getCaseNumber() + ".");
         return toDocumentResponse(savedDocument);
     }
 
     @Transactional(readOnly = true)
     public List<CaseDocumentResponse> getDocuments(String caseNumber) {
         CourtCase courtCase = getCaseOrThrow(caseNumber);
-        assertCaseAccess(courtCase, requireAuthentication());
+        assertCaseReadAccess(courtCase, requireAuthentication());
 
         return caseDocumentRepository.findByCourtCaseIdOrderByUploadedAtDesc(courtCase.getId()).stream()
                 .map(this::toDocumentResponse)
@@ -354,7 +475,7 @@ public class CourtCaseService {
     @Transactional(readOnly = true)
     public List<CaseAuditEventResponse> getAuditEvents(String caseNumber) {
         CourtCase courtCase = getCaseOrThrow(caseNumber);
-        assertCaseAccess(courtCase, requireAuthentication());
+        assertCaseReadAccess(courtCase, requireAuthentication());
 
         return caseAuditEventRepository.findByCourtCaseIdOrderByOccurredAtDesc(courtCase.getId()).stream()
                 .map(this::toAuditResponse)
@@ -364,7 +485,7 @@ public class CourtCaseService {
     @Transactional(readOnly = true)
     public DocumentDownload downloadDocument(String caseNumber, Long documentId) {
         CourtCase courtCase = getCaseOrThrow(caseNumber);
-        assertCaseAccess(courtCase, requireAuthentication());
+        assertCaseReadAccess(courtCase, requireAuthentication());
 
         CaseDocument document = caseDocumentRepository.findByIdAndCourtCaseId(documentId, courtCase.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Document not found"));
@@ -415,23 +536,35 @@ public class CourtCaseService {
     }
 
     private void assertCaseAccess(CourtCase courtCase, Authentication auth) {
+        if (!hasCaseAccess(courtCase, auth)) {
+            throw new AccessDeniedException("Access denied: You do not have permission to access this case.");
+        }
+    }
+
+    private void assertCaseReadAccess(CourtCase courtCase, Authentication auth) {
+        if (!hasCaseReadAccess(courtCase, auth)) {
+            throw new AccessDeniedException("Access denied: You do not have permission to access this case.");
+        }
+    }
+
+    private boolean hasCaseReadAccess(CourtCase courtCase, Authentication auth) {
         if (hasRole(auth, "ADMIN")) {
-            return;
+            return true;
         }
 
         if (hasRole(auth, "CLIENT") && auth.getName().equals(courtCase.getClientUsername())) {
-            return;
+            return true;
         }
 
         if (hasRole(auth, "LAWYER") && auth.getName().equals(courtCase.getLawyerUsername())) {
-            return;
+            return true;
         }
 
-        if (hasRole(auth, "JUDGE") && auth.getName().equals(courtCase.getJudgeUsername())) {
-            return;
+        if (hasRole(auth, "JUDGE")) {
+            return true;
         }
 
-        throw new AccessDeniedException("Access denied: You do not have permission to access this case.");
+        return false;
     }
 
     private String validateClientUsername(String username) {
@@ -505,6 +638,33 @@ public class CourtCaseService {
         return SearchScope.MY;
     }
 
+    private Sort resolveSort(String sortBy, String direction) {
+        String normalizedSortBy = hasText(sortBy) ? sortBy.trim().toLowerCase(Locale.ROOT) : "fileddate";
+        String property = switch (normalizedSortBy) {
+            case "casenumber", "case_number" -> "caseNumber";
+            case "title" -> "title";
+            case "client", "clientusername", "party" -> "clientUsername";
+            case "lawyer", "lawyerusername" -> "lawyerUsername";
+            case "judge", "judgeusername" -> "judgeUsername";
+            case "status" -> "status";
+            case "updatedat", "updated_at" -> "updatedAt";
+            case "createdat", "created_at" -> "createdAt";
+            case "fileddate", "filed_date" -> "filedDate";
+            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported sortBy value.");
+        };
+
+        String normalizedDirection = hasText(direction) ? direction.trim().toLowerCase(Locale.ROOT) : "desc";
+        Sort.Direction resolvedDirection = switch (normalizedDirection) {
+            case "asc" -> Sort.Direction.ASC;
+            case "desc" -> Sort.Direction.DESC;
+            default -> throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "direction must be 'asc' or 'desc'.");
+        };
+
+        return Sort.by(
+                new Sort.Order(resolvedDirection, property),
+                new Sort.Order(Sort.Direction.DESC, "updatedAt"));
+    }
+
     private int validatePage(int page) {
         if (page < 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Page index must be zero or greater.");
@@ -535,6 +695,15 @@ public class CourtCaseService {
                 .stream()
                 .map(this::toDocumentResponse)
                 .toList();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean canAssignJudge = canAssignJudge(courtCase, auth);
+        boolean canUpdateStatus = canUpdateStatus(courtCase, auth);
+        boolean canUploadDocuments = canUploadDocuments(courtCase, auth);
+        List<CaseStatus> allowedNextStatuses = canUpdateStatus
+                ? courtCase.getStatus().getAllowedTransitions().stream()
+                        .sorted(Comparator.comparingInt(Enum::ordinal))
+                        .toList()
+                : List.of();
 
         return new CaseResponse(
                 courtCase.getCaseNumber(),
@@ -547,7 +716,11 @@ public class CourtCaseService {
                 courtCase.getJudgeUsername(),
                 courtCase.getCreatedAt(),
                 courtCase.getUpdatedAt(),
-                documents);
+                documents,
+                allowedNextStatuses,
+                canAssignJudge,
+                canUpdateStatus,
+                canUploadDocuments);
     }
 
     private CaseDocumentResponse toDocumentResponse(CaseDocument document) {
@@ -569,6 +742,54 @@ public class CourtCaseService {
                 event.getOccurredAt());
     }
 
+    private boolean canAssignJudge(CourtCase courtCase, Authentication auth) {
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getName())) {
+            return false;
+        }
+        if (hasRole(auth, "ADMIN")) {
+            return courtCase.getStatus() != CaseStatus.CLOSED;
+        }
+        return hasRole(auth, "JUDGE")
+                && courtCase.getStatus() != CaseStatus.CLOSED
+                && (!hasText(courtCase.getJudgeUsername()) || auth.getName().equals(courtCase.getJudgeUsername()));
+    }
+
+    private boolean canUpdateStatus(CourtCase courtCase, Authentication auth) {
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getName())) {
+            return false;
+        }
+        if (hasRole(auth, "ADMIN")) {
+            return courtCase.getStatus() != CaseStatus.CLOSED;
+        }
+        return hasRole(auth, "JUDGE")
+                && auth.getName().equals(courtCase.getJudgeUsername())
+                && courtCase.getStatus() != CaseStatus.CLOSED;
+    }
+
+    private boolean canUploadDocuments(CourtCase courtCase, Authentication auth) {
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getName())) {
+            return false;
+        }
+        return hasCaseAccess(courtCase, auth);
+    }
+
+    private boolean hasCaseAccess(CourtCase courtCase, Authentication auth) {
+        return hasRole(auth, "ADMIN")
+                || (hasRole(auth, "CLIENT") && auth.getName().equals(courtCase.getClientUsername()))
+                || (hasRole(auth, "LAWYER") && auth.getName().equals(courtCase.getLawyerUsername()))
+                || (hasRole(auth, "JUDGE") && auth.getName().equals(courtCase.getJudgeUsername()));
+    }
+
+    private List<CourtCase> getVisibleCases(Authentication auth, String role) {
+        return switch (role) {
+            case "ADMIN" -> caseRepository.findAll();
+            case "JUDGE" -> caseRepository.findAll();
+            case "CLIENT" -> caseRepository.findByClientUsername(auth.getName());
+            case "LAWYER" -> caseRepository.findByLawyerUsername(auth.getName());
+            default -> List.of();
+        };
+    }
+
     private void recordAuditEvent(CourtCase courtCase, String actorUsername, String eventType, String details) {
         CaseAuditEvent event = new CaseAuditEvent();
         event.setCourtCase(courtCase);
@@ -576,6 +797,45 @@ public class CourtCaseService {
         event.setEventType(eventType);
         event.setDetails(details);
         caseAuditEventRepository.save(event);
+    }
+
+    private void notifyCaseParticipants(
+            CourtCase courtCase,
+            String actorUsername,
+            String eventType,
+            String title,
+            String message) {
+        notificationService.notifyUsers(getCaseRelatedRecipients(courtCase), actorUsername, eventType, title, message,
+                courtCase.getCaseNumber());
+    }
+
+    private Set<String> getCaseRelatedRecipients(CourtCase courtCase) {
+        Set<String> recipients = new LinkedHashSet<>();
+        addIfPresent(recipients, courtCase.getClientUsername());
+        addIfPresent(recipients, courtCase.getLawyerUsername());
+        addIfPresent(recipients, courtCase.getJudgeUsername());
+        userRepository.findAll().stream()
+                .filter(User::isActive)
+                .filter(user -> "ADMIN".equalsIgnoreCase(user.getRole()))
+                .map(User::getUsername)
+                .forEach(recipients::add);
+        return recipients;
+    }
+
+    private String buildCaseCreatedMessage(CourtCase courtCase, String actorRole, String actorUsername) {
+        return switch (actorRole) {
+            case "LAWYER" -> "Lawyer " + actorUsername + " filed case " + courtCase.getCaseNumber()
+                    + " for client " + courtCase.getClientUsername() + ".";
+            case "ADMIN" -> "Admin " + actorUsername + " filed case " + courtCase.getCaseNumber()
+                    + " for client " + courtCase.getClientUsername() + ".";
+            default -> "Client " + actorUsername + " filed case " + courtCase.getCaseNumber() + ".";
+        };
+    }
+
+    private void addIfPresent(Set<String> recipients, String username) {
+        if (hasText(username)) {
+            recipients.add(username);
+        }
     }
 
     public record DocumentDownload(

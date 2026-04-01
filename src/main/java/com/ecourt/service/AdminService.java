@@ -49,10 +49,12 @@ public class AdminService {
 
     private final UserRepository userRepository;
     private final UserService userService;
+    private final NotificationService notificationService;
 
-    public AdminService(UserRepository userRepository, UserService userService) {
+    public AdminService(UserRepository userRepository, UserService userService, NotificationService notificationService) {
         this.userRepository = userRepository;
         this.userService = userService;
+        this.notificationService = notificationService;
     }
 
     public UserListResponse getUsers(String role, Boolean active, String query, int page, int size) {
@@ -90,11 +92,19 @@ public class AdminService {
     }
 
     public UserSummaryResponse createUser(AdminCreateUserRequest request) {
-        return UserSummaryResponse.from(userService.createManagedUser(
+        User createdUser = userService.createManagedUser(
                 request.getUsername(),
                 request.getEmail(),
                 request.getPassword(),
-                request.getRole()));
+                request.getRole());
+        notificationService.notifyUser(
+                createdUser.getUsername(),
+                null,
+                "ACCOUNT_CREATED",
+                "Your account is ready",
+                "An admin created your " + createdUser.getRole() + " account. You can now sign in to E-Court.",
+                null);
+        return UserSummaryResponse.from(createdUser);
     }
 
     public UserSummaryResponse updateUserRole(Long userId, String role, String actorUsername) {
@@ -105,8 +115,17 @@ public class AdminService {
             throw new ResponseStatusException(BAD_REQUEST, "Admin users cannot remove their own ADMIN role.");
         }
 
+        String previousRole = user.getRole();
         user.setRole(normalizedRole);
-        return UserSummaryResponse.from(userRepository.save(user));
+        User savedUser = userRepository.save(user);
+        notificationService.notifyUser(
+                savedUser.getUsername(),
+                actorUsername,
+                "USER_ROLE_UPDATED",
+                "Your role was updated",
+                "Admin " + actorUsername + " changed your role from " + previousRole + " to " + normalizedRole + ".",
+                null);
+        return UserSummaryResponse.from(savedUser);
     }
 
     public UserSummaryResponse updateUserStatus(Long userId, boolean active, String actorUsername) {
@@ -116,8 +135,18 @@ public class AdminService {
             throw new ResponseStatusException(BAD_REQUEST, "Admin users cannot deactivate their own account.");
         }
 
+        boolean previousActive = user.isActive();
         user.setActive(active);
-        return UserSummaryResponse.from(userRepository.save(user));
+        User savedUser = userRepository.save(user);
+        notificationService.notifyUser(
+                savedUser.getUsername(),
+                actorUsername,
+                "USER_STATUS_UPDATED",
+                active ? "Your account was activated" : "Your account was deactivated",
+                "Admin " + actorUsername + " changed your account status from "
+                        + (previousActive ? "ACTIVE" : "INACTIVE") + " to " + (active ? "ACTIVE" : "INACTIVE") + ".",
+                null);
+        return UserSummaryResponse.from(savedUser);
     }
 
     private User findUser(Long userId) {

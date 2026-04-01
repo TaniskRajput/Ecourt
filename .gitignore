@@ -37,3 +37,4 @@ build/
 /backend-h2.log
 /frontend-server.out.log
 /frontend-server.err.log
+*.md

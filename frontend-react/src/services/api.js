@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080';
+const API_URL = 'http://localhost:8081';
 
 const api = axios.create({
     baseURL: API_URL,
@@ -37,17 +37,34 @@ export const login = (username, password) =>
 
 export const register = (username, email, password, role) =>
     api.post('/auth/register', { username, email, password, role });
+export const requestRegistrationOtp = (payload) =>
+    api.post('/auth/register/request-otp', payload);
+export const verifyRegistrationOtp = (payload) =>
+    api.post('/auth/register/verify-otp', payload);
+export const completeRegistration = (payload) =>
+    api.post('/auth/register/complete', payload);
+export const requestPasswordResetOtp = (payload) =>
+    api.post('/auth/password/request-reset', payload);
+export const verifyPasswordResetOtp = (payload) =>
+    api.post('/auth/password/verify-otp', payload);
+export const completePasswordReset = (payload) =>
+    api.post('/auth/password/reset', payload);
+export const beginGoogleAuth = (payload) =>
+    api.post('/auth/google', payload);
 
 // --- Cases ---
 export const getMyCases = () => api.get('/cases/my');
 export const getAllCases = () => api.get('/cases/all');
+export const getDashboardSummary = () => api.get('/cases/dashboard');
 export const getCaseByNumber = (caseNumber) => api.get(`/cases/${caseNumber}`);
 export const fileCase = (payload) => api.post('/cases', payload);
 export const searchCases = (params) => api.get('/cases/search', { params });
 
 // --- Judge actions ---
-export const assignJudge = (caseNumber) =>
-    api.put(`/cases/${caseNumber}/assign`);
+export const assignJudge = (caseNumber, judgeUsername) =>
+    api.put(`/cases/${caseNumber}/assign`, null, {
+        params: judgeUsername ? { judgeUsername } : {},
+    });
 export const updateCaseStatus = (caseNumber, status) =>
     api.put(`/cases/${caseNumber}/status`, null, { params: { status } });
 
@@ -85,6 +102,18 @@ export const getAuditTrail = (caseNumber) =>
     api.get(`/cases/${caseNumber}/audit`);
 
 // --- Admin ---
-export const getAllUsers = () => api.get('/admin/users?size=100');
+export const getAllUsers = (params = {}) => api.get('/admin/users', {
+    params: { size: 100, ...params },
+});
+export const updateUserRole = (userId, role) =>
+    api.put(`/admin/users/${userId}/role`, { role });
+export const updateUserStatus = (userId, active) =>
+    api.put(`/admin/users/${userId}/status`, { active });
+
+// --- Notifications ---
+export const getNotifications = () => api.get('/notifications');
+export const markNotificationRead = (notificationId) =>
+    api.put(`/notifications/${notificationId}/read`);
+export const markAllNotificationsRead = () => api.put('/notifications/read-all');
 
 export default api;

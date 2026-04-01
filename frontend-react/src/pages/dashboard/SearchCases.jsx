@@ -6,58 +6,82 @@ import { searchCases } from '../../services/api';
 import StatusChip from '../../components/StatusChip';
 
 const SEARCH_MODES = [
-    { value: 'query', label: '🔍 Case Number / Title' },
-    { value: 'client', label: '👤 Client Username' },
-    { value: 'lawyer', label: '⚖️ Lawyer Username' },
-    { value: 'judge', label: '🏛️ Judge Username' },
-    { value: 'status', label: '📋 Case Status' },
-    { value: 'date', label: '📅 Filed Date' },
+    { value: 'query', label: 'Case / Party / Title' },
+    { value: 'client', label: 'Client Username' },
+    { value: 'lawyer', label: 'Lawyer Username' },
+    { value: 'judge', label: 'Judge Username' },
+    { value: 'status', label: 'Case Status' },
+    { value: 'date', label: 'Filed Date Range' },
 ];
+
+const SORT_OPTIONS = [
+    { value: 'filedDate', label: 'Filed Date' },
+    { value: 'updatedAt', label: 'Last Updated' },
+    { value: 'caseNumber', label: 'Case Number' },
+    { value: 'status', label: 'Status' },
+    { value: 'judgeUsername', label: 'Judge' },
+];
+
+function formatDate(value) {
+    if (!value) return 'N/A';
+    const parsed = new Date(value);
+    return Number.isNaN(parsed.getTime()) ? value : parsed.toLocaleDateString();
+}
 
 export default function SearchCases() {
     const { user } = useAuth();
     const navigate = useNavigate();
     const role = user?.role || '';
-
     const showAllScope = ['ADMIN', 'JUDGE'].includes(role);
-
-    // Modes that logically imply searching across ALL cases (not just my own)
     const crossUserModes = ['client', 'lawyer', 'judge'];
 
-    const [scope, setScope] = useState('my');
+    const [scope, setScope] = useState(showAllScope ? 'all' : 'my');
     const [searchMode, setSearchMode] = useState('query');
     const [inputValue, setInputValue] = useState('');
     const [filedFrom, setFiledFrom] = useState('');
     const [filedTo, setFiledTo] = useState('');
     const [pageSize, setPageSize] = useState(10);
     const [currentPage, setCurrentPage] = useState(0);
+    const [sortBy, setSortBy] = useState('updatedAt');
+    const [direction, setDirection] = useState('desc');
     const [results, setResults] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-
-
-    const formatDate = (d) => {
-        if (!d) return 'N/A';
-        const parsed = new Date(d);
-        return isNaN(parsed.getTime()) ? d : parsed.toLocaleDateString();
-    };
-
     const buildParams = (page) => {
-        const params = { scope, page, size: pageSize };
-        const v = inputValue.trim();
+        const params = {
+            scope,
+            page,
+            size: pageSize,
+            sortBy,
+            direction,
+        };
+        const value = inputValue.trim();
+
         switch (searchMode) {
-            case 'query': if (v) params.query = v; break;
-            case 'client': if (v) params.clientUsername = v; break;
-            case 'lawyer': if (v) params.lawyerUsername = v; break;
-            case 'judge': if (v) params.judgeUsername = v; break;
-            case 'status': if (v) params.status = v; break;
+            case 'query':
+                if (value) params.query = value;
+                break;
+            case 'client':
+                if (value) params.clientUsername = value;
+                break;
+            case 'lawyer':
+                if (value) params.lawyerUsername = value;
+                break;
+            case 'judge':
+                if (value) params.judgeUsername = value;
+                break;
+            case 'status':
+                if (value) params.status = value;
+                break;
             case 'date':
                 if (filedFrom) params.filedFrom = filedFrom;
                 if (filedTo) params.filedTo = filedTo;
                 break;
-            default: break;
+            default:
+                break;
         }
+
         return params;
     };
 
@@ -69,7 +93,7 @@ export default function SearchCases() {
             setResults(res.data);
             setCurrentPage(res.data.page || 0);
         } catch (err) {
-            if (err.response?.status !== 403) setError('Search failed. Please try again.');
+            setError(err.response?.data?.message || 'Search failed. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -81,6 +105,7 @@ export default function SearchCases() {
         setFiledTo('');
         setResults(null);
         setError('');
+        setCurrentPage(0);
     };
 
     const handleModeChange = (mode) => {
@@ -88,10 +113,10 @@ export default function SearchCases() {
         setInputValue('');
         setFiledFrom('');
         setFiledTo('');
-        // Auto-expand scope to 'all' when admin/judge picks a cross-user filter
+
         if (showAllScope && crossUserModes.includes(mode)) {
             setScope('all');
-        } else if (!crossUserModes.includes(mode)) {
+        } else if (!showAllScope) {
             setScope('my');
         }
     };
@@ -105,12 +130,18 @@ export default function SearchCases() {
             className="dash-view active"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
+            transition={{ duration: 0.35 }}
         >
-            <h3>Search Cases</h3>
-            <div className="dash-form-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+                <div>
+                    <h3>Search, Filter, and Sort Cases</h3>
+                    <p style={{ color: 'var(--text-gray)', marginTop: '0.4rem' }}>
+                        Search by case number, party, status, filing range, and assigned judge.
+                    </p>
+                </div>
+            </div>
 
-                {/* Scope Toggle */}
+            <div className="dash-form-card">
                 {showAllScope && (
                     <div className="filter-actions" style={{ marginBottom: '1.2rem' }}>
                         <div className="scope-toggle">
@@ -122,8 +153,7 @@ export default function SearchCases() {
                     </div>
                 )}
 
-                {/* Search By Tabs */}
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '2rem' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.5rem' }}>
                     {SEARCH_MODES.map((mode) => (
                         <button
                             key={mode.value}
@@ -135,7 +165,33 @@ export default function SearchCases() {
                     ))}
                 </div>
 
-                {/* Dynamic Input Area */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem', marginBottom: '1.2rem' }}>
+                    <div>
+                        <label style={{ display: 'block', marginBottom: '6px', fontWeight: 600 }}>Sort By</label>
+                        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} style={{ width: '100%' }}>
+                            {SORT_OPTIONS.map((option) => (
+                                <option key={option.value} value={option.value}>{option.label}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
+                        <label style={{ display: 'block', marginBottom: '6px', fontWeight: 600 }}>Direction</label>
+                        <select value={direction} onChange={(e) => setDirection(e.target.value)} style={{ width: '100%' }}>
+                            <option value="desc">Descending</option>
+                            <option value="asc">Ascending</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style={{ display: 'block', marginBottom: '6px', fontWeight: 600 }}>Page Size</label>
+                        <select value={pageSize} onChange={(e) => setPageSize(Number.parseInt(e.target.value, 10))} style={{ width: '100%' }}>
+                            <option value="5">5 / page</option>
+                            <option value="10">10 / page</option>
+                            <option value="20">20 / page</option>
+                            <option value="50">50 / page</option>
+                        </select>
+                    </div>
+                </div>
+
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={searchMode}
@@ -147,13 +203,9 @@ export default function SearchCases() {
                     >
                         {searchMode === 'status' ? (
                             <div>
-                                <label style={{ display: 'block', marginBottom: '6px', fontWeight: 500 }}>Select Status</label>
-                                <select
-                                    value={inputValue}
-                                    onChange={(e) => setInputValue(e.target.value)}
-                                    style={{ width: '100%', maxWidth: '380px' }}
-                                >
-                                    <option value="">— Choose a Status —</option>
+                                <label style={{ display: 'block', marginBottom: '6px', fontWeight: 600 }}>Select Status</label>
+                                <select value={inputValue} onChange={(e) => setInputValue(e.target.value)} style={{ width: '100%', maxWidth: '380px' }}>
+                                    <option value="">Choose a status</option>
                                     <option value="FILED">Filed</option>
                                     <option value="SCRUTINY">Scrutiny</option>
                                     <option value="HEARING">Hearing</option>
@@ -165,18 +217,18 @@ export default function SearchCases() {
                         ) : searchMode === 'date' ? (
                             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                                 <div style={{ flex: 1, minWidth: '160px' }}>
-                                    <label style={{ display: 'block', marginBottom: '6px', fontWeight: 500 }}>Filed From</label>
+                                    <label style={{ display: 'block', marginBottom: '6px', fontWeight: 600 }}>Filed From</label>
                                     <input type="date" value={filedFrom} onChange={(e) => setFiledFrom(e.target.value)} style={{ width: '100%' }} />
                                 </div>
                                 <div style={{ flex: 1, minWidth: '160px' }}>
-                                    <label style={{ display: 'block', marginBottom: '6px', fontWeight: 500 }}>Filed To</label>
+                                    <label style={{ display: 'block', marginBottom: '6px', fontWeight: 600 }}>Filed To</label>
                                     <input type="date" value={filedTo} onChange={(e) => setFiledTo(e.target.value)} style={{ width: '100%' }} />
                                 </div>
                             </div>
                         ) : (
                             <div>
                                 <label style={{ display: 'block', marginBottom: '10px', fontWeight: 600, color: 'var(--clr-text-secondary)', fontSize: '0.9rem' }}>
-                                    {SEARCH_MODES.find(m => m.value === searchMode)?.label}
+                                    {SEARCH_MODES.find((mode) => mode.value === searchMode)?.label}
                                 </label>
                                 <div className="premium-search-container">
                                     <div className="premium-search-icon">🔍</div>
@@ -186,7 +238,7 @@ export default function SearchCases() {
                                         value={inputValue}
                                         onChange={(e) => setInputValue(e.target.value)}
                                         onKeyDown={(e) => e.key === 'Enter' && doSearch(0)}
-                                        placeholder={`Search by ${SEARCH_MODES.find(m => m.value === searchMode)?.label.replace(/^[^\s]+\s/, '')}…`}
+                                        placeholder={`Search by ${SEARCH_MODES.find((mode) => mode.value === searchMode)?.label.toLowerCase()}...`}
                                         autoFocus
                                     />
                                 </div>
@@ -195,7 +247,6 @@ export default function SearchCases() {
                     </motion.div>
                 </AnimatePresence>
 
-                {/* Action Buttons */}
                 <div className="filter-actions" style={{ marginBottom: '1.5rem' }}>
                     <button
                         className="auth-submit-btn"
@@ -203,18 +254,13 @@ export default function SearchCases() {
                         onClick={() => doSearch(0)}
                         disabled={loading}
                     >
-                        {loading ? 'Searching…' : 'Search'}
+                        {loading ? 'Searching...' : 'Search'}
                     </button>
-                    <button
-                        className="outline-btn"
-                        style={{ padding: '10px 20px', fontSize: '0.9rem' }}
-                        onClick={clearFilters}
-                    >
+                    <button className="outline-btn" style={{ padding: '10px 20px', fontSize: '0.9rem' }} onClick={clearFilters}>
                         Clear
                     </button>
                 </div>
 
-                {/* Results Table */}
                 <div className="table-container">
                     <table className="data-table clickable-rows">
                         <thead>
@@ -222,6 +268,7 @@ export default function SearchCases() {
                                 <th>Case Number</th>
                                 <th>Title</th>
                                 <th>Client</th>
+                                <th>Lawyer</th>
                                 <th>Judge</th>
                                 <th>Filed Date</th>
                                 <th>Status</th>
@@ -229,49 +276,43 @@ export default function SearchCases() {
                         </thead>
                         <tbody>
                             {loading ? (
-                                <tr><td colSpan="6" style={{ textAlign: 'center' }}>Searching…</td></tr>
+                                <tr><td colSpan="7" style={{ textAlign: 'center' }}>Searching...</td></tr>
                             ) : error ? (
-                                <tr><td colSpan="6" style={{ textAlign: 'center', color: '#ef4444' }}>{error}</td></tr>
+                                <tr><td colSpan="7" style={{ textAlign: 'center', color: '#ef4444' }}>{error}</td></tr>
                             ) : cases.length === 0 ? (
-                                <tr><td colSpan="6" style={{ textAlign: 'center', color: 'var(--clr-text-secondary)' }}>
-                                    {results ? 'No cases match your criteria.' : 'Choose a filter category above and click Search.'}
-                                </td></tr>
-                            ) : cases.map((c, i) => (
-                                <motion.tr
-                                    key={c.caseNumber || i}
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: i * 0.03 }}
-                                    onClick={() => navigate(`/dashboard/case/${c.caseNumber}`)}
-                                    style={{ cursor: 'pointer' }}
-                                >
-                                    <td>{c.caseNumber || 'N/A'}</td>
-                                    <td>{c.title || 'Untitled'}</td>
-                                    <td>{c.clientUsername || '—'}</td>
-                                    <td>{c.judgeUsername || 'Unassigned'}</td>
-                                    <td>{formatDate(c.filedDate)}</td>
-                                    <td><StatusChip status={c.status} /></td>
-                                </motion.tr>
-                            ))}
+                                <tr><td colSpan="7" style={{ textAlign: 'center' }}>{results ? 'No cases match your criteria.' : 'Choose filters and run a search.'}</td></tr>
+                            ) : (
+                                cases.map((courtCase, index) => (
+                                    <motion.tr
+                                        key={courtCase.caseNumber || index}
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: index * 0.03 }}
+                                        onClick={() => navigate(`/dashboard/case/${courtCase.caseNumber}`)}
+                                        style={{ cursor: 'pointer' }}
+                                    >
+                                        <td>{courtCase.caseNumber || 'N/A'}</td>
+                                        <td>{courtCase.title || 'Untitled'}</td>
+                                        <td>{courtCase.clientUsername || '—'}</td>
+                                        <td>{courtCase.lawyerUsername || '—'}</td>
+                                        <td>{courtCase.judgeUsername || 'Unassigned'}</td>
+                                        <td>{formatDate(courtCase.filedDate)}</td>
+                                        <td><StatusChip status={courtCase.status} /></td>
+                                    </motion.tr>
+                                ))
+                            )}
                         </tbody>
                     </table>
                 </div>
 
-                {/* Pagination */}
                 {totalElements > 0 && (
                     <div className="pagination-bar" style={{ display: 'flex' }}>
                         <div className="page-info">Page {currentPage + 1} of {totalPages} ({totalElements} total)</div>
                         <div className="page-controls">
-                            <select className="page-size-select" value={pageSize} onChange={(e) => { setPageSize(parseInt(e.target.value)); doSearch(0); }}>
-                                <option value="5">5 / page</option>
-                                <option value="10">10 / page</option>
-                                <option value="20">20 / page</option>
-                                <option value="50">50 / page</option>
-                            </select>
-                            <button disabled={currentPage <= 0} onClick={() => doSearch(0)}>« First</button>
-                            <button disabled={currentPage <= 0} onClick={() => doSearch(currentPage - 1)}>← Prev</button>
-                            <button disabled={currentPage >= totalPages - 1} onClick={() => doSearch(currentPage + 1)}>Next →</button>
-                            <button disabled={currentPage >= totalPages - 1} onClick={() => doSearch(totalPages - 1)}>Last »</button>
+                            <button disabled={currentPage <= 0 || loading} onClick={() => doSearch(0)}>First</button>
+                            <button disabled={currentPage <= 0 || loading} onClick={() => doSearch(currentPage - 1)}>Prev</button>
+                            <button disabled={currentPage >= totalPages - 1 || loading} onClick={() => doSearch(currentPage + 1)}>Next</button>
+                            <button disabled={currentPage >= totalPages - 1 || loading} onClick={() => doSearch(totalPages - 1)}>Last</button>
                         </div>
                     </div>
                 )}

@@ -1,8 +1,15 @@
 package com.ecourt.controller;
 
 import com.ecourt.dto.AuthResponse;
+import com.ecourt.dto.GoogleAuthRequest;
 import com.ecourt.dto.LoginRequest;
 import com.ecourt.dto.MessageResponse;
+import com.ecourt.dto.OtpVerificationRequest;
+import com.ecourt.dto.OtpVerificationResponse;
+import com.ecourt.dto.PasswordResetCompleteRequest;
+import com.ecourt.dto.PasswordResetRequest;
+import com.ecourt.dto.RegisterCompleteRequest;
+import com.ecourt.dto.RegisterOtpRequest;
 import com.ecourt.dto.RegisterRequest;
 import com.ecourt.security.CustomUserDetails;
 import jakarta.validation.Valid;
@@ -10,6 +17,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import com.ecourt.security.JwtService;
+import com.ecourt.service.AuthFlowService;
 import com.ecourt.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,14 +46,52 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final UserService userService;
+    private final AuthFlowService authFlowService;
 
     public AuthController(
             AuthenticationManager authenticationManager,
             JwtService jwtService,
-            UserService userService) {
+            UserService userService,
+            AuthFlowService authFlowService) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.userService = userService;
+        this.authFlowService = authFlowService;
+    }
+
+    @PostMapping("/register/request-otp")
+    public MessageResponse requestRegistrationOtp(@Valid @RequestBody RegisterOtpRequest request) {
+        return new MessageResponse(authFlowService.sendRegistrationOtp(request));
+    }
+
+    @PostMapping("/register/verify-otp")
+    public OtpVerificationResponse verifyRegistrationOtp(@Valid @RequestBody OtpVerificationRequest request) {
+        return authFlowService.verifyRegistrationOtp(request);
+    }
+
+    @PostMapping("/register/complete")
+    public MessageResponse completeRegistration(@Valid @RequestBody RegisterCompleteRequest request) {
+        return new MessageResponse(authFlowService.completeRegistration(request));
+    }
+
+    @PostMapping("/password/request-reset")
+    public MessageResponse requestPasswordReset(@Valid @RequestBody PasswordResetRequest request) {
+        return new MessageResponse(authFlowService.sendPasswordResetOtp(request));
+    }
+
+    @PostMapping("/password/verify-otp")
+    public OtpVerificationResponse verifyPasswordResetOtp(@Valid @RequestBody OtpVerificationRequest request) {
+        return authFlowService.verifyPasswordResetOtp(request);
+    }
+
+    @PostMapping("/password/reset")
+    public MessageResponse completePasswordReset(@Valid @RequestBody PasswordResetCompleteRequest request) {
+        return new MessageResponse(authFlowService.completePasswordReset(request));
+    }
+
+    @PostMapping("/google")
+    public MessageResponse googleAuth(@Valid @RequestBody GoogleAuthRequest request) {
+        return new MessageResponse(authFlowService.explainGoogleSignInStatus(request));
     }
 
     @PostMapping("/register")

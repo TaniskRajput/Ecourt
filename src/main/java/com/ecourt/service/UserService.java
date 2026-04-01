@@ -11,30 +11,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Locale;
 import java.util.Set;
 
-/**
- * Business Logic Service for User Identity Management.
- * 
- * WHY IT IS USED:
- * This file handles the provisioning and validation of all user accounts on the
- * platform. It focuses
- * strictly on security rules—hashing passwords using BCrypt, enforcing strong
- * password complexity,
- * normalizing string cases across the application (e.g., standardizing emails),
- * and verifying that
- * database constraints like "unique email" are gracefully handled and
- * translated into 409 Conflict errors
- * rather than hard SQL crashes.
- *
- * FUNCTIONS OVERVIEW:
- * - register: The public endpoint handler for new signups. Enforces that public
- * users can only be CLIENTs or LAWYERs.
- * - createManagedUser: Bypasses the public restriction, allowing Admins to
- * create internal JUDGE or ADMIN staff.
- * - normalizeAdminManagedRole: Ensures that roles requested by clients match
- * known, safe internal strings.
- * - validatePassword: A strict RegEx/logic checker to enforce alphanumeric,
- * 8-character-minimum passwords.
- */
 @Service
 public class UserService {
 
@@ -50,40 +26,29 @@ public class UserService {
     }
 
     public String register(RegisterRequest request) {
-        String username = normalizeRequired(request.getUsername(), "Username is required");
-        String email = normalizeRequired(request.getEmail(), "Email is required").toLowerCase(Locale.ROOT);
+        String username = normalizeUsername(request.getUsername());
+        String email = normalizeEmail(request.getEmail());
         String password = validatePassword(request.getPassword());
-        String role = normalizeRole(request.getRole());
+        String role = normalizeSelfServiceRole(request.getRole());
 
-        if (!SELF_SERVICE_ROLES.contains(role)) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Self-registration only supports CLIENT or LAWYER accounts.");
-        }
-
-        if (userRepository.findByUsername(username).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already exists");
-        }
-
-        if (userRepository.findByEmail(email).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
-        }
+        assertUserDoesNotExist(username, email);
 
         User user = new User();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
         user.setEmail(email);
+        user.setEmailVerified(true);
         user.setRole(role);
         user.setActive(true);
-
+        user.setAuthProvider("LOCAL");
         userRepository.save(user);
 
         return "User registered successfully";
     }
 
     public User createManagedUser(String username, String email, String password, String role) {
-        String normalizedUsername = normalizeRequired(username, "Username is required");
-        String normalizedEmail = normalizeRequired(email, "Email is required").toLowerCase(Locale.ROOT);
+        String normalizedUsername = normalizeUsername(username);
+        String normalizedEmail = normalizeEmail(email);
         String normalizedPassword = validatePassword(password);
         String normalizedRole = normalizeAdminManagedRole(role);
 
@@ -93,9 +58,53 @@ public class UserService {
         user.setUsername(normalizedUsername);
         user.setEmail(normalizedEmail);
         user.setPassword(passwordEncoder.encode(normalizedPassword));
+        user.setEmailVerified(true);
         user.setRole(normalizedRole);
         user.setActive(true);
+        user.setAuthProvider("LOCAL");
         return userRepository.save(user);
+    }
+
+    public User createVerifiedUser(
+            String username,
+            String email,
+            String password,
+            String role,
+            String authProvider,
+            String googleSubject) {
+        String normalizedUsername = normalizeUsername(username);
+        String normalizedEmail = normalizeEmail(email);
+        String normalizedRole = normalizeRole(role);
+        assertUserDoesNotExist(normalizedUsername, normalizedEmail);
+
+        User user = new User();
+        user.setUsername(normalizedUsername);
+        user.setEmail(normalizedEmail);
+        user.setPassword(passwordEncoder.encode(password));
+        user.setEmailVerified(true);
+        user.setRole(normalizedRole);
+        user.setActive(true);
+        user.setAuthProvider(authProvider);
+        user.setGoogleSubject(googleSubject);
+        return userRepository.save(user);
+    }
+
+    public String normalizeUsername(String username) {
+        return normalizeRequired(username, "Username is required");
+    }
+
+    public String normalizeEmail(String email) {
+        return normalizeRequired(email, "Email is required").toLowerCase(Locale.ROOT);
+    }
+
+    public String normalizeSelfServiceRole(String role) {
+        String normalizedRole = normalizeRole(role);
+        if (!SELF_SERVICE_ROLES.contains(normalizedRole)) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Self-registration only supports CLIENT or LAWYER accounts.");
+        }
+        return normalizedRole;
     }
 
     public String normalizeAdminManagedRole(String role) {
@@ -106,6 +115,18 @@ public class UserService {
                     "Role must be one of CLIENT, LAWYER, ADMIN, or JUDGE.");
         }
         return normalizedRole;
+    }
+
+    public String validateAndConfirmPassword(String password, String confirmPassword) {
+        String validatedPassword = validatePassword(password);
+        if (confirmPassword == null || !validatedPassword.equals(confirmPassword)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Password and confirm password must match.");
+        }
+        return validatedPassword;
+    }
+
+    public String encodePassword(String password) {
+        return passwordEncoder.encode(validatePassword(password));
     }
 
     private void assertUserDoesNotExist(String username, String email) {

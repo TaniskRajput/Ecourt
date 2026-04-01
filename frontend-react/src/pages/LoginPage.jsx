@@ -1,14 +1,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { login as loginApi } from '../services/api';
+import { beginGoogleAuth, login as loginApi } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
 export default function LoginPage() {
-    const [username, setUsername] = useState('');
+    const [identifier, setIdentifier] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [googleBusy, setGoogleBusy] = useState(false);
     const navigate = useNavigate();
     const { loginUser } = useAuth();
 
@@ -17,13 +18,25 @@ export default function LoginPage() {
         setError('');
         setLoading(true);
         try {
-            const res = await loginApi(username, password);
+            const res = await loginApi(identifier, password);
             loginUser(res.data);
             navigate('/dashboard');
         } catch (err) {
-            setError(err.response?.data?.message || err.response?.data || 'Login failed. Check credentials.');
+            setError(err.response?.data?.message || 'Login failed. Check credentials.');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleGoogleSignIn = async () => {
+        setGoogleBusy(true);
+        setError('');
+        try {
+            await beginGoogleAuth({ credential: 'device-google-account' });
+        } catch (err) {
+            setError(err.response?.data?.message || 'Google sign-in is not available yet.');
+        } finally {
+            setGoogleBusy(false);
         }
     };
 
@@ -36,7 +49,7 @@ export default function LoginPage() {
                 transition={{ duration: 0.5, ease: 'easeOut' }}
             >
                 <h2>USER LOGIN</h2>
-                <p className="subtitle">Access your case information securely</p>
+                <p className="subtitle">Access your verified account securely</p>
 
                 <div className="auth-form-container">
                     <div className="auth-icon">
@@ -54,9 +67,9 @@ export default function LoginPage() {
                         <div className="input-container">
                             <input
                                 type="text"
-                                placeholder="Username"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
+                                placeholder="Email or Username"
+                                value={identifier}
+                                onChange={(e) => setIdentifier(e.target.value)}
                                 required
                             />
                         </div>
@@ -72,6 +85,14 @@ export default function LoginPage() {
                         <button type="submit" className="auth-submit-btn" disabled={loading}>
                             {loading ? 'Logging in...' : 'Login'}
                         </button>
+                        <button type="button" className="outline-btn" onClick={handleGoogleSignIn} disabled={googleBusy}>
+                            {googleBusy ? 'Checking Google Sign-In...' : 'Continue with Google'}
+                        </button>
+                        <div className="auth-inline-link">
+                            <a href="#" onClick={(e) => { e.preventDefault(); navigate('/forgot-password'); }}>
+                                Forgot password?
+                            </a>
+                        </div>
                         {error && <div className="error-msg">{error}</div>}
                     </form>
                 </div>

@@ -46,10 +46,18 @@ public class User {
     private String email;
 
     @Column(nullable = false)
+    private boolean emailVerified = false;
+
+    @Column(nullable = false)
     private String role;
 
     @Column(nullable = false)
     private boolean active = true;
+
+    @Column(nullable = false)
+    private String authProvider = "LOCAL";
+
+    private String googleSubject;
 
     @org.hibernate.annotations.CreationTimestamp
     @Column(updatable = false)
@@ -87,6 +95,14 @@ public class User {
         this.email = email;
     }
 
+    public boolean isEmailVerified() {
+        return emailVerified;
+    }
+
+    public void setEmailVerified(boolean emailVerified) {
+        this.emailVerified = emailVerified;
+    }
+
     public String getRole() {
         return role;
     }
@@ -101,6 +117,22 @@ public class User {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public String getAuthProvider() {
+        return authProvider;
+    }
+
+    public void setAuthProvider(String authProvider) {
+        this.authProvider = authProvider;
+    }
+
+    public String getGoogleSubject() {
+        return googleSubject;
+    }
+
+    public void setGoogleSubject(String googleSubject) {
+        this.googleSubject = googleSubject;
     }
 
     public java.time.Instant getCreatedAt() {

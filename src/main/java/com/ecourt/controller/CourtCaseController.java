@@ -5,6 +5,7 @@ import com.ecourt.dto.CaseCreateRequest;
 import com.ecourt.dto.CaseDocumentResponse;
 import com.ecourt.dto.CaseListResponse;
 import com.ecourt.dto.CaseResponse;
+import com.ecourt.dto.DashboardSummaryResponse;
 import com.ecourt.dto.MessageResponse;
 import com.ecourt.service.CourtCaseService;
 import jakarta.validation.Valid;
@@ -72,6 +73,11 @@ public class CourtCaseController {
         return caseService.getAllCases();
     }
 
+    @GetMapping("/dashboard")
+    public DashboardSummaryResponse getDashboardSummary() {
+        return caseService.getDashboardSummary();
+    }
+
     @GetMapping("/search")
     public CaseListResponse searchCases(
             @RequestParam(defaultValue = "my") String scope,
@@ -84,7 +90,9 @@ public class CourtCaseController {
             @RequestParam(required = false) LocalDate filedDate,
             @RequestParam(required = false) LocalDate filedFrom,
             @RequestParam(required = false) LocalDate filedTo,
-            @RequestParam(required = false) String query) {
+            @RequestParam(required = false) String query,
+            @RequestParam(defaultValue = "filedDate") String sortBy,
+            @RequestParam(defaultValue = "desc") String direction) {
         return caseService.searchCases(
                 scope,
                 page,
@@ -96,7 +104,9 @@ public class CourtCaseController {
                 filedDate,
                 filedFrom,
                 filedTo,
-                query);
+                query,
+                sortBy,
+                direction);
     }
 
     @GetMapping("/{caseNumber}")
