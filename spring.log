@@ -257,3 +257,36 @@ Identify and stop the process that's listening on port 8080 or configure this ap
 2026-04-01T21:56:28.032+05:30  INFO 30284 --- [Ecourt] [http-nio-8081-exec-4] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
 2026-04-01T21:57:06.852+05:30  INFO 30284 --- [Ecourt] [http-nio-8081-exec-2] c.e.service.LoggingAuthEmailService      : Registration OTP for amulya <tanisk12357@gmail.com>: 971183
 2026-04-01T22:20:49.413+05:30  INFO 30284 --- [Ecourt] [http-nio-8081-exec-8] c.e.service.LoggingAuthEmailService      : Registration OTP for sambhavi <tanisk12357@gmail.com>: 837125
+2026-04-02T00:53:40.787+05:30  INFO 60872 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Starting EcourtApplication using Java 21.0.10 with PID 60872 (/home/tanisk/Downloads/Ecourt/target/classes started by tanisk in /home/tanisk/Downloads/Ecourt)
+2026-04-02T00:53:40.791+05:30  INFO 60872 --- [Ecourt] [main] com.ecourt.EcourtApplication             : No active profile set, falling back to 1 default profile: "default"
+2026-04-02T00:53:41.546+05:30  INFO 60872 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-02T00:53:41.613+05:30  INFO 60872 --- [Ecourt] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 57 ms. Found 6 JPA repository interfaces.
+2026-04-02T00:53:42.181+05:30  INFO 60872 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8081 (http)
+2026-04-02T00:53:42.194+05:30  INFO 60872 --- [Ecourt] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-04-02T00:53:42.194+05:30  INFO 60872 --- [Ecourt] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-04-02T00:53:42.248+05:30  INFO 60872 --- [Ecourt] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1384 ms
+2026-04-02T00:53:42.370+05:30  INFO 60872 --- [Ecourt] [main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-04-02T00:53:42.433+05:30  INFO 60872 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.1.Final
+2026-04-02T00:53:42.846+05:30  INFO 60872 --- [Ecourt] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-02T00:53:42.876+05:30  INFO 60872 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-04-02T00:53:43.238+05:30  INFO 60872 --- [Ecourt] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@299786b1
+2026-04-02T00:53:43.240+05:30  INFO 60872 --- [Ecourt] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-04-02T00:53:43.311+05:30  WARN 60872 --- [Ecourt] [main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-04-02T00:53:43.329+05:30  INFO 60872 --- [Ecourt] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/ecourt_db]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 8.0.45
+	Default catalog/schema: ecourt_db/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-04-02T00:53:44.498+05:30  INFO 60872 --- [Ecourt] [main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-02T00:53:44.655+05:30  INFO 60872 --- [Ecourt] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-02T00:53:44.747+05:30  INFO 60872 --- [Ecourt] [main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-04-02T00:53:45.160+05:30  INFO 60872 --- [Ecourt] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailsService
+2026-04-02T00:53:45.996+05:30  INFO 60872 --- [Ecourt] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8081 (http) with context path '/'
+2026-04-02T00:53:46.005+05:30  INFO 60872 --- [Ecourt] [main] com.ecourt.EcourtApplication             : Started EcourtApplication in 6.016 seconds (process running for 6.872)
