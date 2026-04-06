@@ -1529,3 +1529,236 @@ a {
   font-weight: 600;
   font-size: 0.9rem;
 }
+
+/* --- Public Tracking --- */
+.public-page-shell {
+  min-height: calc(100vh - 220px);
+  padding: 3rem 1.5rem 4rem;
+  background:
+    radial-gradient(circle at top right, rgba(103, 165, 222, 0.22), transparent 28%),
+    radial-gradient(circle at left center, rgba(255, 255, 255, 0.92), rgba(227, 240, 252, 0.95) 60%, rgba(212, 229, 245, 0.95) 100%);
+}
+
+.public-page-card {
+  max-width: 1180px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.84);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(100, 150, 193, 0.28);
+  border-radius: 28px;
+  box-shadow: 0 26px 60px rgba(31, 71, 115, 0.12);
+  padding: 2.5rem;
+}
+
+.public-page-card h1 {
+  font-size: clamp(2.3rem, 4vw, 4rem);
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+}
+
+.public-page-card p {
+  color: var(--text-gray);
+}
+
+.track-search-card {
+  display: grid;
+  gap: 2rem;
+}
+
+.track-search-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.track-search-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 2px solid rgba(51, 123, 189, 0.45);
+  box-shadow: 0 16px 38px rgba(31, 71, 115, 0.10);
+}
+
+.track-search-row input,
+.track-filter-row input,
+.track-filter-row select,
+.hearings-topbar input,
+.hearings-case-grid select {
+  width: 100%;
+  border: 1px solid rgba(100, 150, 193, 0.25);
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.track-search-row input {
+  border: 0;
+  border-radius: 0;
+  padding: 18px 20px;
+  font-size: 1.15rem;
+}
+
+.track-search-row .auth-submit-btn {
+  min-width: 148px;
+  margin: 0;
+  border-radius: 0;
+}
+
+.track-filter-row {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.public-section-block {
+  display: grid;
+  gap: 1rem;
+}
+
+.public-section-title {
+  font-size: 1.65rem;
+  font-weight: 900;
+  color: var(--text-dark);
+}
+
+.track-results-grid,
+.hearings-management-grid,
+.hearings-lists-grid,
+.history-layout {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.track-result-card,
+.public-order-card,
+.public-info-panel {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(100, 150, 193, 0.20);
+  border-radius: 20px;
+  padding: 1.25rem;
+  box-shadow: 0 12px 28px rgba(31, 71, 115, 0.08);
+}
+
+.track-result-card h3,
+.public-order-card h3 {
+  margin-bottom: 0.45rem;
+  color: var(--text-dark);
+}
+
+.track-result-card .outline-btn,
+.public-order-card .outline-btn,
+.public-order-card .auth-submit-btn {
+  width: auto;
+  margin-top: 1rem;
+}
+
+.track-result-meta,
+.history-subtext {
+  color: var(--text-gray);
+  font-size: 0.92rem;
+}
+
+.public-history-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.public-case-number {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text-dark);
+}
+
+.public-history-summary {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 250px;
+}
+
+.public-info-panel h2 {
+  margin-bottom: 1rem;
+  color: var(--text-dark);
+}
+
+.public-history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.public-history-table th,
+.public-history-table td {
+  text-align: left;
+  padding: 0.85rem 0.75rem;
+  border-bottom: 1px solid rgba(100, 150, 193, 0.18);
+}
+
+.public-history-table th {
+  color: var(--text-dark);
+  font-weight: 900;
+  font-size: 0.95rem;
+}
+
+.public-order-list {
+  display: grid;
+  gap: 1rem;
+}
+
+/* --- Hearings & Orders Dashboard --- */
+.hearings-toggle-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.hearings-topbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+}
+
+.hearings-case-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(260px, 420px);
+  gap: 1rem;
+  align-items: end;
+  margin-top: 1rem;
+}
+
+.hearing-case-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 1.1rem;
+  border-radius: 16px;
+  background: rgba(248, 251, 255, 0.9);
+  border: 1px solid rgba(100, 150, 193, 0.18);
+}
+
+@media (max-width: 900px) {
+  .track-filter-row,
+  .hearings-topbar,
+  .hearings-case-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .track-search-row {
+    grid-template-columns: 1fr;
+  }
+
+  .track-search-row .auth-submit-btn {
+    border-radius: 0 0 14px 14px;
+  }
+
+  .public-page-card {
+    padding: 1.4rem;
+  }
+}

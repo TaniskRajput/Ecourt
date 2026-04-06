@@ -9,7 +9,7 @@ export default function Navbar() {
         <nav className="main-nav">
             <div className="nav-links">
                 <a href="#" className="nav-item active" onClick={(e) => { e.preventDefault(); navigate('/'); }}>Home</a>
-                <a href="#" className="nav-item" onClick={(e) => e.preventDefault()}>Track Case</a>
+                <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); navigate('/track-case'); }}>Track Case</a>
                 <a href="#" className="nav-item" onClick={(e) => e.preventDefault()}>Cause List</a>
                 <a href="#" className="nav-item" onClick={(e) => e.preventDefault()}>About Us</a>
             </div>

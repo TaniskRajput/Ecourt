@@ -1,14 +1,17 @@
 package com.ecourt.config;
 
 import com.ecourt.security.JwtAuthFilter;
+import com.ecourt.security.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -23,12 +26,18 @@ public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final String allowedOrigins;
+    private final CustomUserDetailsService customUserDetailsService;
+    private final PasswordEncoder passwordEncoder;
 
     public SecurityConfig(
             JwtAuthFilter jwtAuthFilter,
-            @Value("${app.cors.allowed-origins}") String allowedOrigins) {
+            @Value("${app.cors.allowed-origins}") String allowedOrigins,
+            CustomUserDetailsService customUserDetailsService,
+            PasswordEncoder passwordEncoder) {
         this.jwtAuthFilter = jwtAuthFilter;
         this.allowedOrigins = allowedOrigins;
+        this.customUserDetailsService = customUserDetailsService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Bean
@@ -39,10 +48,12 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/index.html", "/style.css", "/app.js", "/favicon.ico").permitAll()
-                        .requestMatchers("/auth/**", "/error", "/h2-console/**").permitAll()
+                        .requestMatchers("/auth/**", "/error", "/h2-console/**", "/public/cases/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/cases").hasAnyRole("CLIENT", "ADMIN", "LAWYER")
                         .requestMatchers(HttpMethod.POST, "/cases/*/documents")
                         .hasAnyRole("CLIENT", "LAWYER", "JUDGE", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/cases/*/hearings").hasAnyRole("JUDGE", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/cases/*/orders").hasAnyRole("JUDGE", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/cases/my").hasAnyRole("CLIENT", "LAWYER", "JUDGE")
                         .requestMatchers(HttpMethod.GET, "/cases/all").hasAnyRole("JUDGE", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/cases/**").hasAnyRole("CLIENT", "LAWYER", "JUDGE", "ADMIN")
@@ -61,8 +72,10 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
+    public AuthenticationManager authenticationManager() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(customUserDetailsService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder);
+        return new ProviderManager(authenticationProvider);
     }
 
     @Bean

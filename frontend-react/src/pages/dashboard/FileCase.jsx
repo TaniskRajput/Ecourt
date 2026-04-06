@@ -8,6 +8,7 @@ export default function FileCase() {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [clientUsername, setClientUsername] = useState('');
+    const [courtName, setCourtName] = useState('');
     const [message, setMessage] = useState({ text: '', isError: false });
     const [loading, setLoading] = useState(false);
 
@@ -16,7 +17,7 @@ export default function FileCase() {
         setMessage({ text: '', isError: false });
         setLoading(true);
 
-        const payload = { title, description };
+        const payload = { title, description, courtName: courtName.trim() || undefined };
         if (['ADMIN', 'LAWYER'].includes(user.role) && clientUsername.trim()) {
             payload.clientUsername = clientUsername.trim();
         }
@@ -31,6 +32,7 @@ export default function FileCase() {
             setTitle('');
             setDescription('');
             setClientUsername('');
+            setCourtName('');
         } catch (err) {
             setMessage({
                 text: err.response?.data?.message || err.response?.data || 'Unable to file case.',
@@ -58,6 +60,10 @@ export default function FileCase() {
                     <div className="input-container">
                         <label>Description</label>
                         <textarea value={description} onChange={(e) => setDescription(e.target.value)} required placeholder="Case details..." rows="3" />
+                    </div>
+                    <div className="input-container">
+                        <label>Court Name (optional)</label>
+                        <input type="text" value={courtName} onChange={(e) => setCourtName(e.target.value)} placeholder="District Court, Patna" />
                     </div>
                     {['ADMIN', 'LAWYER'].includes(user.role) && (
                         <div className="input-container">

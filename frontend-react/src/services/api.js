@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8081';
+const configuredApiUrl = import.meta.env.VITE_API_URL?.trim();
+const API_URL = configuredApiUrl || '';
 
 const api = axios.create({
     baseURL: API_URL,
@@ -59,6 +60,8 @@ export const getDashboardSummary = () => api.get('/cases/dashboard');
 export const getCaseByNumber = (caseNumber) => api.get(`/cases/${caseNumber}`);
 export const fileCase = (payload) => api.post('/cases', payload);
 export const searchCases = (params) => api.get('/cases/search', { params });
+export const searchPublicCases = (params) => api.get('/public/cases/track', { params });
+export const getPublicCaseTrackingDetail = (caseNumber) => api.get(`/public/cases/${caseNumber}`);
 
 // --- Judge actions ---
 export const assignJudge = (caseNumber, judgeUsername) =>
@@ -67,6 +70,20 @@ export const assignJudge = (caseNumber, judgeUsername) =>
     });
 export const updateCaseStatus = (caseNumber, status) =>
     api.put(`/cases/${caseNumber}/status`, null, { params: { status } });
+export const addHearing = (caseNumber, payload) =>
+    api.post(`/cases/${caseNumber}/hearings`, payload);
+export const getHearings = (caseNumber) =>
+    api.get(`/cases/${caseNumber}/hearings`);
+export const getOrders = (caseNumber) =>
+    api.get(`/cases/${caseNumber}/orders`);
+export const uploadOrder = (caseNumber, payload) => {
+    const formData = new FormData();
+    formData.append('file', payload.file);
+    formData.append('orderType', payload.orderType);
+    if (payload.title) formData.append('title', payload.title);
+    if (payload.orderDate) formData.append('orderDate', payload.orderDate);
+    return api.post(`/cases/${caseNumber}/orders`, formData);
+};
 
 // --- Documents ---
 export const getCaseDocuments = (caseNumber) =>
@@ -83,6 +100,26 @@ export const downloadDocument = async (caseNumber, documentId) => {
     );
     const disposition = response.headers['content-disposition'];
     let filename = 'download';
+    if (disposition) {
+        const match = disposition.match(/filename="(.+)"/);
+        if (match) filename = match[1];
+    }
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+};
+export const downloadPublicOrder = async (caseNumber, documentId) => {
+    const response = await api.get(
+        `/public/cases/${caseNumber}/orders/${documentId}/download`,
+        { responseType: 'blob' }
+    );
+    const disposition = response.headers['content-disposition'];
+    let filename = 'court-order';
     if (disposition) {
         const match = disposition.match(/filename="(.+)"/);
         if (match) filename = match[1];

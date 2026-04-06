@@ -8,6 +8,7 @@ public record CaseResponse(
         String caseNumber,
         String title,
         String description,
+        String courtName,
         com.ecourt.model.CaseStatus status,
         LocalDate filedDate,
         String clientUsername,
@@ -16,8 +17,12 @@ public record CaseResponse(
         Instant createdAt,
         Instant updatedAt,
         List<CaseDocumentResponse> documents,
+        List<HearingResponse> hearings,
+        List<CaseDocumentResponse> orderDocuments,
         List<com.ecourt.model.CaseStatus> allowedNextStatuses,
         boolean canAssignJudge,
         boolean canUpdateStatus,
-        boolean canUploadDocuments) {
+        boolean canUploadDocuments,
+        boolean canManageHearings,
+        boolean canManageOrders) {
 }

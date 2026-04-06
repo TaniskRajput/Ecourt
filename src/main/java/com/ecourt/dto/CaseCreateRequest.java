@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Size;
 
 public record CaseCreateRequest(
         String clientUsername,
+        String courtName,
         @NotBlank(message = "Title is required")
         @Size(max = 255, message = "Title must be at most 255 characters")
         String title,

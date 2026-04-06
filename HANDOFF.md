@@ -1,157 +1,246 @@
 # Ecourt Handoff
 
-## Project Direction
+## Project Snapshot
 
-This project is now moving from backend productionization into a real multi-role court portal.
+`Ecourt` is now beyond the initial CRUD stage. The project currently has:
 
-Current priorities from the user:
-- Build expected portal experiences for `CLIENT`, `JUDGE`, and `ADMIN`
-- Keep backend correctness and role enforcement strong while expanding the React UI
-- Support richer dashboards, structured case details, better audit visibility, and operational workflows
-- Continue treating document upload and auditability as core platform features
+- Spring Boot backend with JWT-based auth and role-aware access control
+- React portal for `CLIENT`, `LAWYER`, `JUDGE`, and `ADMIN` workflows
+- Case filing, search, assignment, status progression, document handling, and audit history
+- Public case tracking with hearing history and court-order download flow
+- Dashboard-based hearing recording and court-order upload workflows
+- Admin user management and dashboard/reporting endpoints
+- OTP-backed registration and password reset flows
 
-## What Was Completed
+The codebase is in a transition point between "feature-complete demo portal" and "stabilized production-ready platform."
 
-The backend productionization work is still in place, and the next portal slice has now been implemented.
+## What Is Implemented
 
-### Case API changes
-- Replaced raw entity-based case creation with DTO-based input/output
-- Added server-generated case numbers
-- Added client-first case filing flow
-- Added admin ability to file a case on behalf of a client
-- Added `/cases/my` for current user case listing
-- Kept `/cases/all` for admin/judge visibility
-- Expanded role-based case handling for `ADMIN` and `JUDGE`
-  - admins can assign judges to cases
-  - judges can self-assign to eligible cases
-  - judges can list their assigned cases through `/cases/my`
-  - admins can update case status
-  - assigned judges can update case status
-- Added paginated `/cases/search` with scope filters (client, status, judge, lawyer, date, query) plus page/size controls and role-aware enforcement
-- Extended `/cases/search` with sorting support (`sortBy`, `direction`) for real case-table usage
-- Added `GET /cases/dashboard` returning a role-aware dashboard summary with counts, recent cases, and recent actions
-- Enriched `CaseResponse` with:
+### Authentication and user lifecycle
+
+- JWT login flow is implemented through `/auth/login`
+- Username or email can be used for login
+- User activation and email verification are enforced during authentication
+- OTP-based registration flow is implemented:
+  - `/auth/register/request-otp`
+  - `/auth/register/verify-otp`
+  - `/auth/register/complete`
+- OTP-based password reset flow is implemented:
+  - `/auth/password/request-reset`
+  - `/auth/password/verify-otp`
+  - `/auth/password/reset`
+- Password policy for new passwords is enforced in backend flows:
+  - minimum 8 characters
+  - must contain letters and numbers
+- Legacy login compatibility is now implemented for pre-seeded old users whose stored passwords may still be plain character-only values
+  - login accepts BCrypt passwords for current users
+  - login also accepts old plain stored passwords for legacy users
+  - this compatibility is scoped to login and does not relax the new-password policy for registration or reset
+- Google auth endpoint exists only as a placeholder and is not yet functionally integrated
+
+### Roles and access
+
+- Supported roles in the system:
+  - `CLIENT`
+  - `LAWYER`
+  - `JUDGE`
+  - `ADMIN`
+- Role-based endpoint protection is in place via Spring Security
+- Admin safeguards are implemented:
+  - admins cannot remove their own admin role
+  - admins cannot deactivate themselves
+
+### Case management
+
+- DTO-based case creation and response models are in place
+- Server-generated case numbers are implemented
+- Optional `courtName` is now supported on cases
+- Clients can file cases for themselves
+- Admins can file cases on behalf of clients
+- `/cases/my` provides role-scoped personal case views
+- `/cases/all` remains available for broader admin/judge access
+- Admins can assign judges
+- Judges can work assigned cases
+- Admins and assigned judges can update case status
+- Workflow-aware status transitions are validated
+- Case detail responses include action metadata such as:
   - allowed next statuses
-  - `canAssignJudge`
-  - `canUpdateStatus`
-  - `canUploadDocuments`
+  - judge assignment permission
+  - status update permission
+  - document upload permission
 
-### Document upload
-- Added persistent case document entity and repository
-- Added local document storage service
-- Added endpoints to:
-  - upload a case document
-  - list case documents
-  - download a case document
-- Added audit trail per case for creation/status/document events, stored actor/timestamp/details, and exposed `/cases/{caseNumber}/audit`
-- Improved audit semantics so assignment and closure show up as dedicated events (`JUDGE_ASSIGNED`, `CASE_CLOSED`)
+### Search, dashboard, and operations
 
-### Validation and API consistency
-- Added request validation for auth and case creation inputs
-- Added standard message response wrapper
-- Added global exception handler with structured API error responses
+- Paginated case search is implemented through `/cases/search`
+- Search supports:
+  - scope
+  - status
+  - client username
+  - judge username
+  - lawyer username
+  - text query
+  - date filters
+  - sorting
+  - pagination
+- Role-aware dashboard summary is implemented through `/cases/dashboard`
+- Dashboard summary includes:
+  - counts
+  - recent cases
+  - recent actions
+- Admin user management APIs are implemented:
+  - paginated list/filter users
+  - create managed users
+  - change user role
+  - activate/deactivate user
 
-### Admin user management
-- Added paginated admin user listing with optional filters for:
-  - role
-  - active status
-  - username/email search query
-- Added admin endpoint to create users with controlled roles
-- Added admin endpoint to change a user's role
-- Added admin endpoint to activate/deactivate a user
-- Added safeguards preventing admins from removing their own admin role or deactivating themselves
-- Added persisted user `active` flag and enforced it in authentication
+### Documents and auditability
 
-### React portal slice
-- Reworked the React dashboard into role-aware client, judge, and admin summaries
-- Added recent case and recent action panels backed by the new dashboard summary endpoint
-- Reworked the case details page into structured sections:
-  - case metadata
-  - workflow timeline
-  - document management
-  - audit trail
-  - role-based actions
-- Upgraded the search page to support realistic search/filter/sort combinations for case tables
-- Turned the manage page into an actual operations workbench:
-  - admin user role management
-  - admin activate/deactivate flow
-  - judge assignment flow
-  - quick status update actions
-  - quick lookup with direct case access
+- Case document upload is implemented
+- Case document listing is implemented
+- Case document download is implemented
+- Case documents now distinguish between evidence uploads and court-order documents
+- Court-order uploads support order title, order type, and order date metadata
+- Local filesystem-backed storage is used for uploaded files
+- Audit trail is implemented for key case actions
+- Dedicated audit event types include:
+  - case created
+  - judge assigned
+  - status changes
+  - case closed
+  - document uploaded
+  - hearing added
+  - order uploaded
+- `/cases/{caseNumber}/audit` exposes case audit history
 
-### Phase 2 polish
-- Added workbench refresh behavior after admin/judge actions so counters, judge lists, permissions, and case rows stay in sync
-- Added per-row action loading states for assignments, status updates, and user management actions
-- Added manual refresh control for the management dashboard
+### Hearings and public tracking
 
-### Production-hardening changes
-- Disabled `spring.jpa.open-in-view`
-- Added multipart config properties
-- Added upload directory config
+- Hearing records are now persisted separately from the generic audit trail
+- `/cases/{caseNumber}/hearings` supports judge/admin hearing management
+- `/cases/{caseNumber}/orders` supports judge/admin order upload and listing
+- `/public/cases/track` supports public case search by case number, year, and court
+- `/public/cases/{caseNumber}` returns public hearing/order history for a case
+- Public order downloads are available through `/public/cases/{caseNumber}/orders/{documentId}/download`
 
-## Main Files Changed
+### Frontend
 
-Updated:
-- `HANDOFF.md`
-- `src/main/java/com/ecourt/controller/CourtCaseController.java`
-- `src/main/java/com/ecourt/service/CourtCaseService.java`
-- `src/test/java/com/ecourt/CourtCaseControllerIntegrationTest.java`
-- `frontend-react/src/services/api.js`
-- `frontend-react/src/pages/dashboard/Overview.jsx`
-- `frontend-react/src/pages/dashboard/SearchCases.jsx`
-- `frontend-react/src/pages/dashboard/CaseDetail.jsx`
-- `frontend-react/src/pages/dashboard/ManageCases.jsx`
+- React portal is the main UI direction
+- Role-aware dashboard pages are implemented
+- Search/filter/sort experience is implemented in the React app
+- Structured case detail page is implemented
+- Management/workbench page is implemented for admin operations
+- Refresh behavior and action loading states were added for admin/judge workflows
+- Public `Track Case` page is implemented in the React app
+- Public case history page is implemented for hearing history and court orders
+- Dashboard `Hearings` and `Orders` sections are now functional
 
-Added:
-- `src/main/java/com/ecourt/dto/DashboardSummaryResponse.java`
+## Important Recent Changes
 
-## Verification
+The most recent feature slice added hearings, typed court orders, and public case tracking. A follow-up stabilization cleanup simplified auth password matching and removed explicit Hibernate dialect warnings.
 
-Verified with:
+What changed:
+- hearings are now stored as first-class records instead of only appearing in generic audit history
+- court orders are uploaded separately from evidence documents and carry order metadata
+- public users can search cases and view hearing/order history without logging in
+- auth login now delegates all password matching through the shared `PasswordEncoder`
+- explicit `hibernate.dialect` configuration was removed from runtime and test properties to reduce warning noise
+
+Primary files involved:
+- [src/main/java/com/ecourt/service/CourtCaseService.java](/home/tanisk/Downloads/Ecourt/src/main/java/com/ecourt/service/CourtCaseService.java)
+- [src/main/java/com/ecourt/controller/CourtCaseController.java](/home/tanisk/Downloads/Ecourt/src/main/java/com/ecourt/controller/CourtCaseController.java)
+- [src/main/java/com/ecourt/controller/PublicCaseTrackingController.java](/home/tanisk/Downloads/Ecourt/src/main/java/com/ecourt/controller/PublicCaseTrackingController.java)
+- [frontend-react/src/pages/TrackCasePage.jsx](/home/tanisk/Downloads/Ecourt/frontend-react/src/pages/TrackCasePage.jsx)
+- [frontend-react/src/pages/CaseHistoryPage.jsx](/home/tanisk/Downloads/Ecourt/frontend-react/src/pages/CaseHistoryPage.jsx)
+- [frontend-react/src/pages/dashboard/HearingsOrdersPage.jsx](/home/tanisk/Downloads/Ecourt/frontend-react/src/pages/dashboard/HearingsOrdersPage.jsx)
+- [src/main/java/com/ecourt/service/UserService.java](/home/tanisk/Downloads/Ecourt/src/main/java/com/ecourt/service/UserService.java)
+
+## Current Known State
+
+- The backend is functional and broadly integration-tested
+- The React portal is usable for major role-based workflows
+- Public case tracking is now available for hearing/order history without authentication
+- File storage is still local and should later become replaceable
+- Google sign-in is not implemented yet
+- The project still has technical debt around frontend data-fetch orchestration and deployment hardening
+- Auth wiring is simpler than before, but production deployment still requires a separately hosted backend/API
+- The portal is feature-rich for demo/staging usage, but not yet hardened enough for real deployment
+
+## Suggested Next Phases
+
+### Phase 1: Stabilization
+
+Focus on making the current feature set more reliable.
+
+- Add more frontend test coverage for dashboard, search, case detail, and management flows
+- Add focused backend tests for auth edge cases, role restrictions, and invalid workflow transitions
+- Clean up security/auth configuration so login behavior is easier to maintain
+- Reduce warning noise and document intentional configuration choices
+- Review error messages and API consistency across auth, admin, and case modules
+
+### Phase 2: Data and storage hardening
+
+Prepare the app for longer-lived environments.
+
+- Replace local-only file storage with a storage abstraction suitable for S3/object storage
+- Introduce migration/versioning discipline for schema evolution
+- Review seeded/demo-user assumptions and separate demo data from real deployment behavior
+- Improve audit/history retention strategy
+- Add backup and restore planning for documents and case metadata
+
+### Phase 3: Frontend architecture improvement
+
+Move from functional UI to maintainable product UI.
+
+- Replace refresh-heavy data flows with structured query/state management
+- Normalize shared case/user/dashboard data handling
+- Add route guards and stronger auth/session handling in the React app
+- Improve loading, empty, and failure states across dashboard pages
+- Add reusable admin and workflow components to reduce duplication
+
+### Phase 4: Real user workflows
+
+Expand from demo operations into actual court portal flows.
+
+- Full lawyer assignment and lawyer-specific workbench flows
+- Better judge queue management and hearing workflow UX
+- Notifications center with actionable read/unread and event grouping
+- More complete registration onboarding and account recovery UX
+- Document validation rules, file previews, and download/audit improvements
+
+### Phase 5: Production readiness
+
+Prepare for deployability and operations.
+
+- Environment-specific configuration cleanup
+- Centralized logging and monitoring
+- Rate limiting and brute-force protection for auth flows
+- Better secret management
+- CI pipeline improvements with backend and frontend verification
+- Deployment documentation and rollback plan
+
+## Recommended Immediate Next Slice
+
+If continuing right away, the best next slice is:
+
+1. Add targeted frontend tests for track-case, hearings, and orders flows
+2. Add focused backend tests for access restrictions around hearing/order management
+3. Start storage abstraction work so evidence files and court orders are no longer tied directly to local disk
+
+## Verification Reference
+
+Most recent successful verification after the latest hearings/orders and stabilization change:
 
 ```bash
-./mvnw test
-npm run build --prefix frontend-react
+./mvnw clean test
 ```
 
-Result:
-- Spring tests passing
-- React production build passing
+Previously also verified for frontend builds with:
 
-## Known Current State
-
-- File storage is local filesystem storage, configured by `app.storage.upload-dir`
-- This is acceptable for now, but should later move behind a replaceable storage backend for cloud/object storage
-- Users now have an `active` flag; disabled users cannot authenticate
-- Admin user APIs exist for create/list/filter/role change/activate-deactivate
-- Dashboard and manage views are now usable, but they still rely on client-side polling/manual refresh rather than a stronger query/state library
-- The React app now consumes richer backend DTOs for permissions and workflow actions
-- Case role logic now supports:
-  - admin filing for clients
-  - admin judge assignment
-  - judge self-assignment
-  - judge assigned-case listing via `/cases/my`
-  - admin and assigned-judge status changes
-  - dashboard summary counts and recent activity
-  - structured action permissions in case details
-- Security config still carries a Spring Security warning about the authentication provider setup, but the application and tests are working
-- Hibernate warns that the explicit H2 dialect property is unnecessary; not currently blocking
-
-## Recommended Next Slice
-
-Build the next stabilization slice in this order:
-
-1. Frontend verification coverage
-- add targeted frontend tests for dashboard, search, and management flows
-
-2. Storage abstraction cleanup
-- prepare document storage for future S3/object storage support
-
-3. UI state management hardening
-- replace manual refresh-heavy flows with more structured client-side data synchronization
+```bash
+npm run build --prefix frontend-react
+```
 
 ## Resume Prompt
 
 If resuming in a new Codex session, use:
 
-“Read `HANDOFF.md` in the Ecourt repo and continue with the next portal stabilization slice.”
+`Read HANDOFF.md in the Ecourt repo, inspect the current auth/case/hearings/orders implementation, and continue with Phase 1 stabilization by adding test coverage and deployment hardening.`

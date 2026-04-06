@@ -42,6 +42,9 @@ class CourtCaseControllerIntegrationTest {
   private com.ecourt.repository.CaseDocumentRepository caseDocumentRepository;
 
   @Autowired
+  private com.ecourt.repository.HearingRecordRepository hearingRecordRepository;
+
+  @Autowired
   private PasswordEncoder passwordEncoder;
 
   @Autowired
@@ -51,6 +54,7 @@ class CourtCaseControllerIntegrationTest {
   void setUp() {
     caseAuditEventRepository.deleteAll();
     caseDocumentRepository.deleteAll();
+    hearingRecordRepository.deleteAll();
     courtCaseRepository.deleteAll();
     userRepository.deleteAll();
     saveUser("client1", "client1@example.com", "CLIENT");
@@ -218,6 +222,114 @@ class CourtCaseControllerIntegrationTest {
             }
             """))
         .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  void legacyUserWithPlainCharacterOnlyPasswordCanLogIn() throws Exception {
+    User legacyUser = new User();
+    legacyUser.setUsername("legacyuser");
+    legacyUser.setEmail("legacyuser@example.com");
+    legacyUser.setPassword("legacyonly");
+    legacyUser.setEmailVerified(true);
+    legacyUser.setRole("CLIENT");
+    legacyUser.setActive(true);
+    legacyUser.setAuthProvider("LOCAL");
+    userRepository.save(legacyUser);
+
+    mockMvc.perform(post("/auth/login")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+            {
+              "username": "legacyuser",
+              "password": "legacyonly"
+            }
+            """))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.username").value("legacyuser"))
+        .andExpect(jsonPath("$.role").value("CLIENT"));
+  }
+
+  @Test
+  void judgeCanManageHearingsAndOrdersAndPublicCanTrackCase() throws Exception {
+    String caseResponse = mockMvc.perform(post("/cases")
+        .with(user("admin1").roles("ADMIN"))
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+            {
+              "clientUsername": "client1",
+              "courtName": "District Court Patna",
+              "title": "Service Matter",
+              "description": "Proceedings for hearing and order workflow."
+            }
+            """))
+        .andExpect(status().isOk())
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    String caseNumber = com.jayway.jsonpath.JsonPath.read(caseResponse, "$.caseNumber");
+
+    mockMvc.perform(put("/cases/{caseNumber}/assign", caseNumber)
+        .with(user("admin1").roles("ADMIN"))
+        .param("judgeUsername", "judge1"))
+        .andExpect(status().isOk());
+
+    mockMvc.perform(post("/cases/{caseNumber}/hearings", caseNumber)
+        .with(user("judge1").roles("JUDGE"))
+        .contentType(MediaType.APPLICATION_JSON)
+        .content("""
+            {
+              "hearingDate": "2026-04-06",
+              "nextHearingDate": "2026-05-07",
+              "judgeName": "judge1",
+              "remarks": "Arguments heard and next date fixed."
+            }
+            """))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.judgeName").value("judge1"))
+        .andExpect(jsonPath("$.remarks").value("Arguments heard and next date fixed."));
+
+    MockMultipartFile orderFile = new MockMultipartFile(
+        "file",
+        "interim-order.pdf",
+        MediaType.APPLICATION_PDF_VALUE,
+        "dummy-pdf".getBytes());
+
+    String orderResponse = mockMvc.perform(multipart("/cases/{caseNumber}/orders", caseNumber)
+        .file(orderFile)
+        .param("title", "Interim Order")
+        .param("orderType", "Interim Order")
+        .param("orderDate", "2026-04-06")
+        .with(request -> {
+          request.setMethod("POST");
+          return request;
+        })
+        .with(user("judge1").roles("JUDGE")))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.category").value("ORDER"))
+        .andExpect(jsonPath("$.documentTitle").value("Interim Order"))
+        .andReturn()
+        .getResponse()
+        .getContentAsString();
+
+    Integer orderId = com.jayway.jsonpath.JsonPath.read(orderResponse, "$.id");
+
+    mockMvc.perform(get("/public/cases/track")
+        .param("caseNumber", caseNumber))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$[0].caseNumber").value(caseNumber))
+        .andExpect(jsonPath("$[0].courtName").value("District Court Patna"));
+
+    mockMvc.perform(get("/public/cases/{caseNumber}", caseNumber))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.hearings[0].remarks").value("Arguments heard and next date fixed."))
+        .andExpect(jsonPath("$.orders[0].documentTitle").value("Interim Order"));
+
+    mockMvc.perform(get("/public/cases/{caseNumber}/orders/{documentId}/download", caseNumber, orderId))
+        .andExpect(status().isOk())
+        .andExpect(header().string("Content-Disposition",
+            "attachment; filename=\"interim-order.pdf\""))
+        .andExpect(content().bytes("dummy-pdf".getBytes()));
   }
 
   @Test

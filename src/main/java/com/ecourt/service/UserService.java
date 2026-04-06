@@ -89,6 +89,22 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public User authenticateForLogin(String usernameOrEmail, String rawPassword) {
+        String normalized = normalizeRequired(usernameOrEmail, "Email or username is required");
+        User user = userRepository.findByUsernameIgnoreCaseOrEmailIgnoreCase(normalized, normalized)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad credentials"));
+
+        if (!user.isActive() || !user.isEmailVerified()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad credentials");
+        }
+
+        if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Bad credentials");
+        }
+
+        return user;
+    }
+
     public String normalizeUsername(String username) {
         return normalizeRequired(username, "Username is required");
     }

@@ -54,6 +54,16 @@ public class CaseDocument {
     @Column(nullable = false)
     private String uploadedBy;
 
+    @Enumerated(EnumType.STRING)
+    @Column
+    private DocumentCategory category = DocumentCategory.EVIDENCE;
+
+    private String documentTitle;
+
+    private String orderType;
+
+    private Instant orderDate;
+
     @Column(nullable = false, updatable = false)
     private Instant uploadedAt;
 
@@ -112,6 +122,38 @@ public class CaseDocument {
 
     public void setUploadedBy(String uploadedBy) {
         this.uploadedBy = uploadedBy;
+    }
+
+    public DocumentCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(DocumentCategory category) {
+        this.category = category;
+    }
+
+    public String getDocumentTitle() {
+        return documentTitle;
+    }
+
+    public void setDocumentTitle(String documentTitle) {
+        this.documentTitle = documentTitle;
+    }
+
+    public String getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(String orderType) {
+        this.orderType = orderType;
+    }
+
+    public Instant getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(Instant orderDate) {
+        this.orderDate = orderDate;
     }
 
     public Instant getUploadedAt() {

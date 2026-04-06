@@ -222,6 +222,7 @@ export default function CaseDetail() {
                         ['Client', caseData.clientUsername || '—'],
                         ['Lawyer', caseData.lawyerUsername || '—'],
                         ['Assigned Judge', caseData.judgeUsername || 'Unassigned'],
+                        ['Court', caseData.courtName || 'Not specified'],
                         ['Filed Date', formatDate(caseData.filedDate)],
                         ['Created At', formatDateTime(caseData.createdAt)],
                         ['Last Updated', formatDateTime(caseData.updatedAt)],
@@ -325,6 +326,47 @@ export default function CaseDetail() {
                                 ))}
                             </div>
                         )}
+                    </div>
+
+                    <div className="dash-form-card">
+                        <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap' }}>
+                            <div>
+                                <h3 style={{ marginBottom: '0.3rem' }}>Hearings & Orders</h3>
+                                <p style={{ margin: 0, color: 'var(--text-gray)' }}>Latest hearing events and court-issued order documents for this case.</p>
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
+                            <div style={{ padding: '1rem', borderRadius: '12px', border: '1px solid rgba(15, 23, 42, 0.08)', background: '#f8fbff' }}>
+                                <div style={{ fontWeight: 800, marginBottom: '0.75rem' }}>Hearings</div>
+                                {caseData.hearings?.length ? (
+                                    caseData.hearings.slice(0, 3).map((hearing) => (
+                                        <div key={hearing.id} style={{ marginBottom: '0.85rem' }}>
+                                            <div style={{ fontWeight: 700 }}>{formatDate(hearing.hearingDate)} · {hearing.judgeName}</div>
+                                            <div style={{ color: 'var(--text-gray)', fontSize: '0.92rem' }}>{hearing.remarks}</div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p style={{ margin: 0 }}>No hearings recorded yet.</p>
+                                )}
+                            </div>
+
+                            <div style={{ padding: '1rem', borderRadius: '12px', border: '1px solid rgba(15, 23, 42, 0.08)', background: '#f8fbff' }}>
+                                <div style={{ fontWeight: 800, marginBottom: '0.75rem' }}>Court Orders</div>
+                                {caseData.orderDocuments?.length ? (
+                                    caseData.orderDocuments.slice(0, 3).map((order) => (
+                                        <div key={order.id} style={{ marginBottom: '0.85rem' }}>
+                                            <div style={{ fontWeight: 700 }}>{order.documentTitle || order.originalFilename}</div>
+                                            <div style={{ color: 'var(--text-gray)', fontSize: '0.92rem' }}>
+                                                {order.orderType || 'Court Order'} · {formatDate(order.orderDate)}
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p style={{ margin: 0 }}>No order documents uploaded yet.</p>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 </div>
 

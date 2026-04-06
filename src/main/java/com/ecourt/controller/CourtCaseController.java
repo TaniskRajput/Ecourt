@@ -6,6 +6,8 @@ import com.ecourt.dto.CaseDocumentResponse;
 import com.ecourt.dto.CaseListResponse;
 import com.ecourt.dto.CaseResponse;
 import com.ecourt.dto.DashboardSummaryResponse;
+import com.ecourt.dto.HearingCreateRequest;
+import com.ecourt.dto.HearingResponse;
 import com.ecourt.dto.MessageResponse;
 import com.ecourt.service.CourtCaseService;
 import jakarta.validation.Valid;
@@ -141,6 +143,33 @@ public class CourtCaseController {
     @GetMapping("/{caseNumber}/audit")
     public List<CaseAuditEventResponse> getAuditEvents(@PathVariable String caseNumber) {
         return caseService.getAuditEvents(caseNumber);
+    }
+
+    @PostMapping("/{caseNumber}/hearings")
+    public ResponseEntity<HearingResponse> addHearing(
+            @PathVariable String caseNumber,
+            @Valid @RequestBody HearingCreateRequest request) {
+        return ResponseEntity.ok(caseService.addHearing(caseNumber, request));
+    }
+
+    @GetMapping("/{caseNumber}/hearings")
+    public List<HearingResponse> getHearings(@PathVariable String caseNumber) {
+        return caseService.getHearings(caseNumber);
+    }
+
+    @PostMapping(path = "/{caseNumber}/orders", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<CaseDocumentResponse> uploadOrder(
+            @PathVariable String caseNumber,
+            @RequestParam(required = false) String title,
+            @RequestParam String orderType,
+            @RequestParam(required = false) LocalDate orderDate,
+            @RequestParam("file") MultipartFile file) {
+        return ResponseEntity.ok(caseService.uploadOrder(caseNumber, title, orderType, orderDate, file));
+    }
+
+    @GetMapping("/{caseNumber}/orders")
+    public List<CaseDocumentResponse> getOrders(@PathVariable String caseNumber) {
+        return caseService.getOrders(caseNumber);
     }
 
     @GetMapping("/{caseNumber}/documents/{documentId}/download")

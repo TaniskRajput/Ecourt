@@ -11,14 +11,11 @@ import com.ecourt.dto.PasswordResetRequest;
 import com.ecourt.dto.RegisterCompleteRequest;
 import com.ecourt.dto.RegisterOtpRequest;
 import com.ecourt.dto.RegisterRequest;
-import com.ecourt.security.CustomUserDetails;
 import jakarta.validation.Valid;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import com.ecourt.security.JwtService;
 import com.ecourt.service.AuthFlowService;
 import com.ecourt.service.UserService;
+import com.ecourt.model.User;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -43,17 +40,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final UserService userService;
     private final AuthFlowService authFlowService;
 
     public AuthController(
-            AuthenticationManager authenticationManager,
             JwtService jwtService,
             UserService userService,
             AuthFlowService authFlowService) {
-        this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.userService = userService;
         this.authFlowService = authFlowService;
@@ -101,15 +95,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public AuthResponse login(@Valid @RequestBody LoginRequest request) {
-
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
-                        request.getPassword()));
-
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        String token = jwtService.generateToken(userDetails.getUsername());
-
-        return new AuthResponse(token, userDetails.getUsername(), userDetails.getUser().getRole());
+        User user = userService.authenticateForLogin(request.getUsername(), request.getPassword());
+        String token = jwtService.generateToken(user.getUsername());
+        return new AuthResponse(token, user.getUsername(), user.getRole());
     }
 }

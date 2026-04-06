@@ -29,8 +29,8 @@ export default function Sidebar() {
         { icon: <FiFilePlus />, label: 'File New Case', path: '/dashboard/file-case', show: role === 'LAWYER' },
         { icon: <FiSearch />, label: 'Search Cases', path: '/dashboard/search', show: true },
         { icon: <FiFolder />, label: 'Manage Cases', path: '/dashboard/manage', show: true },
-        { icon: <FiCalendar />, label: 'Hearings', path: '#', show: true },
-        { icon: <FiShield />, label: 'Orders', path: '#', show: true },
+        { icon: <FiCalendar />, label: 'Hearings', path: '/dashboard/hearings', show: true },
+        { icon: <FiShield />, label: 'Orders', path: '/dashboard/orders', show: true },
     ];
 
     return (
@@ -49,9 +49,7 @@ export default function Sidebar() {
                         key={i}
                         variants={itemVariants}
                         className={`menu-item ${isActive(item.path) ? 'active' : ''}`}
-                        onClick={() => {
-                            if (item.path !== '#') navigate(item.path);
-                        }}
+                        onClick={() => navigate(item.path)}
                     >
                         <span className="menu-icon">{item.icon}</span>
                         {item.label}

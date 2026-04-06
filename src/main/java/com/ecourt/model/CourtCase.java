@@ -45,6 +45,8 @@ public class CourtCase {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    private String courtName;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private CaseStatus status;
@@ -111,6 +113,14 @@ public class CourtCase {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getCourtName() {
+        return courtName;
+    }
+
+    public void setCourtName(String courtName) {
+        this.courtName = courtName;
     }
 
     public CaseStatus getStatus() {

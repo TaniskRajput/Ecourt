@@ -60,8 +60,10 @@ public class H2DemoDataConfig {
         user.setUsername(username);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(rawPassword));
+        user.setEmailVerified(true);
         user.setRole(role);
         user.setActive(true);
+        user.setAuthProvider("LOCAL");
         userRepository.save(user);
     }
 }

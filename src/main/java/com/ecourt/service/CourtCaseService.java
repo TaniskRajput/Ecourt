@@ -6,14 +6,21 @@ import com.ecourt.dto.CaseDocumentResponse;
 import com.ecourt.dto.CaseListResponse;
 import com.ecourt.dto.CaseResponse;
 import com.ecourt.dto.DashboardSummaryResponse;
+import com.ecourt.dto.HearingCreateRequest;
+import com.ecourt.dto.HearingResponse;
+import com.ecourt.dto.PublicCaseSearchItemResponse;
+import com.ecourt.dto.PublicCaseTrackDetailResponse;
 import com.ecourt.model.CaseAuditEvent;
 import com.ecourt.model.CaseDocument;
 import com.ecourt.model.CourtCase;
 import com.ecourt.model.CaseStatus;
+import com.ecourt.model.DocumentCategory;
+import com.ecourt.model.HearingRecord;
 import com.ecourt.model.User;
 import com.ecourt.repository.CaseAuditEventRepository;
 import com.ecourt.repository.CaseDocumentRepository;
 import com.ecourt.repository.CourtCaseRepository;
+import com.ecourt.repository.HearingRecordRepository;
 import com.ecourt.repository.UserRepository;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
@@ -29,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -76,6 +84,7 @@ public class CourtCaseService {
     private final CourtCaseRepository caseRepository;
     private final CaseAuditEventRepository caseAuditEventRepository;
     private final CaseDocumentRepository caseDocumentRepository;
+    private final HearingRecordRepository hearingRecordRepository;
     private final UserRepository userRepository;
     private final StorageService storageService;
     private final NotificationService notificationService;
@@ -84,12 +93,14 @@ public class CourtCaseService {
             CourtCaseRepository caseRepository,
             CaseAuditEventRepository caseAuditEventRepository,
             CaseDocumentRepository caseDocumentRepository,
+            HearingRecordRepository hearingRecordRepository,
             UserRepository userRepository,
             StorageService storageService,
             NotificationService notificationService) {
         this.caseRepository = caseRepository;
         this.caseAuditEventRepository = caseAuditEventRepository;
         this.caseDocumentRepository = caseDocumentRepository;
+        this.hearingRecordRepository = hearingRecordRepository;
         this.userRepository = userRepository;
         this.storageService = storageService;
         this.notificationService = notificationService;
@@ -107,6 +118,7 @@ public class CourtCaseService {
 
         CourtCase courtCase = new CourtCase();
         courtCase.setCaseNumber(generateCaseNumber());
+        courtCase.setCourtName(normalizeOptional(request.courtName()));
         courtCase.setTitle(normalizeRequired(request.title(), "Title is required"));
         courtCase.setDescription(normalizeRequired(request.description(), "Description is required"));
         courtCase.setClientUsername(clientUsername);
@@ -445,6 +457,8 @@ public class CourtCaseService {
         document.setContentType(storedFile.contentType());
         document.setSizeBytes(storedFile.sizeBytes());
         document.setUploadedBy(auth.getName());
+        document.setCategory(DocumentCategory.EVIDENCE);
+        document.setDocumentTitle(storedFile.originalFilename());
 
         CaseDocument savedDocument = caseDocumentRepository.save(document);
         recordAuditEvent(
@@ -467,9 +481,194 @@ public class CourtCaseService {
         CourtCase courtCase = getCaseOrThrow(caseNumber);
         assertCaseReadAccess(courtCase, requireAuthentication());
 
-        return caseDocumentRepository.findByCourtCaseIdOrderByUploadedAtDesc(courtCase.getId()).stream()
+        return getEvidenceDocuments(courtCase).stream()
                 .map(this::toDocumentResponse)
                 .toList();
+    }
+
+    public HearingResponse addHearing(String caseNumber, HearingCreateRequest request) {
+        CourtCase courtCase = getCaseOrThrow(caseNumber);
+        Authentication auth = requireAuthentication();
+        assertCaseManagementAccess(courtCase, auth);
+
+        HearingRecord hearing = new HearingRecord();
+        hearing.setCourtCase(courtCase);
+        hearing.setHearingDate(request.hearingDate());
+        hearing.setNextHearingDate(request.nextHearingDate());
+        hearing.setJudgeName(resolveHearingJudgeName(courtCase, auth, request.judgeName()));
+        hearing.setRemarks(normalizeRequired(request.remarks(), "Remarks are required"));
+        hearing.setCreatedBy(auth.getName());
+
+        HearingRecord savedHearing = hearingRecordRepository.save(hearing);
+        recordAuditEvent(
+                courtCase,
+                auth.getName(),
+                "HEARING_ADDED",
+                "Hearing added for " + request.hearingDate() + " by " + savedHearing.getJudgeName() + ".");
+        notifyCaseParticipants(
+                courtCase,
+                auth.getName(),
+                "HEARING_ADDED",
+                "New hearing recorded for " + courtCase.getCaseNumber(),
+                "A hearing dated " + request.hearingDate() + " was recorded for case "
+                        + courtCase.getCaseNumber() + ".");
+
+        if (courtCase.getStatus() == CaseStatus.SCRUTINY) {
+            courtCase.setStatus(CaseStatus.HEARING);
+            caseRepository.save(courtCase);
+            recordAuditEvent(
+                    courtCase,
+                    auth.getName(),
+                    "CASE_STATUS_UPDATED",
+                    "Status changed from SCRUTINY to HEARING.");
+        }
+
+        return toHearingResponse(savedHearing);
+    }
+
+    @Transactional(readOnly = true)
+    public List<HearingResponse> getHearings(String caseNumber) {
+        CourtCase courtCase = getCaseOrThrow(caseNumber);
+        assertCaseReadAccess(courtCase, requireAuthentication());
+        return getHearingHistory(courtCase).stream()
+                .map(this::toHearingResponse)
+                .toList();
+    }
+
+    public CaseDocumentResponse uploadOrder(
+            String caseNumber,
+            String orderTitle,
+            String orderType,
+            LocalDate orderDate,
+            MultipartFile file) {
+        CourtCase courtCase = getCaseOrThrow(caseNumber);
+        Authentication auth = requireAuthentication();
+        assertCaseManagementAccess(courtCase, auth);
+
+        if (file == null || file.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order PDF is required.");
+        }
+
+        StorageService.StoredFile storedFile = storageService.store(file);
+
+        CaseDocument document = new CaseDocument();
+        document.setCourtCase(courtCase);
+        document.setOriginalFilename(storedFile.originalFilename());
+        document.setStoredFilename(storedFile.storedFilename());
+        document.setContentType(storedFile.contentType());
+        document.setSizeBytes(storedFile.sizeBytes());
+        document.setUploadedBy(auth.getName());
+        document.setCategory(DocumentCategory.ORDER);
+        document.setDocumentTitle(resolveOrderTitle(orderTitle, storedFile.originalFilename()));
+        document.setOrderType(normalizeRequired(orderType, "Order type is required"));
+        document.setOrderDate((orderDate == null ? LocalDate.now() : orderDate).atStartOfDay()
+                .atZone(java.time.ZoneId.systemDefault())
+                .toInstant());
+
+        CaseDocument savedDocument = caseDocumentRepository.save(document);
+        recordAuditEvent(
+                courtCase,
+                auth.getName(),
+                "ORDER_UPLOADED",
+                "Order uploaded: " + savedDocument.getDocumentTitle() + ".");
+        notifyCaseParticipants(
+                courtCase,
+                auth.getName(),
+                "ORDER_UPLOADED",
+                "Court order uploaded for " + courtCase.getCaseNumber(),
+                auth.getName() + " uploaded order \"" + savedDocument.getDocumentTitle() + "\" for case "
+                        + courtCase.getCaseNumber() + ".");
+
+        if (courtCase.getStatus() == CaseStatus.ARGUMENT) {
+            courtCase.setStatus(CaseStatus.JUDGMENT);
+            caseRepository.save(courtCase);
+            recordAuditEvent(
+                    courtCase,
+                    auth.getName(),
+                    "CASE_STATUS_UPDATED",
+                    "Status changed from ARGUMENT to JUDGMENT.");
+        }
+
+        return toDocumentResponse(savedDocument);
+    }
+
+    @Transactional(readOnly = true)
+    public List<CaseDocumentResponse> getOrders(String caseNumber) {
+        CourtCase courtCase = getCaseOrThrow(caseNumber);
+        assertCaseReadAccess(courtCase, requireAuthentication());
+        return getOrderDocuments(courtCase).stream()
+                .map(this::toDocumentResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PublicCaseSearchItemResponse> searchPublicCases(String caseNumber, Integer year, String courtName) {
+        String normalizedCaseNumber = normalizeOptional(caseNumber);
+        String normalizedCourtName = normalizeOptional(courtName);
+
+        if (!hasText(normalizedCaseNumber) && year == null && !hasText(normalizedCourtName)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Provide a case number, year, or court name to search.");
+        }
+
+        return caseRepository.findAll((root, criteriaQuery, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (hasText(normalizedCaseNumber)) {
+                String pattern = "%" + normalizedCaseNumber.toLowerCase(Locale.ROOT) + "%";
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("caseNumber")), pattern));
+            }
+
+            if (year != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(
+                        root.get("filedDate"),
+                        LocalDate.of(year, 1, 1)));
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(
+                        root.get("filedDate"),
+                        LocalDate.of(year, 12, 31)));
+            }
+
+            if (hasText(normalizedCourtName)) {
+                String pattern = "%" + normalizedCourtName.toLowerCase(Locale.ROOT) + "%";
+                predicates.add(criteriaBuilder.like(criteriaBuilder.lower(root.get("courtName")), pattern));
+            }
+
+            return criteriaBuilder.and(predicates.toArray(Predicate[]::new));
+        }, Sort.by(Sort.Direction.DESC, "updatedAt")).stream()
+                .limit(12)
+                .map(this::toPublicSearchItem)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public PublicCaseTrackDetailResponse getPublicCaseTrackingDetail(String caseNumber) {
+        CourtCase courtCase = getCaseOrThrow(caseNumber);
+        return new PublicCaseTrackDetailResponse(
+                courtCase.getCaseNumber(),
+                courtCase.getTitle(),
+                courtCase.getDescription(),
+                courtCase.getCourtName(),
+                courtCase.getStatus(),
+                courtCase.getFiledDate(),
+                courtCase.getClientUsername(),
+                courtCase.getLawyerUsername(),
+                courtCase.getJudgeUsername(),
+                courtCase.getUpdatedAt(),
+                getHearingHistory(courtCase).stream().map(this::toHearingResponse).toList(),
+                getOrderDocuments(courtCase).stream().map(this::toDocumentResponse).toList());
+    }
+
+    @Transactional(readOnly = true)
+    public DocumentDownload downloadPublicOrder(String caseNumber, Long documentId) {
+        CourtCase courtCase = getCaseOrThrow(caseNumber);
+        CaseDocument document = caseDocumentRepository
+                .findByIdAndCourtCaseIdAndCategory(documentId, courtCase.getId(), DocumentCategory.ORDER)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order document not found"));
+
+        return new DocumentDownload(
+                storageService.loadAsResource(document.getStoredFilename()),
+                document.getOriginalFilename(),
+                document.getContentType());
     }
 
     @Transactional(readOnly = true)
@@ -608,6 +807,10 @@ public class CourtCaseService {
         return value.trim();
     }
 
+    private String normalizeOptional(String value) {
+        return hasText(value) ? value.trim() : null;
+    }
+
     private CaseStatus normalizeStatus(String status) {
         String trimmed = normalizeRequired(status, "Status is required").toUpperCase(Locale.ROOT);
         try {
@@ -690,15 +893,21 @@ public class CourtCaseService {
     }
 
     private CaseResponse toResponse(CourtCase courtCase) {
-        List<CaseDocumentResponse> documents = caseDocumentRepository
-                .findByCourtCaseIdOrderByUploadedAtDesc(courtCase.getId())
-                .stream()
+        List<CaseDocumentResponse> documents = getEvidenceDocuments(courtCase).stream()
                 .map(this::toDocumentResponse)
+                .toList();
+        List<CaseDocumentResponse> orderDocuments = getOrderDocuments(courtCase).stream()
+                .map(this::toDocumentResponse)
+                .toList();
+        List<HearingResponse> hearings = getHearingHistory(courtCase).stream()
+                .map(this::toHearingResponse)
                 .toList();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean canAssignJudge = canAssignJudge(courtCase, auth);
         boolean canUpdateStatus = canUpdateStatus(courtCase, auth);
         boolean canUploadDocuments = canUploadDocuments(courtCase, auth);
+        boolean canManageHearings = canManageHearings(courtCase, auth);
+        boolean canManageOrders = canManageOrders(courtCase, auth);
         List<CaseStatus> allowedNextStatuses = canUpdateStatus
                 ? courtCase.getStatus().getAllowedTransitions().stream()
                         .sorted(Comparator.comparingInt(Enum::ordinal))
@@ -709,6 +918,7 @@ public class CourtCaseService {
                 courtCase.getCaseNumber(),
                 courtCase.getTitle(),
                 courtCase.getDescription(),
+                courtCase.getCourtName(),
                 courtCase.getStatus(),
                 courtCase.getFiledDate(),
                 courtCase.getClientUsername(),
@@ -717,20 +927,51 @@ public class CourtCaseService {
                 courtCase.getCreatedAt(),
                 courtCase.getUpdatedAt(),
                 documents,
+                hearings,
+                orderDocuments,
                 allowedNextStatuses,
                 canAssignJudge,
                 canUpdateStatus,
-                canUploadDocuments);
+                canUploadDocuments,
+                canManageHearings,
+                canManageOrders);
     }
 
     private CaseDocumentResponse toDocumentResponse(CaseDocument document) {
+        DocumentCategory category = document.getCategory() == null ? DocumentCategory.EVIDENCE : document.getCategory();
         return new CaseDocumentResponse(
                 document.getId(),
+                category.name(),
+                document.getDocumentTitle(),
+                document.getOrderType(),
+                document.getOrderDate(),
                 document.getOriginalFilename(),
                 document.getContentType(),
                 document.getSizeBytes(),
                 document.getUploadedBy(),
                 document.getUploadedAt());
+    }
+
+    private HearingResponse toHearingResponse(HearingRecord hearing) {
+        return new HearingResponse(
+                hearing.getId(),
+                hearing.getHearingDate(),
+                hearing.getNextHearingDate(),
+                hearing.getJudgeName(),
+                hearing.getRemarks(),
+                hearing.getCreatedBy(),
+                hearing.getCreatedAt());
+    }
+
+    private PublicCaseSearchItemResponse toPublicSearchItem(CourtCase courtCase) {
+        return new PublicCaseSearchItemResponse(
+                courtCase.getCaseNumber(),
+                courtCase.getTitle(),
+                courtCase.getCourtName(),
+                courtCase.getStatus(),
+                courtCase.getFiledDate(),
+                courtCase.getUpdatedAt(),
+                buildPublicCaseSummary(courtCase));
     }
 
     private CaseAuditEventResponse toAuditResponse(CaseAuditEvent event) {
@@ -773,6 +1014,22 @@ public class CourtCaseService {
         return hasCaseAccess(courtCase, auth);
     }
 
+    private boolean canManageHearings(CourtCase courtCase, Authentication auth) {
+        return canManageCaseProceedings(courtCase, auth);
+    }
+
+    private boolean canManageOrders(CourtCase courtCase, Authentication auth) {
+        return canManageCaseProceedings(courtCase, auth);
+    }
+
+    private boolean canManageCaseProceedings(CourtCase courtCase, Authentication auth) {
+        if (auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getName())) {
+            return false;
+        }
+        return hasRole(auth, "ADMIN")
+                || (hasRole(auth, "JUDGE") && auth.getName().equals(courtCase.getJudgeUsername()));
+    }
+
     private boolean hasCaseAccess(CourtCase courtCase, Authentication auth) {
         return hasRole(auth, "ADMIN")
                 || (hasRole(auth, "CLIENT") && auth.getName().equals(courtCase.getClientUsername()))
@@ -797,6 +1054,47 @@ public class CourtCaseService {
         event.setEventType(eventType);
         event.setDetails(details);
         caseAuditEventRepository.save(event);
+    }
+
+    private void assertCaseManagementAccess(CourtCase courtCase, Authentication auth) {
+        if (!canManageCaseProceedings(courtCase, auth)) {
+            throw new AccessDeniedException("Access denied: Only admins or the assigned judge can manage hearings and orders.");
+        }
+    }
+
+    private String resolveHearingJudgeName(CourtCase courtCase, Authentication auth, String judgeName) {
+        if (hasText(judgeName)) {
+            return judgeName.trim();
+        }
+        if (hasText(courtCase.getJudgeUsername())) {
+            return courtCase.getJudgeUsername();
+        }
+        return auth.getName();
+    }
+
+    private String resolveOrderTitle(String orderTitle, String fallbackFilename) {
+        return hasText(orderTitle) ? orderTitle.trim() : fallbackFilename;
+    }
+
+    private List<CaseDocument> getEvidenceDocuments(CourtCase courtCase) {
+        return caseDocumentRepository.findByCourtCaseIdOrderByUploadedAtDesc(courtCase.getId()).stream()
+                .filter(document -> document.getCategory() != DocumentCategory.ORDER)
+                .toList();
+    }
+
+    private List<CaseDocument> getOrderDocuments(CourtCase courtCase) {
+        return caseDocumentRepository.findByCourtCaseIdAndCategoryOrderByUploadedAtDesc(
+                courtCase.getId(),
+                DocumentCategory.ORDER);
+    }
+
+    private List<HearingRecord> getHearingHistory(CourtCase courtCase) {
+        return hearingRecordRepository.findByCourtCaseIdOrderByHearingDateDescCreatedAtDesc(courtCase.getId());
+    }
+
+    private String buildPublicCaseSummary(CourtCase courtCase) {
+        String court = hasText(courtCase.getCourtName()) ? courtCase.getCourtName() : "Court not specified";
+        return court + " · Last updated " + courtCase.getUpdatedAt();
     }
 
     private void notifyCaseParticipants(
