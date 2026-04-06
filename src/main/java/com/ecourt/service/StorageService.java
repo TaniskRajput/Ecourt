@@ -18,7 +18,7 @@ public interface StorageService {
     StoredFile store(MultipartFile file);
 
     /**
-     * Load a previously stored file as a Spring {@link Resource}.
+     * Load  a previously stored file as a Spring {@link Resource}.
      */
     Resource loadAsResource(String storedFilename);
 
