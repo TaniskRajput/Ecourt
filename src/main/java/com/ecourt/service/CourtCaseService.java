@@ -3,6 +3,7 @@ package com.ecourt.service;
 import com.ecourt.dto.CaseAuditEventResponse;
 import com.ecourt.dto.CaseCreateRequest;
 import com.ecourt.dto.CaseDocumentResponse;
+import com.ecourt.dto.CaseInsightResponse;
 import com.ecourt.dto.CaseListResponse;
 import com.ecourt.dto.CaseResponse;
 import com.ecourt.dto.DashboardSummaryResponse;
@@ -88,6 +89,7 @@ public class CourtCaseService {
     private final UserRepository userRepository;
     private final StorageService storageService;
     private final NotificationService notificationService;
+    private final CaseInsightService caseInsightService;
 
     public CourtCaseService(
             CourtCaseRepository caseRepository,
@@ -96,7 +98,8 @@ public class CourtCaseService {
             HearingRecordRepository hearingRecordRepository,
             UserRepository userRepository,
             StorageService storageService,
-            NotificationService notificationService) {
+            NotificationService notificationService,
+            CaseInsightService caseInsightService) {
         this.caseRepository = caseRepository;
         this.caseAuditEventRepository = caseAuditEventRepository;
         this.caseDocumentRepository = caseDocumentRepository;
@@ -104,6 +107,7 @@ public class CourtCaseService {
         this.userRepository = userRepository;
         this.storageService = storageService;
         this.notificationService = notificationService;
+        this.caseInsightService = caseInsightService;
     }
 
     public CaseResponse addCase(CaseCreateRequest request) {
@@ -893,15 +897,20 @@ public class CourtCaseService {
     }
 
     private CaseResponse toResponse(CourtCase courtCase) {
+        // Load hearing history once so both the normal case payload and the forecast logic
+        // can reuse the same data without repeating repository work.
+        List<HearingRecord> hearingHistory = getHearingHistory(courtCase);
         List<CaseDocumentResponse> documents = getEvidenceDocuments(courtCase).stream()
                 .map(this::toDocumentResponse)
                 .toList();
         List<CaseDocumentResponse> orderDocuments = getOrderDocuments(courtCase).stream()
                 .map(this::toDocumentResponse)
                 .toList();
-        List<HearingResponse> hearings = getHearingHistory(courtCase).stream()
+        List<HearingResponse> hearings = hearingHistory.stream()
                 .map(this::toHearingResponse)
                 .toList();
+        // Build the prediction object that powers the AI Insight card in the React UI.
+        CaseInsightResponse insight = caseInsightService.buildInsight(courtCase, hearingHistory);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean canAssignJudge = canAssignJudge(courtCase, auth);
         boolean canUpdateStatus = canUpdateStatus(courtCase, auth);
@@ -929,6 +938,8 @@ public class CourtCaseService {
                 documents,
                 hearings,
                 orderDocuments,
+                // Include forecast data in the main case response so the frontend gets everything in one API call.
+                insight,
                 allowedNextStatuses,
                 canAssignJudge,
                 canUpdateStatus,

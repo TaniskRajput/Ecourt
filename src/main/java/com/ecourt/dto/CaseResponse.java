@@ -19,6 +19,8 @@ public record CaseResponse(
         List<CaseDocumentResponse> documents,
         List<HearingResponse> hearings,
         List<CaseDocumentResponse> orderDocuments,
+        // Carries the hearing/disposal forecast used by the new AI Insight panel.
+        CaseInsightResponse insight,
         List<com.ecourt.model.CaseStatus> allowedNextStatuses,
         boolean canAssignJudge,
         boolean canUpdateStatus,

@@ -493,7 +493,9 @@ class CourtCaseControllerIntegrationTest {
         .with(user("admin1").roles("ADMIN")))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.status").value("CLOSED"))
-        .andExpect(jsonPath("$.judgeUsername").value("judge1"));
+        .andExpect(jsonPath("$.judgeUsername").value("judge1"))
+        .andExpect(jsonPath("$.insight.confidenceLabel").value("Closed"))
+        .andExpect(jsonPath("$.insight.estimatedDisposalInDays").value(0));
   }
 
   @Test

@@ -25,6 +25,14 @@ function formatDateTime(value) {
     return Number.isNaN(parsed.getTime()) ? value : parsed.toLocaleString();
 }
 
+function formatDurationDays(days) {
+    // Turns raw day counts from the backend into friendlier labels for the insight card.
+    if (days == null) return 'N/A';
+    if (days < 30) return `${days} day${days === 1 ? '' : 's'}`;
+    const months = Math.round((days / 30) * 10) / 10;
+    return `${months} month${months === 1 ? '' : 's'}`;
+}
+
 function formatBytes(bytes) {
     if (!bytes || bytes === 0) return '0 B';
     const units = ['B', 'KB', 'MB', 'GB'];
@@ -371,6 +379,96 @@ export default function CaseDetail() {
                 </div>
 
                 <div style={{ display: 'grid', gap: '1.5rem' }}>
+                    {/* 
+                        New AI-facing summary card.
+                        Relevance:
+                        This is where the backend forecast becomes visible to users, so the
+                        case detail page now shows predicted hearing timing and disposal outlook
+                        alongside the usual workflow information.
+                    */}
+                    <div
+                        className="dash-form-card"
+                        style={{
+                            background: 'linear-gradient(135deg, rgba(223, 244, 255, 0.96), rgba(244, 251, 255, 0.98))',
+                            border: '1px solid rgba(14, 116, 144, 0.16)',
+                        }}
+                    >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem', alignItems: 'flex-start', flexWrap: 'wrap', marginBottom: '1rem' }}>
+                            <div>
+                                <h3 style={{ marginBottom: '0.35rem' }}>AI Insight</h3>
+                                <p style={{ margin: 0, color: 'var(--text-gray)' }}>
+                                    Forecast based on hearing history, case stage, judge assignment, and court cadence.
+                                </p>
+                            </div>
+                            <div
+                                style={{
+                                    padding: '0.45rem 0.8rem',
+                                    borderRadius: '999px',
+                                    background: 'rgba(14, 116, 144, 0.12)',
+                                    color: '#0f766e',
+                                    fontWeight: 800,
+                                    fontSize: '0.82rem',
+                                    letterSpacing: '0.02em',
+                                }}
+                            >
+                                Confidence {caseData.insight?.confidenceScore ?? '—'}%
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'grid', gap: '0.9rem', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', marginBottom: '1rem' }}>
+                            <div className="case-meta-item">
+                                <div className="meta-label">Predicted Next Hearing</div>
+                                <div className="meta-value">{formatDate(caseData.insight?.predictedNextHearingDate)}</div>
+                                <div style={{ color: 'var(--text-gray)', fontSize: '0.84rem', marginTop: '0.3rem' }}>
+                                    {formatDurationDays(caseData.insight?.predictedNextHearingInDays)}
+                                </div>
+                            </div>
+
+                            <div className="case-meta-item">
+                                <div className="meta-label">Estimated Disposal</div>
+                                <div className="meta-value">{formatDate(caseData.insight?.estimatedDisposalDate)}</div>
+                                <div style={{ color: 'var(--text-gray)', fontSize: '0.84rem', marginTop: '0.3rem' }}>
+                                    {formatDurationDays(caseData.insight?.estimatedDisposalInDays)}
+                                </div>
+                            </div>
+
+                            <div className="case-meta-item">
+                                <div className="meta-label">Prediction Quality</div>
+                                <div className="meta-value">{caseData.insight?.confidenceLabel || 'N/A'}</div>
+                                <div style={{ color: 'var(--text-gray)', fontSize: '0.84rem', marginTop: '0.3rem' }}>
+                                    Uses the strongest signal available in the case record.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            style={{
+                                height: '10px',
+                                borderRadius: '999px',
+                                background: 'rgba(14, 116, 144, 0.10)',
+                                overflow: 'hidden',
+                                marginBottom: '0.9rem',
+                            }}
+                        >
+                            {/* Visualizes the confidence score as a simple progress bar. */}
+                            <div
+                                style={{
+                                    height: '100%',
+                                    width: `${Math.max(8, Math.min(caseData.insight?.confidenceScore ?? 0, 100))}%`,
+                                    borderRadius: '999px',
+                                    background: 'linear-gradient(90deg, #0ea5e9, #14b8a6)',
+                                }}
+                            />
+                        </div>
+
+                        <div style={{ fontWeight: 700, marginBottom: '0.35rem' }}>
+                            {caseData.insight?.summary || 'No prediction available yet.'}
+                        </div>
+                        <div style={{ color: 'var(--text-gray)', fontSize: '0.92rem' }}>
+                            {caseData.insight?.reasoning || 'The system needs more workflow data to estimate upcoming milestones.'}
+                        </div>
+                    </div>
+
                     <div className="dash-form-card">
                         <h3 style={{ marginBottom: '1rem' }}>Available Actions</h3>
 
