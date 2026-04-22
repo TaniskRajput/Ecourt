@@ -11,7 +11,7 @@ public class FrontendResourceConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**")
-                .addResourceLocations("file:frontend-react/dist/");
+                .addResourceLocations("classpath:/static/");
     }
 
     @Override
