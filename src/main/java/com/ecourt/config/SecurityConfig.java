@@ -47,7 +47,8 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/index.html", "/style.css", "/app.js", "/favicon.ico").permitAll()
+                        .requestMatchers("/", "/index.html", "/assets/**", "/*.js", "/*.css", "/*.svg", "/*.ico")
+                        .permitAll()
                         .requestMatchers("/auth/**", "/error", "/h2-console/**", "/public/cases/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/cases").hasAnyRole("CLIENT", "ADMIN", "LAWYER")
                         .requestMatchers(HttpMethod.POST, "/cases/*/documents")
