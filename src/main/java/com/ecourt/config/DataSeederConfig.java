@@ -14,11 +14,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.LocalDate;
 
 @Configuration
-@Profile("h2")
-public class H2DemoDataConfig {
+public class DataSeederConfig {
 
     @Bean
-    CommandLineRunner seedH2DemoData(
+    CommandLineRunner seedDemoData(
             UserRepository userRepository,
             CourtCaseRepository courtCaseRepository,
             PasswordEncoder passwordEncoder) {
