@@ -1,8 +1,19 @@
+# Project docs that should stay local
 HELP.md
+HANDOFF.md
+WORKLOG.md
+
+# Java / Maven build output
 target/
-.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+*.log.*
+logs/
 
 ### STS ###
 .apt_generated
@@ -32,12 +43,28 @@ build/
 ### VS Code ###
 .vscode/
 
-### Local runtime files ###
+# Node / React
+node_modules/
+frontend-react/node_modules/
+frontend-react/dist/
+frontend-react/dist-ssr/
+frontend-react/.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local runtime files
 /data/
-/backend-h2.log
-/frontend-server.out.log
-/frontend-server.err.log
+/uploads/
+/uploads-h2/
+*.db
+*.mv.db
+*.trace.db
 .env
 .env.*
 !.env.example
-*.md
+
+# OS files
+.DS_Store
+Thumbs.db

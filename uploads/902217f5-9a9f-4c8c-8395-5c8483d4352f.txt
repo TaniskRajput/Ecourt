@@ -1,2 +1,0 @@
-Serversocket class - make an object and pass the port as a parameterized constructor.
-

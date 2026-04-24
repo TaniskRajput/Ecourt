@@ -12,7 +12,10 @@ public class RegisterRequest {
     @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password;
     @NotBlank(message = "Email is required")
-    @Email(message = "Email must be valid")
+    @Email(
+            regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+            message = "Email must be in a valid format, for example name@example.com"
+    )
     private String email;
     private String role;
 
