@@ -120,8 +120,28 @@ public class CourtCaseService {
             default -> throw new AccessDeniedException("Access denied: You cannot create cases.");
         };
 
+        String state = request.stateCode() != null && !request.stateCode().isBlank() ? request.stateCode() : "00";
+        String district = request.districtCode() != null && !request.districtCode().isBlank() ? request.districtCode()
+                : "00";
+        String est = request.establishmentCode() != null && !request.establishmentCode().isBlank()
+                ? request.establishmentCode()
+                : "00";
+        String type = request.caseTypeCode() != null && !request.caseTypeCode().isBlank() ? request.caseTypeCode()
+                : "000";
+        String filing = request.filingNumber() != null && !request.filingNumber().isBlank() ? request.filingNumber()
+                : "0000";
+        String yearStr = request.caseYear() != null && !request.caseYear().isBlank() ? request.caseYear()
+                : String.valueOf(LocalDate.now().getYear());
+        String cnr = state + district + est + type + filing + yearStr;
+
         CourtCase courtCase = new CourtCase();
-        courtCase.setCaseNumber(generateCaseNumber());
+        courtCase.setCaseNumber(cnr);
+        courtCase.setStateCode(state);
+        courtCase.setDistrictCode(district);
+        courtCase.setEstablishmentCode(est);
+        courtCase.setCaseTypeCode(type);
+        courtCase.setFilingNumber(filing);
+        courtCase.setCaseYear(yearStr);
         courtCase.setCourtName(normalizeOptional(request.courtName()));
         courtCase.setTitle(normalizeRequired(request.title(), "Title is required"));
         courtCase.setDescription(normalizeRequired(request.description(), "Description is required"));
@@ -180,7 +200,8 @@ public class CourtCaseService {
                     .filter(courtCase -> courtCase.getStatus() != CaseStatus.CLOSED)
                     .count();
             case "ADMIN" -> visibleCases.stream()
-                    .filter(courtCase -> !hasText(courtCase.getJudgeUsername()) || courtCase.getStatus() != CaseStatus.CLOSED)
+                    .filter(courtCase -> !hasText(courtCase.getJudgeUsername())
+                            || courtCase.getStatus() != CaseStatus.CLOSED)
                     .count();
             default -> visibleCases.stream()
                     .filter(courtCase -> courtCase.getStatus() != CaseStatus.CLOSED)
@@ -886,18 +907,9 @@ public class CourtCaseService {
         return size;
     }
 
-    private String generateCaseNumber() {
-        String candidate;
-        do {
-            candidate = "ECOURT-" + LocalDate.now() + "-"
-                    + UUID.randomUUID().toString().substring(0, 8).toUpperCase(Locale.ROOT);
-        } while (caseRepository.findByCaseNumber(candidate).isPresent());
-
-        return candidate;
-    }
-
     private CaseResponse toResponse(CourtCase courtCase) {
-        // Load hearing history once so both the normal case payload and the forecast logic
+        // Load hearing history once so both the normal case payload and the forecast
+        // logic
         // can reuse the same data without repeating repository work.
         List<HearingRecord> hearingHistory = getHearingHistory(courtCase);
         List<CaseDocumentResponse> documents = getEvidenceDocuments(courtCase).stream()
@@ -938,7 +950,8 @@ public class CourtCaseService {
                 documents,
                 hearings,
                 orderDocuments,
-                // Include forecast data in the main case response so the frontend gets everything in one API call.
+                // Include forecast data in the main case response so the frontend gets
+                // everything in one API call.
                 insight,
                 allowedNextStatuses,
                 canAssignJudge,
@@ -1069,7 +1082,8 @@ public class CourtCaseService {
 
     private void assertCaseManagementAccess(CourtCase courtCase, Authentication auth) {
         if (!canManageCaseProceedings(courtCase, auth)) {
-            throw new AccessDeniedException("Access denied: Only admins or the assigned judge can manage hearings and orders.");
+            throw new AccessDeniedException(
+                    "Access denied: Only admins or the assigned judge can manage hearings and orders.");
         }
     }
 

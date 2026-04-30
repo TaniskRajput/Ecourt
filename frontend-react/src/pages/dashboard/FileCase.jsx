@@ -9,6 +9,15 @@ export default function FileCase() {
     const [description, setDescription] = useState('');
     const [clientUsername, setClientUsername] = useState('');
     const [courtName, setCourtName] = useState('');
+
+    // CNR fields
+    const [stateCode, setStateCode] = useState('');
+    const [districtCode, setDistrictCode] = useState('');
+    const [establishmentCode, setEstablishmentCode] = useState('');
+    const [caseTypeCode, setCaseTypeCode] = useState('');
+    const [filingNumber, setFilingNumber] = useState('');
+    const [caseYear, setCaseYear] = useState('');
+
     const [message, setMessage] = useState({ text: '', isError: false });
     const [loading, setLoading] = useState(false);
 
@@ -17,7 +26,10 @@ export default function FileCase() {
         setMessage({ text: '', isError: false });
         setLoading(true);
 
-        const payload = { title, description, courtName: courtName.trim() || undefined };
+        const payload = {
+            title, description, courtName: courtName.trim() || undefined,
+            stateCode, districtCode, establishmentCode, caseTypeCode, filingNumber, caseYear
+        };
         if (['ADMIN', 'LAWYER'].includes(user.role) && clientUsername.trim()) {
             payload.clientUsername = clientUsername.trim();
         }
@@ -33,6 +45,12 @@ export default function FileCase() {
             setDescription('');
             setClientUsername('');
             setCourtName('');
+            setStateCode('');
+            setDistrictCode('');
+            setEstablishmentCode('');
+            setCaseTypeCode('');
+            setFilingNumber('');
+            setCaseYear('');
         } catch (err) {
             setMessage({
                 text: err.response?.data?.message || err.response?.data || 'Unable to file case.',
@@ -64,6 +82,34 @@ export default function FileCase() {
                     <div className="input-container">
                         <label>Court Name (optional)</label>
                         <input type="text" value={courtName} onChange={(e) => setCourtName(e.target.value)} placeholder="District Court, Patna" />
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+                        <div className="input-container">
+                            <label>State Code (2)</label>
+                            <input type="text" value={stateCode} onChange={(e) => setStateCode(e.target.value)} maxLength="2" required />
+                        </div>
+                        <div className="input-container">
+                            <label>District Code (2)</label>
+                            <input type="text" value={districtCode} onChange={(e) => setDistrictCode(e.target.value)} maxLength="2" required />
+                        </div>
+                        <div className="input-container">
+                            <label>Est. Code (2)</label>
+                            <input type="text" value={establishmentCode} onChange={(e) => setEstablishmentCode(e.target.value)} maxLength="2" required />
+                        </div>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+                        <div className="input-container">
+                            <label>Case Type Code (3)</label>
+                            <input type="text" value={caseTypeCode} onChange={(e) => setCaseTypeCode(e.target.value)} maxLength="3" required />
+                        </div>
+                        <div className="input-container">
+                            <label>Filing Number (4)</label>
+                            <input type="text" value={filingNumber} onChange={(e) => setFilingNumber(e.target.value)} maxLength="4" required />
+                        </div>
+                        <div className="input-container">
+                            <label>Year (4)</label>
+                            <input type="text" value={caseYear} onChange={(e) => setCaseYear(e.target.value)} maxLength="4" required />
+                        </div>
                     </div>
                     {['ADMIN', 'LAWYER'].includes(user.role) && (
                         <div className="input-container">

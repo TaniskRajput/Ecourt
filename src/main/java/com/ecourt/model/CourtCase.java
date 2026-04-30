@@ -61,6 +61,13 @@ public class CourtCase {
 
     private String judgeUsername;
 
+    private String stateCode;
+    private String districtCode;
+    private String establishmentCode;
+    private String caseTypeCode;
+    private String filingNumber;
+    private String caseYear;
+
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -161,6 +168,54 @@ public class CourtCase {
 
     public void setJudgeUsername(String judgeUsername) {
         this.judgeUsername = judgeUsername;
+    }
+
+    public String getStateCode() {
+        return stateCode;
+    }
+
+    public void setStateCode(String stateCode) {
+        this.stateCode = stateCode;
+    }
+
+    public String getDistrictCode() {
+        return districtCode;
+    }
+
+    public void setDistrictCode(String districtCode) {
+        this.districtCode = districtCode;
+    }
+
+    public String getEstablishmentCode() {
+        return establishmentCode;
+    }
+
+    public void setEstablishmentCode(String establishmentCode) {
+        this.establishmentCode = establishmentCode;
+    }
+
+    public String getCaseTypeCode() {
+        return caseTypeCode;
+    }
+
+    public void setCaseTypeCode(String caseTypeCode) {
+        this.caseTypeCode = caseTypeCode;
+    }
+
+    public String getFilingNumber() {
+        return filingNumber;
+    }
+
+    public void setFilingNumber(String filingNumber) {
+        this.filingNumber = filingNumber;
+    }
+
+    public String getCaseYear() {
+        return caseYear;
+    }
+
+    public void setCaseYear(String caseYear) {
+        this.caseYear = caseYear;
     }
 
     public Instant getCreatedAt() {

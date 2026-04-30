@@ -1,5 +1,10 @@
 package com.ecourt.controller;
 
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.ecourt.dto.AuthResponse;
 import com.ecourt.dto.GoogleAuthRequest;
 import com.ecourt.dto.LoginRequest;
@@ -11,30 +16,26 @@ import com.ecourt.dto.PasswordResetRequest;
 import com.ecourt.dto.RegisterCompleteRequest;
 import com.ecourt.dto.RegisterOtpRequest;
 import com.ecourt.dto.RegisterRequest;
-import jakarta.validation.Valid;
+import com.ecourt.model.User;
 import com.ecourt.security.JwtService;
 import com.ecourt.service.AuthFlowService;
 import com.ecourt.service.UserService;
-import com.ecourt.model.User;
-import org.springframework.web.bind.annotation.*;
+
+import jakarta.validation.Valid;
 
 /**
  * REST Controller responsible for User Authentication.
- * 
- * WHY IT IS USED:
- * This file provides publicly accessible endpoints that allow users to register
- * for the platform
- * and authenticate themselves. It acts as the gateway to the E-Court system,
- * intercepting initial
- * access requests and delegating to the AuthenticationManager to verify
- * credentials before
- * issuing JSON Web Tokens (JWTs) for subsequent authenticated API calls.
  *
- * FUNCTIONS OVERVIEW:
- * - register: Accepts new user details, validates them, and creates a new
- * CLIENT or LAWYER account.
- * - login: Authenticates existing credentials against the database and returns
- * a signed JWT alongside basic user info.
+ * WHY IT IS USED: This file provides publicly accessible endpoints that allow
+ * users to register for the platform and authenticate themselves. It acts as
+ * the gateway to the E-Court system, intercepting initial access requests and
+ * delegating to the AuthenticationManager to verify credentials before issuing
+ * JSON Web Tokens (JWTs) for subsequent authenticated API calls.
+ *
+ * FUNCTIONS OVERVIEW: - register: Accepts new user details, validates them, and
+ * creates a new CLIENT or LAWYER account. - login: Authenticates existing
+ * credentials against the database and returns a signed JWT alongside basic
+ * user info.
  */
 @RestController
 @RequestMapping("/auth")

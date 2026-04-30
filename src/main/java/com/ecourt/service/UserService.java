@@ -1,5 +1,6 @@
 package com.ecourt.service;
 
+import com.ecourt.dto.RegisterCompleteRequest;
 import com.ecourt.dto.RegisterRequest;
 import com.ecourt.model.User;
 import com.ecourt.repository.UserRepository;
@@ -41,6 +42,7 @@ public class UserService {
         user.setRole(role);
         user.setActive(true);
         user.setAuthProvider("LOCAL");
+        applyRegistrationProfile(user, request);
         userRepository.save(user);
 
         return "User registered successfully";
@@ -86,6 +88,25 @@ public class UserService {
         user.setActive(true);
         user.setAuthProvider(authProvider);
         user.setGoogleSubject(googleSubject);
+        return userRepository.save(user);
+    }
+
+    public User createVerifiedUser(RegisterCompleteRequest request, String authProvider, String googleSubject) {
+        String normalizedUsername = normalizeUsername(request.getUsername());
+        String normalizedEmail = normalizeEmail(request.getEmail());
+        String normalizedRole = normalizeRole(request.getRole());
+        assertUserDoesNotExist(normalizedUsername, normalizedEmail);
+
+        User user = new User();
+        user.setUsername(normalizedUsername);
+        user.setEmail(normalizedEmail);
+        user.setPassword(encodePassword(request.getPassword()));
+        user.setEmailVerified(true);
+        user.setRole(normalizedRole);
+        user.setActive(true);
+        user.setAuthProvider(authProvider);
+        user.setGoogleSubject(googleSubject);
+        applyRegistrationProfile(user, request);
         return userRepository.save(user);
     }
 
@@ -178,5 +199,70 @@ public class UserService {
             return "CLIENT";
         }
         return role.trim().toUpperCase(Locale.ROOT);
+    }
+
+    private void applyRegistrationProfile(User user, RegisterRequest request) {
+        user.setFullName(normalizeOptional(request.getFullName()));
+        user.setMobileNumber(normalizeOptional(request.getMobileNumber()));
+        user.setAadhaarLast4(normalizeOptional(request.getAadhaarLast4()));
+        user.setState(normalizeOptional(request.getState()));
+        user.setDistrict(normalizeOptional(request.getDistrict()));
+        user.setPreferredCourt(normalizeOptional(request.getPreferredCourt()));
+        user.setAddress(normalizeOptional(request.getAddress()));
+        user.setBarCouncilId(normalizeOptional(request.getBarCouncilId()));
+        user.setEnrollmentNumber(normalizeOptional(request.getEnrollmentNumber()));
+        user.setPracticeArea(normalizeOptional(request.getPracticeArea()));
+        user.setIdProofType(normalizeOptional(request.getIdProofType()));
+    }
+
+    private void applyRegistrationProfile(User user, RegisterCompleteRequest request) {
+        user.setFullName(normalizeOptional(request.getFullName()));
+        user.setMobileNumber(normalizeOptional(request.getMobileNumber()));
+        user.setAadhaarLast4(normalizeOptional(request.getAadhaarLast4()));
+        user.setState(normalizeOptional(request.getState()));
+        user.setDistrict(normalizeOptional(request.getDistrict()));
+        user.setPreferredCourt(normalizeOptional(request.getPreferredCourt()));
+        user.setAddress(normalizeOptional(request.getAddress()));
+        user.setBarCouncilId(normalizeOptional(request.getBarCouncilId()));
+        user.setEnrollmentNumber(normalizeOptional(request.getEnrollmentNumber()));
+        user.setPracticeArea(normalizeOptional(request.getPracticeArea()));
+        user.setIdProofType(normalizeOptional(request.getIdProofType()));
+    }
+
+    private String normalizeOptional(String value) {
+        return value == null || value.trim().isEmpty() ? null : value.trim();
+    }
+
+    public com.ecourt.dto.UserProfileResponse getUserProfile(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        return new com.ecourt.dto.UserProfileResponse(
+                user.getUsername(), user.getEmail(), user.getRole(),
+                user.getFullName(), user.getMobileNumber(), user.getAddress(), user.getAadhaarLast4()
+        );
+    }
+
+    public com.ecourt.dto.UserProfileResponse updateUserProfile(String currentUsername, String newUsername, com.ecourt.dto.UserProfileUpdateRequest request) {
+        User user = userRepository.findByUsername(currentUsername)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        
+        if (newUsername != null && !newUsername.trim().isEmpty() && !newUsername.equalsIgnoreCase(currentUsername)) {
+            if (userRepository.existsByUsername(newUsername.trim())) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already taken");
+            }
+            user.setUsername(newUsername.trim());
+        }
+
+        if (request.getFullName() != null) user.setFullName(request.getFullName().trim());
+        if (request.getMobileNumber() != null) user.setMobileNumber(request.getMobileNumber().trim());
+        if (request.getAddress() != null) user.setAddress(request.getAddress().trim());
+        if (request.getAadhaarLast4() != null) user.setAadhaarLast4(request.getAadhaarLast4().trim());
+        
+        userRepository.save(user);
+        
+        return new com.ecourt.dto.UserProfileResponse(
+                user.getUsername(), user.getEmail(), user.getRole(),
+                user.getFullName(), user.getMobileNumber(), user.getAddress(), user.getAadhaarLast4()
+        );
     }
 }

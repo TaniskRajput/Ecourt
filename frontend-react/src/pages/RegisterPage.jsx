@@ -1,78 +1,33 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import {
-    completeRegistration,
-    requestRegistrationOtp,
-    verifyRegistrationOtp,
-    beginGoogleAuth,
-} from '../services/api';
+import { register, beginGoogleAuth } from '../services/api';
 
 export default function RegisterPage() {
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [role, setRole] = useState('CLIENT');
-    const [otp, setOtp] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [verificationTicket, setVerificationTicket] = useState('');
-    const [otpSent, setOtpSent] = useState(false);
-    const [verified, setVerified] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
     const [googleBusy, setGoogleBusy] = useState(false);
 
-    const handleSendOtp = async (event) => {
+    const handleRegister = async (event) => {
         event.preventDefault();
-        setLoading(true);
-        setError('');
-        setSuccess('');
-        try {
-            const res = await requestRegistrationOtp({ username, email, role });
-            setOtpSent(true);
-            setVerified(false);
-            setVerificationTicket('');
-            setSuccess(res.data?.message || 'OTP sent to your email.');
-        } catch (err) {
-            setError(err.response?.data?.message || 'Unable to send OTP.');
-        } finally {
-            setLoading(false);
+        
+        if (password !== confirmPassword) {
+            setError('Passwords do not match.');
+            return;
         }
-    };
 
-    const handleVerifyOtp = async (event) => {
-        event.preventDefault();
         setLoading(true);
         setError('');
         setSuccess('');
         try {
-            const res = await verifyRegistrationOtp({ email, otp });
-            setVerificationTicket(res.data?.verificationTicket || '');
-            setVerified(true);
-            setSuccess(res.data?.message || 'Email verified successfully.');
-        } catch (err) {
-            setError(err.response?.data?.message || 'OTP verification failed.');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleCompleteRegistration = async (event) => {
-        event.preventDefault();
-        setLoading(true);
-        setError('');
-        setSuccess('');
-        try {
-            const res = await completeRegistration({
-                username,
-                email,
-                role,
-                password,
-                confirmPassword,
-                verificationTicket,
-            });
+            const res = await register(username, email, password, role);
             setSuccess(res.data?.message || 'Registration successful. Redirecting to login...');
             setTimeout(() => navigate('/login'), 1500);
         } catch (err) {
@@ -105,9 +60,9 @@ export default function RegisterPage() {
                 transition={{ duration: 0.5, ease: 'easeOut' }}
             >
                 <h2>USER REGISTRATION</h2>
-                <p className="subtitle">Verify email first, then create your password securely</p>
+                <p className="subtitle">Fill in your details to create an account</p>
 
-                <form onSubmit={verified ? handleCompleteRegistration : otpSent ? handleVerifyOtp : handleSendOtp} className="reg-form">
+                <form onSubmit={handleRegister} className="reg-form">
                     <div className="input-container">
                         <label>Username</label>
                         <input
@@ -115,7 +70,6 @@ export default function RegisterPage() {
                             placeholder="Choose a username"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            disabled={otpSent}
                             required
                         />
                     </div>
@@ -126,69 +80,41 @@ export default function RegisterPage() {
                             placeholder="Enter your email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            disabled={otpSent}
                             required
                         />
                     </div>
                     <div className="input-container">
                         <label>Account Type</label>
-                        <select value={role} onChange={(e) => setRole(e.target.value)} disabled={otpSent} required>
+                        <select value={role} onChange={(e) => setRole(e.target.value)} required>
                             <option value="CLIENT">Client</option>
                             <option value="LAWYER">Lawyer</option>
                         </select>
                     </div>
 
-                    {!otpSent && (
-                        <button type="submit" className="auth-submit-btn dark-btn" disabled={loading}>
-                            {loading ? 'Sending OTP...' : 'Send OTP'}
-                        </button>
-                    )}
+                    <div className="input-container">
+                        <label>Password</label>
+                        <input
+                            type="password"
+                            placeholder="Minimum 8 characters"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="input-container">
+                        <label>Confirm Password</label>
+                        <input
+                            type="password"
+                            placeholder="Re-enter your password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            required
+                        />
+                    </div>
 
-                    {otpSent && !verified && (
-                        <>
-                            <div className="input-container">
-                                <label>OTP</label>
-                                <input
-                                    type="text"
-                                    placeholder="Enter the 6-digit OTP"
-                                    value={otp}
-                                    onChange={(e) => setOtp(e.target.value)}
-                                    required
-                                />
-                            </div>
-                            <button type="submit" className="auth-submit-btn dark-btn" disabled={loading}>
-                                {loading ? 'Verifying...' : 'Verify OTP'}
-                            </button>
-                        </>
-                    )}
-
-                    {verified && (
-                        <>
-                            <div className="input-container">
-                                <label>Password</label>
-                                <input
-                                    type="password"
-                                    placeholder="Minimum 8 characters, with letters and numbers"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    required
-                                />
-                            </div>
-                            <div className="input-container">
-                                <label>Confirm Password</label>
-                                <input
-                                    type="password"
-                                    placeholder="Re-enter your password"
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    required
-                                />
-                            </div>
-                            <button type="submit" className="auth-submit-btn dark-btn" disabled={loading}>
-                                {loading ? 'Creating account...' : 'Create Account'}
-                            </button>
-                        </>
-                    )}
+                    <button type="submit" className="auth-submit-btn dark-btn" disabled={loading}>
+                        {loading ? 'Creating account...' : 'Create Account'}
+                    </button>
 
                     <button type="button" className="outline-btn" onClick={handleGoogleSignup} disabled={googleBusy}>
                         {googleBusy ? 'Checking Google Sign-In...' : 'Continue with Google'}

@@ -142,10 +142,17 @@ export const getAuditTrail = (caseNumber) =>
 export const getAllUsers = (params = {}) => api.get('/admin/users', {
     params: { size: 100, ...params },
 });
+export const createUser = (payload) => api.post('/admin/users', payload);
 export const updateUserRole = (userId, role) =>
     api.put(`/admin/users/${userId}/role`, { role });
 export const updateUserStatus = (userId, active) =>
     api.put(`/admin/users/${userId}/status`, { active });
+
+// --- User Profile ---
+export const getMyProfile = () => api.get('/users/me');
+export const updateMyProfile = (username, payload) => 
+    api.put('/users/me', payload, { params: { username } });
+
 
 // --- Notifications ---
 export const getNotifications = () => api.get('/notifications');

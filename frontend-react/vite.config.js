@@ -10,6 +10,7 @@ export default defineConfig({
       '/cases': 'http://localhost:8081',
       '/admin': 'http://localhost:8081',
       '/notifications': 'http://localhost:8081',
+      '/public': 'http://localhost:8081',
     },
   },
 })

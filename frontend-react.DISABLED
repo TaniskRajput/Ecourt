@@ -1,0 +1,5 @@
+This React app has been disabled in favor of a new frontend scaffold.
+
+Reason: preparing a clean React project to develop the redesigned UI.
+
+To re-enable the old app, remove this file or rename the folder `frontend-react` back into active use.

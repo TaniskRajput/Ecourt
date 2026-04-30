@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { getDashboardSummary } from '../../services/api';
 import StatusChip from '../../components/StatusChip';
+import NotificationCenter from '../../components/NotificationCenter';
 
 function AnimatedCounter({ value }) {
     const [count, setCount] = useState(0);
@@ -86,8 +87,8 @@ export default function Overview() {
             return [
                 { title: 'Cases Under Oversight', value: summary.totalCases, cls: 'blue-card' },
                 { title: 'Unassigned Cases', value: summary.unassignedCases, cls: 'light-blue-card' },
-                { title: 'Active Judges', value: summary.activeJudges, cls: '' },
-                { title: 'Total Users', value: summary.totalUsers, cls: '' },
+                { title: 'Active Judges', value: summary.activeJudges, cls: 'blue-card' },
+                { title: 'Total Users', value: summary.totalUsers, cls: 'blue-card' },
             ];
         }
 
@@ -95,14 +96,14 @@ export default function Overview() {
             return [
                 { title: 'Visible Cases', value: summary.totalCases, cls: 'blue-card' },
                 { title: 'Pending Actions', value: summary.pendingActions, cls: 'light-blue-card' },
-                { title: 'Unassigned Cases', value: summary.unassignedCases, cls: '' },
+                { title: 'Unassigned Cases', value: summary.unassignedCases, cls: 'blue-card' },
             ];
         }
 
         return [
             { title: 'Filed Cases', value: summary.totalCases, cls: 'blue-card' },
             { title: 'Active Cases', value: summary.activeCases, cls: 'light-blue-card' },
-            { title: 'Recent Actions', value: summary.recentActions?.length || 0, cls: '' },
+            { title: 'Recent Actions', value: summary.recentActions?.length || 0, cls: 'blue-card' },
         ];
     })() : [];
 
@@ -123,7 +124,8 @@ export default function Overview() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.35 }}
             >
-                Welcome <strong>{user?.username}</strong> (<span>{role}</span>)
+                <div>Welcome <strong>{user?.username}</strong> ({role})</div>
+                <NotificationCenter />
             </motion.div>
 
             <div className="stats-row">

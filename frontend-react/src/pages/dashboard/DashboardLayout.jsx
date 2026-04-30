@@ -9,14 +9,8 @@ export default function DashboardLayout() {
     if (!user) return <Navigate to="/login" replace />;
 
     return (
-        <div className="dashboard-container" style={{ display: 'flex' }}>
-            <Sidebar />
-            <div className="dashboard-content">
-                <div className="dashboard-toolbar">
-                    <NotificationCenter />
-                </div>
-                <Outlet />
-            </div>
+        <div className="dashboard-content">
+            <Outlet />
         </div>
     );
 }
