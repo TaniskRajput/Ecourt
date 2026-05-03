@@ -242,11 +242,14 @@ public class UserService {
         );
     }
 
+    @org.springframework.transaction.annotation.Transactional
     public com.ecourt.dto.UserProfileResponse updateUserProfile(String currentUsername, String newUsername, com.ecourt.dto.UserProfileUpdateRequest request) {
+        System.out.println("DEBUG: updateUserProfile - currentUsername: " + currentUsername + ", newUsername: " + newUsername);
         User user = userRepository.findByUsername(currentUsername)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         
         if (newUsername != null && !newUsername.trim().isEmpty() && !newUsername.equalsIgnoreCase(currentUsername)) {
+            System.out.println("DEBUG: Changing username from " + currentUsername + " to " + newUsername.trim());
             if (userRepository.existsByUsername(newUsername.trim())) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already taken");
             }
@@ -264,5 +267,18 @@ public class UserService {
                 user.getUsername(), user.getEmail(), user.getRole(),
                 user.getFullName(), user.getMobileNumber(), user.getAddress(), user.getAadhaarLast4()
         );
+    }
+
+    public void changePassword(String username, String oldPassword, String newPassword) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Incorrect old password.");
+        }
+
+        String validatedPassword = validatePassword(newPassword);
+        user.setPassword(passwordEncoder.encode(validatedPassword));
+        userRepository.save(user);
     }
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { getMyProfile, updateMyProfile } from '../../services/api';
+import { getMyProfile, updateMyProfile, changeMyPassword } from '../../services/api';
 import { FiUser, FiMail, FiPhone, FiMapPin, FiShield, FiEdit2, FiCreditCard } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
 
@@ -31,6 +31,33 @@ export default function ProfilePage() {
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+
+    const [editingPassword, setEditingPassword] = useState(false);
+    const [passwords, setPasswords] = useState({ oldPassword: '', newPassword: '' });
+    const [savingPwd, setSavingPwd] = useState(false);
+    const [pwdError, setPwdError] = useState('');
+    const [pwdSuccess, setPwdSuccess] = useState('');
+
+    const handlePasswordSubmit = async (e) => {
+        e.preventDefault();
+        setSavingPwd(true);
+        setPwdError('');
+        setPwdSuccess('');
+
+        try {
+            await changeMyPassword(passwords);
+            setPwdSuccess('Password updated successfully!');
+            setTimeout(() => {
+                setEditingPassword(false);
+                setPasswords({ oldPassword: '', newPassword: '' });
+                setPwdSuccess('');
+            }, 3000);
+        } catch (err) {
+            setPwdError(err.response?.data?.message || 'Failed to update password.');
+        } finally {
+            setSavingPwd(false);
+        }
+    };
 
     useEffect(() => {
         fetchProfile();
@@ -80,6 +107,10 @@ export default function ProfilePage() {
         setError('');
         setSuccess('');
         
+        const oldUsername = user?.username;
+        const newUsername = profile.username.trim();
+        const usernameChanged = newUsername && oldUsername && newUsername.toLowerCase() !== oldUsername.toLowerCase();
+
         try {
             const payload = {
                 fullName: profile.fullName,
@@ -87,13 +118,20 @@ export default function ProfilePage() {
                 address: profile.address,
                 aadhaarLast4: profile.aadhaarLast4
             };
-            await updateMyProfile(profile.username, payload);
-            setSuccess('Profile updated successfully!');
-            setEditing({ username: false, email: false, role: false, fullName: false, mobileNumber: false, address: false, aadhaarLast4: false });
-            if (profile.username !== user?.username) {
-                 setSuccess('Profile updated successfully! If you changed your username, you may need to log in again soon.');
+            
+            await updateMyProfile(newUsername, payload);
+            
+            if (usernameChanged) {
+                setSuccess('Username updated successfully! Logging you out...');
+                setTimeout(() => {
+                    logoutUser();
+                    navigate('/login', { state: { message: 'Username changed. Please login with your new username.' } });
+                }, 2000);
+            } else {
+                setSuccess('Profile updated successfully!');
+                setEditing({ username: false, email: false, role: false, fullName: false, mobileNumber: false, address: false, aadhaarLast4: false });
+                fetchProfile();
             }
-            fetchProfile();
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to update profile.');
         } finally {
@@ -114,7 +152,8 @@ export default function ProfilePage() {
                 <p style={{ color: 'var(--text-gray)', marginTop: '0.4rem' }}>View and update your personal details</p>
             </div>
 
-            <div className="dash-form-card" style={{ position: 'relative' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '25px', alignItems: 'start' }}>
+                <div className="dash-form-card" style={{ position: 'relative' }}>
                 <div style={{ marginBottom: '1.5rem' }}>
                     <h4 style={{ marginBottom: '0.35rem' }}>Personal Information</h4>
                     <p style={{ color: 'var(--text-gray)', margin: 0 }}>Keep your contact details up to date</p>
@@ -225,6 +264,50 @@ export default function ProfilePage() {
                         </div>
                     )}
                 </form>
+            </div>
+
+                <div className="dash-form-card" style={{ position: 'relative' }}>
+                <div style={{ marginBottom: '1.5rem' }}>
+                    <h4 style={{ marginBottom: '0.35rem' }}>Security Information</h4>
+                    <p style={{ color: 'var(--text-gray)', margin: 0 }}>Update your password and secure your account</p>
+                </div>
+
+                {!editingPassword ? (
+                    <button type="button" className="outline-btn" style={{ width: 'auto', display: 'flex', alignItems: 'center', gap: '8px' }} onClick={() => setEditingPassword(true)}>
+                        <FiShield /> Change Password
+                    </button>
+                ) : (
+                    <form onSubmit={handlePasswordSubmit}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '15px', maxWidth: '400px' }}>
+                            <div className="input-container" style={{ marginBottom: 0 }}>
+                                <label>Current Password</label>
+                                <input type="password" value={passwords.oldPassword} onChange={(e) => setPasswords(p => ({ ...p, oldPassword: e.target.value }))} required />
+                            </div>
+                            <div className="input-container" style={{ marginBottom: 0 }}>
+                                <label>New Password</label>
+                                <input type="password" value={passwords.newPassword} onChange={(e) => setPasswords(p => ({ ...p, newPassword: e.target.value }))} required placeholder="Min 8 chars, letters & numbers" />
+                            </div>
+                        </div>
+
+                        {pwdError && <div className="error-msg" style={{ marginTop: '20px' }}>{pwdError}</div>}
+                        {pwdSuccess && <div className="success-msg" style={{ marginTop: '20px' }}>{pwdSuccess}</div>}
+
+                        <div style={{ marginTop: '30px', display: 'flex', gap: '15px' }}>
+                            <button type="submit" className="auth-submit-btn dark-btn" style={{ width: 'auto', margin: 0 }} disabled={savingPwd}>
+                                {savingPwd ? 'Updating...' : 'Update Password'}
+                            </button>
+                            <button type="button" className="outline-btn" style={{ width: 'auto', padding: '12px 20px' }} onClick={() => { 
+                                setEditingPassword(false); 
+                                setPasswords({ oldPassword: '', newPassword: '' });
+                                setPwdError('');
+                                setPwdSuccess('');
+                            }}>
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                )}
+                </div>
             </div>
         </motion.div>
     );

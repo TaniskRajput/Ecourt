@@ -28,4 +28,12 @@ public class UserController {
             Authentication authentication) {
         return userService.updateUserProfile(authentication.getName(), username, request);
     }
+
+    @PutMapping("/me/password")
+    public org.springframework.http.ResponseEntity<String> updatePassword(
+            @RequestBody com.ecourt.dto.ChangePasswordRequest request,
+            Authentication authentication) {
+        userService.changePassword(authentication.getName(), request.getOldPassword(), request.getNewPassword());
+        return org.springframework.http.ResponseEntity.ok("Password updated successfully");
+    }
 }

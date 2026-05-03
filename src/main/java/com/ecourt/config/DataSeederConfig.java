@@ -51,7 +51,7 @@ public class DataSeederConfig {
             String email,
             String rawPassword,
             String role) {
-        if (userRepository.findByUsername(username).isPresent()) {
+        if (userRepository.findByUsername(username).isPresent() || userRepository.findByEmail(email).isPresent()) {
             return;
         }
 

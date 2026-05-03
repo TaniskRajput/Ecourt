@@ -11,6 +11,7 @@ export default defineConfig({
       '/admin': 'http://localhost:8081',
       '/notifications': 'http://localhost:8081',
       '/public': 'http://localhost:8081',
+      '/users': 'http://localhost:8081',
     },
   },
 })

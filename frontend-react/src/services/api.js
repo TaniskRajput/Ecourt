@@ -152,6 +152,7 @@ export const updateUserStatus = (userId, active) =>
 export const getMyProfile = () => api.get('/users/me');
 export const updateMyProfile = (username, payload) => 
     api.put('/users/me', payload, { params: { username } });
+export const changeMyPassword = (payload) => api.put('/users/me/password', payload);
 
 
 // --- Notifications ---

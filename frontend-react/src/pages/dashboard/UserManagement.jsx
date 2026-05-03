@@ -21,7 +21,7 @@ export default function UserManagement() {
         setLoading(true);
         try {
             const res = await getAllUsers();
-            setUsers(res.data.users || []);
+            setUsers(res.data.content || []);
         } catch (err) {
             console.error('Failed to fetch users', err);
         } finally {
