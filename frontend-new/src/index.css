@@ -2930,17 +2930,17 @@ svg {
 .role-main {
     width: min(1140px, calc(100% - 80px));
     margin: 0 auto;
-    padding: 60px 0;
+    padding: 28px 0;
 }
 
 .lawyer-main,
 .judge-main {
     width: min(1200px, calc(100% - 72px));
-    padding-top: 42px;
+    padding-top: 24px;
 }
 
 .role-hero {
-    min-height: 225px;
+    min-height: 180px;
     border-radius: 8px;
     background:
         linear-gradient(90deg, #2748b9 0%, #2748b9 66%, rgba(39, 72, 185, 0.86) 66%),
@@ -4527,7 +4527,7 @@ svg {
     .lawyer-main,
     .judge-main {
         width: min(100% - 32px, 1200px);
-        padding: 32px 0;
+        padding: 20px 0;
     }
 
     .role-metrics,
@@ -4784,7 +4784,7 @@ svg {
 
     .role-hero {
         padding: 30px 24px;
-        min-height: 190px;
+        min-height: 150px;
     }
 
     .role-hero h1,
