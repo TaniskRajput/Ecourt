@@ -25,9 +25,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ResponseStatusException.class)
     public org.springframework.http.ResponseEntity<ApiErrorResponse> handleResponseStatus(
-            ResponseStatusException exception,
-            HttpServletRequest request
-    ) {
+         ResponseStatusException exception,
+            HttpServletRequest request  ) {
         HttpStatusCode statusCode = exception.getStatusCode();
         HttpStatus status = HttpStatus.valueOf(statusCode.value());
         return org.springframework.http.ResponseEntity.status(status)

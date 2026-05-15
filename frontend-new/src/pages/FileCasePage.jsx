@@ -1,5 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react'
 import { fileCase, uploadCaseDocument } from '../services/api'
+import DashboardLayout from '../components/DashboardLayout'
 
 const initialForm = {
     title: '',
@@ -15,7 +16,6 @@ const initialForm = {
     respondentName: '',
     behalfOf: 'Self (Individual Filing)',
     description: '',
-    legalRepresentation: '',
     clientUsername: '',
 }
 
@@ -24,10 +24,7 @@ const stepLabels = ['Case Info', 'Parties', 'Details', 'Documents']
 export default function FileCasePage({ onNavigate }) {
     const [step, setStep] = useState(0)
     const [form, setForm] = useState(initialForm)
-    const [files, setFiles] = useState([
-        { id: 'sample-pdf', name: 'Primary_Case_Petition.pdf', size: 12.4, progress: 100, type: 'pdf', file: null },
-        { id: 'sample-id', name: 'Identity_Verification_Aadhar.jpg', size: 2.1, progress: 62, type: 'image', file: null },
-    ])
+    const [files, setFiles] = useState([])
     const [message, setMessage] = useState('')
     const [error, setError] = useState('')
     const [submitting, setSubmitting] = useState(false)
@@ -111,39 +108,35 @@ export default function FileCasePage({ onNavigate }) {
     }
 
     return (
-        <div className="filing-app">
-            <FilingTopbar onNavigate={onNavigate} />
-            <div className="filing-layout">
-                <FilingSidebar />
-                <main className="filing-main">
-                    <header className="filing-title">
-                        <h1>File New Case</h1>
-                        <p>Complete the judicial filing process by providing accurate case details.</p>
-                    </header>
+        <DashboardLayout onNavigate={onNavigate} activeItem="Filing Center">
+            <main className="filing-main">
+                <header className="filing-title">
+                    <h1>File New Case</h1>
+                    <p>Complete the judicial filing process by providing accurate case details.</p>
+                </header>
 
-                    <FilingStepper step={step} />
+                <FilingStepper step={step} />
 
-                    {step === 0 && <CaseInfoStep form={form} updateField={updateField} onNext={() => setStep(1)} onSave={saveDraft} />}
-                    {step === 1 && <PartiesStep form={form} updateField={updateField} onPrev={() => setStep(0)} onNext={() => setStep(2)} onSave={saveDraft} />}
-                    {step === 2 && <DetailsStep form={form} updateField={updateField} onPrev={() => setStep(1)} onNext={() => setStep(3)} onSave={saveDraft} />}
-                    {step === 3 && (
-                        <DocumentsStep
-                            files={files}
-                            inputRef={inputRef}
-                            submitting={submitting}
-                            onAddFiles={addFiles}
-                            onRemoveFile={removeFile}
-                            onPrev={() => setStep(2)}
-                            onSave={saveDraft}
-                            onSubmit={submitCase}
-                        />
-                    )}
+                {step === 0 && <CaseInfoStep form={form} updateField={updateField} onNext={() => setStep(1)} onSave={saveDraft} />}
+                {step === 1 && <PartiesStep form={form} updateField={updateField} onPrev={() => setStep(0)} onNext={() => setStep(2)} onSave={saveDraft} />}
+                {step === 2 && <DetailsStep form={form} updateField={updateField} onPrev={() => setStep(1)} onNext={() => setStep(3)} onSave={saveDraft} />}
+                {step === 3 && (
+                    <DocumentsStep
+                        files={files}
+                        inputRef={inputRef}
+                        submitting={submitting}
+                        onAddFiles={addFiles}
+                        onRemoveFile={removeFile}
+                        onPrev={() => setStep(2)}
+                        onSave={saveDraft}
+                        onSubmit={submitCase}
+                    />
+                )}
 
-                    {(message || error) && (
-                        <p className={error ? 'filing-alert error' : 'filing-alert success'}>{error || message}</p>
-                    )}
-                </main>
-            </div>
+                {(message || error) && (
+                    <p className={error ? 'filing-alert error' : 'filing-alert success'}>{error || message}</p>
+                )}
+            </main>
 
             {successCase && (
                 <SuccessModal
@@ -153,48 +146,13 @@ export default function FileCasePage({ onNavigate }) {
                         setForm(initialForm)
                         setStep(0)
                     }}
+                    onViewDetails={() => {
+                        localStorage.setItem('selectedCaseNumber', successCase.number)
+                        onNavigate('case-details')
+                    }}
                 />
             )}
-        </div>
-    )
-}
-
-function FilingTopbar({ onNavigate }) {
-    return (
-        <header className="filing-topbar">
-            <button type="button" onClick={() => onNavigate('home')} className="filing-brand">JusticePortal</button>
-            <nav>
-                <button type="button">Dashboard</button>
-                <button type="button" className="active">New Filing</button>
-                <button type="button">My Cases</button>
-            </nav>
-            <div className="filing-icons">
-                <button type="button">हिन्दी</button>
-                <button type="button" aria-label="Notifications">♧</button>
-                <button type="button" aria-label="Profile">◎</button>
-            </div>
-        </header>
-    )
-}
-
-function FilingSidebar() {
-    const items = ['Dashboard', 'New Filing', 'My Cases', 'Calendar', 'Support']
-    return (
-        <aside className="filing-sidebar">
-            <div className="side-heading">
-                <strong>Case Management</strong>
-                <span>Registry Office</span>
-            </div>
-            <nav>
-                {items.map((item) => (
-                    <button key={item} className={item === 'New Filing' ? 'active' : ''} type="button">
-                        <span>{item === 'New Filing' ? '⌁' : item === 'My Cases' ? '□' : item === 'Support' ? '?' : '▦'}</span>
-                        {item}
-                    </button>
-                ))}
-            </nav>
-            <button className="start-filing" type="button">Start New Filing</button>
-        </aside>
+        </DashboardLayout>
     )
 }
 
@@ -258,7 +216,7 @@ function PartiesStep({ form, updateField, onPrev, onNext, onSave }) {
                     <FilingField label="Respondent Name" value={form.respondentName} onChange={(value) => updateField('respondentName', value)} placeholder="Enter full name of respondent" required />
                 </div>
                 <FilingSelect label="On behalf of" value={form.behalfOf} onChange={(value) => updateField('behalfOf', value)} options={[['Self (Individual Filing)', 'Self (Individual Filing)'], ['Organization', 'Organization'], ['Client', 'Client']]} />
-                <div className="backend-draft-note">Party details are draft-only in the current backend. The case API does not yet store petitioner, respondent, or behalf-of fields.</div>
+
                 <div className="filing-actions blue">
                     <button type="button" className="text-action previous" onClick={onPrev}>← Previous</button>
                     <button type="button" className="text-action" onClick={onSave}>Save Draft</button>
@@ -278,10 +236,8 @@ function DetailsStep({ form, updateField, onPrev, onNext, onSave }) {
             <div className="filing-card-body">
                 <label className="editor-field">
                     <span>Full Case Narrative *</span>
-                    <div className="editor-toolbar">B&nbsp;&nbsp; I&nbsp;&nbsp; ≡&nbsp;&nbsp; 🔗</div>
                     <textarea value={form.description} onChange={(event) => updateField('description', event.target.value)} placeholder="Describe the facts, legal grounds, and relief sought..." required />
                 </label>
-                <FilingSelect label="Assign Legal Representation" value={form.legalRepresentation} onChange={(value) => updateField('legalRepresentation', value)} options={[['', 'Select a registered lawyer or firm'], ['lawyerdemo', 'lawyerdemo'], ['firm', 'Registered Firm']]} badge="Optional" />
                 <FilingField label="Client Username" value={form.clientUsername} onChange={(value) => updateField('clientUsername', value)} placeholder="Required when filing as admin or lawyer, e.g. clientdemo" />
                 <div className="filing-grid cnr">
                     <FilingField label="State Code" value={form.stateCode} onChange={(value) => updateField('stateCode', value)} placeholder="00" maxLength="2" />
@@ -290,7 +246,7 @@ function DetailsStep({ form, updateField, onPrev, onNext, onSave }) {
                     <FilingField label="Filing No." value={form.filingNumber} onChange={(value) => updateField('filingNumber', value)} placeholder="8892" maxLength="4" />
                     <FilingField label="Year" value={form.caseYear} onChange={(value) => updateField('caseYear', value)} placeholder="2024" maxLength="4" />
                 </div>
-                <div className="backend-draft-note">The backend saves title, description, court name, and CNR code fields. Rich text formatting and legal representative selection are not saved yet.</div>
+
                 <div className="filing-actions blue">
                     <button type="button" className="text-action previous" onClick={onPrev}>← Previous</button>
                     <button type="button" className="text-action" onClick={onSave}>Save Draft</button>
@@ -323,8 +279,6 @@ function DocumentsStep({ files, inputRef, submitting, onAddFiles, onRemoveFile, 
                         <span>⇧</span>
                         <strong>Drag & Drop files here</strong>
                         <small>or click to browse from your computer</small>
-                        <em>PDF only for affidavits</em>
-                        <em>OCR recommended</em>
                     </button>
                     <input ref={inputRef} type="file" multiple hidden onChange={(event) => onAddFiles(event.target.files)} />
                     <div className="file-queue">
@@ -346,7 +300,6 @@ function DocumentsStep({ files, inputRef, submitting, onAddFiles, onRemoveFile, 
             <div className="document-actions">
                 <button type="button" className="outline-action" onClick={onPrev}>← Back to Details</button>
                 <span />
-                <button type="button" className="outline-blue">Preview Filing</button>
                 <button type="button" className="soft-blue" onClick={onSave}>Save Draft</button>
                 <button type="button" className="submit-case" onClick={onSubmit} disabled={submitting}>{submitting ? 'Submitting...' : 'Submit Case ▷'}</button>
             </div>
@@ -417,7 +370,7 @@ function GuidanceBand() {
     )
 }
 
-function SuccessModal({ caseData, onFileAnother }) {
+function SuccessModal({ caseData, onFileAnother, onViewDetails }) {
     return (
         <div className="success-overlay">
             <section className="success-modal">
@@ -432,9 +385,8 @@ function SuccessModal({ caseData, onFileAnother }) {
                     <div><span>Status</span><strong>{caseData.status}</strong></div>
                     <div><span>Timestamp</span><strong>{caseData.timestamp}</strong></div>
                 </div>
-                <button type="button" className="view-case">View Case Details</button>
+                <button type="button" className="view-case" onClick={onViewDetails}>View Case Details</button>
                 <button type="button" className="file-another" onClick={onFileAnother}>File Another Case ⊕</button>
-                <a href="#acknowledgement">Download Submission Acknowledgment (PDF)</a>
                 <footer>
                     <span>e-Authenticated via Aadhaar</span>
                     <span>Portal Ref: #JU-992-0X</span>

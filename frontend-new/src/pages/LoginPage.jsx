@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { beginGoogleAuth, login } from '../services/api'
+import { login } from '../services/api'
 
 export default function LoginPage({ onNavigate }) {
     const [identifier, setIdentifier] = useState('')
@@ -9,7 +9,6 @@ export default function LoginPage({ onNavigate }) {
     const [status, setStatus] = useState('')
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
-    const [googleBusy, setGoogleBusy] = useState(false)
 
     const handleSubmit = async (event) => {
         event.preventDefault()
@@ -29,21 +28,6 @@ export default function LoginPage({ onNavigate }) {
             setError(err.message || 'Login failed. Check credentials.')
         } finally {
             setLoading(false)
-        }
-    }
-
-    const handleGoogleSignIn = async () => {
-        setGoogleBusy(true)
-        setError('')
-        setStatus('')
-
-        try {
-            const data = await beginGoogleAuth()
-            setStatus(data.message || 'Google sign-in request received.')
-        } catch (err) {
-            setError(err.message || 'Google sign-in is not available yet.')
-        } finally {
-            setGoogleBusy(false)
         }
     }
 
@@ -111,7 +95,6 @@ export default function LoginPage({ onNavigate }) {
                                 />
                                 Remember Me
                             </label>
-                            <button className="link-button" type="button">Forgot Password?</button>
                         </div>
 
                         {error && <p className="form-alert error">{error}</p>}
@@ -122,13 +105,6 @@ export default function LoginPage({ onNavigate }) {
                             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
                         </button>
                     </form>
-
-                    <div className="divider"><span>Or continue with</span></div>
-
-                    <button className="google-button" type="button" onClick={handleGoogleSignIn} disabled={googleBusy}>
-                        <span className="google-g" aria-hidden="true">G</span>
-                        {googleBusy ? 'Checking Google...' : 'Sign in with Google'}
-                    </button>
 
                     <p className="auth-note">
                         Authorized personnel only.
@@ -150,12 +126,8 @@ function AuthHeader({ onNavigate, active }) {
             </button>
             <nav className="auth-nav" aria-label="Primary">
                 <button type="button" onClick={() => onNavigate('home')}>Track Case</button>
-                <button type="button">Cause List</button>
-                <button type="button">Judgments</button>
-                <button type="button">Help Desk</button>
             </nav>
             <div className="auth-actions">
-                <span>English / हिन्दी</span>
                 <button className={active === 'signup' ? 'nav-pill active' : 'nav-pill'} type="button" onClick={() => onNavigate('signup')}>Sign Up</button>
                 <button className={active === 'login' ? 'nav-pill active' : 'nav-pill'} type="button" onClick={() => onNavigate('login')}>Sign In</button>
             </div>
@@ -167,7 +139,7 @@ export function AuthFooter() {
     return (
         <footer className="auth-footer">
             <span>© 2024 Department of Justice. Digital India Initiative.</span>
-            <span>Privacy Policy&nbsp;&nbsp;&nbsp; Terms of Use&nbsp;&nbsp;&nbsp; Accessibility Statement&nbsp;&nbsp;&nbsp; Contact</span>
+            <span>Privacy Policy&nbsp;&nbsp;&nbsp; Terms of Use&nbsp;&nbsp;&nbsp; Accessibility Statement</span>
         </footer>
     )
 }

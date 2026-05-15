@@ -20,7 +20,7 @@ export default function LandingPage() {
             if (caseNumber.trim()) params.caseNumber = caseNumber.trim();
             if (year) params.year = Number.parseInt(year, 10);
             if (courtName.trim()) params.courtName = courtName.trim();
-
+            
             const response = await searchPublicCases(params);
 
             if (response.data && response.data.length > 0) {

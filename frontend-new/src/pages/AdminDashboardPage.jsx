@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { getAdminUsers, getAllCases, getDashboardSummary } from '../services/api'
+import DashboardLayout from '../components/DashboardLayout'
 
 export default function AdminDashboardPage({ onNavigate }) {
     const [summary, setSummary] = useState(null)
@@ -27,7 +28,7 @@ export default function AdminDashboardPage({ onNavigate }) {
                 setCases(Array.isArray(caseData) ? caseData : [])
             } catch (err) {
                 if (!mounted) return
-                setError(err.message || 'Unable to load admin dashboard. Sign in with an admin account.')
+                setError(err.message || 'Unable to load admin dashboard.')
             } finally {
                 if (mounted) setLoading(false)
             }
@@ -45,43 +46,28 @@ export default function AdminDashboardPage({ onNavigate }) {
         const activeCases = summary?.activeCases ?? cases.filter((item) => item.status !== 'CLOSED').length
         const closedCases = summary?.closedCases ?? cases.filter((item) => item.status === 'CLOSED').length
         const pendingCases = cases.filter((item) => ['FILED', 'SCRUTINY', 'PENDING'].includes(item.status)).length
+        const unassignedCases = summary?.unassignedCases ?? 0
         const activeJudges = summary?.activeJudges || users.filter((user) => user.role === 'JUDGE' && user.active).length
-        return { totalCases, totalUsers, activeCases, closedCases, pendingCases, activeJudges }
+        return { totalCases, totalUsers, activeCases, closedCases, pendingCases, unassignedCases, activeJudges }
     }, [summary, cases, users])
 
-    const casesByCourt = useMemo(() => {
-        const counts = cases.reduce((acc, courtCase) => {
-            const court = courtCase.courtName || 'Unassigned Court'
-            acc[court] = (acc[court] || 0) + 1
-            return acc
-        }, {})
-        const entries = Object.entries(counts)
-            .sort((a, b) => b[1] - a[1])
-            .slice(0, 3)
-        return entries.length ? entries : [['Supreme Bench', 0], ['High Court Division', 0], ['District & Sessions', 0]]
-    }, [cases])
-
     const recentCases = summary?.recentCases?.length ? summary.recentCases : cases.slice(0, 5)
-    const maxCourtCount = Math.max(...casesByCourt.map(([, count]) => count), 1)
 
-    const logout = () => {
-        localStorage.clear()
-        onNavigate('login')
+    const openCase = (caseNumber) => {
+        localStorage.setItem('selectedCaseNumber', caseNumber)
+        onNavigate('case-details')
     }
 
     return (
-        <div className="admin-app">
-            <AdminSidebar onNavigate={onNavigate} onLogout={logout} />
+        <DashboardLayout onNavigate={onNavigate} activeItem="Dashboard">
             <main className="admin-main">
-                <AdminTopbar />
-
                 <section className="admin-content">
                     <div className="admin-welcome">
                         <p>Welcome, System Administrator</p>
-                        <h1>You have {summary?.pendingActions ?? metrics.pendingCases} pending actions today. System health is stable.</h1>
+                        <h1>You have {summary?.pendingActions ?? metrics.pendingCases} pending actions. {metrics.unassignedCases > 0 ? `${metrics.unassignedCases} cases need judge assignment.` : 'All cases are assigned.'}</h1>
                     </div>
 
-                    {loading && <div className="admin-state">Loading admin dashboard from backend...</div>}
+                    {loading && <div className="admin-state">Loading admin dashboard...</div>}
                     {error && (
                         <div className="admin-state error">
                             {error}
@@ -92,54 +78,62 @@ export default function AdminDashboardPage({ onNavigate }) {
                     {!loading && !error && (
                         <>
                             <div className="admin-metrics">
-                                <MetricCard title="Total Cases" value={metrics.totalCases} accent="+12%" icon="▣" />
-                                <MetricCard title="Total Users" value={metrics.totalUsers} accent="This month" icon="♙" warm />
-                                <StatusCard active={metrics.activeCases} pending={metrics.pendingCases} closed={metrics.closedCases} />
-                                <HealthCard />
+                                <article className="metric-card">
+                                    <div className="metric-icon">▣</div>
+                                    <strong>Total Cases</strong>
+                                    <p>{metrics.totalCases}</p>
+                                </article>
+                                <article className="metric-card">
+                                    <div className="metric-icon warm">♙</div>
+                                    <strong>Total Users</strong>
+                                    <p>{metrics.totalUsers}</p>
+                                </article>
+                                <article className="metric-card">
+                                    <div className="metric-icon">⌁</div>
+                                    <strong>Active Cases</strong>
+                                    <p>{metrics.activeCases}</p>
+                                </article>
+                                <article className="metric-card">
+                                    <div className="metric-icon">⚖</div>
+                                    <strong>Active Judges</strong>
+                                    <p>{metrics.activeJudges}</p>
+                                </article>
                             </div>
 
                             <div className="admin-dashboard-grid">
-                                <section className="admin-panel chart-panel">
-                                    <div className="panel-title-row">
-                                        <div>
-                                            <h2>Monthly Case Filing Trend</h2>
-                                            <p>Aggregated system-wide data for {new Date().getFullYear()}</p>
+                                {/* Status Distribution */}
+                                <section className="admin-panel">
+                                    <h2>Case Status Distribution</h2>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, marginTop: 16 }}>
+                                        <div style={{ textAlign: 'center', padding: 16, background: '#eff6ff', borderRadius: 8 }}>
+                                            <strong style={{ fontSize: 28, color: '#0b2fbb' }}>{metrics.activeCases}</strong>
+                                            <p style={{ margin: 0, fontSize: 13 }}>Active</p>
                                         </div>
-                                        <div className="segmented">
-                                            <button type="button">Weekly</button>
-                                            <button type="button" className="active">Monthly</button>
+                                        <div style={{ textAlign: 'center', padding: 16, background: '#fef3c7', borderRadius: 8 }}>
+                                            <strong style={{ fontSize: 28, color: '#d97706' }}>{metrics.pendingCases}</strong>
+                                            <p style={{ margin: 0, fontSize: 13 }}>Pending</p>
+                                        </div>
+                                        <div style={{ textAlign: 'center', padding: 16, background: '#fce7f3', borderRadius: 8 }}>
+                                            <strong style={{ fontSize: 28, color: '#be185d' }}>{metrics.closedCases}</strong>
+                                            <p style={{ margin: 0, fontSize: 13 }}>Closed</p>
                                         </div>
                                     </div>
-                                    <BarChart cases={cases} />
                                 </section>
 
-                                <section className="admin-panel pending-panel">
-                                    <h2>Pending Actions</h2>
-                                    <article className="action-card danger">
-                                        <strong>Critical Assignment Needed</strong>
-                                        <p>{summary?.unassignedCases ?? 0} cases require bench allocation before EOD.</p>
-                                        <button type="button">Action Now</button>
-                                    </article>
-                                    <article className="action-card warning">
-                                        <strong>Review Required</strong>
-                                        <p>Updated filing rules awaiting system-wide approval.</p>
-                                        <button type="button">View Document</button>
-                                    </article>
-                                </section>
-
+                                {/* Recent Cases */}
                                 <section className="admin-panel recent-panel">
                                     <div className="panel-title-row">
-                                        <h2>Recent Cases List</h2>
-                                        <button type="button">View All</button>
+                                        <h2>Recent Cases</h2>
+                                        <button type="button" onClick={() => onNavigate('case-search')}>View All</button>
                                     </div>
                                     <table>
                                         <thead>
                                             <tr>
                                                 <th>Case ID</th>
                                                 <th>Title</th>
-                                                <th>Filing Date</th>
+                                                <th>Filed</th>
                                                 <th>Status</th>
-                                                <th>Actions</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -148,31 +142,21 @@ export default function AdminDashboardPage({ onNavigate }) {
                                                     <td>{courtCase.caseNumber}</td>
                                                     <td>{courtCase.title}</td>
                                                     <td>{formatDate(courtCase.filedDate)}</td>
-                                                    <td><span className={`status-pill ${String(courtCase.status).toLowerCase()}`}>{formatStatus(courtCase.status)}</span></td>
-                                                    <td>◎</td>
+                                                    <td><span className={`status-pill ${String(courtCase.status).toLowerCase()}`}>{String(courtCase.status).replaceAll('_', ' ')}</span></td>
+                                                    <td><button onClick={() => openCase(courtCase.caseNumber)}>Open</button></td>
                                                 </tr>
                                             ))}
                                         </tbody>
                                     </table>
                                 </section>
 
+                                {/* Quick Actions */}
                                 <aside className="admin-side-stack">
-                                    <section className="admin-panel court-panel">
-                                        <h2>Cases by Court</h2>
-                                        {casesByCourt.map(([court, count]) => (
-                                            <div className="court-row" key={court}>
-                                                <div><span>{court}</span><strong>{count}</strong></div>
-                                                <i><b style={{ width: `${(count / maxCourtCount) * 100}%` }} /></i>
-                                            </div>
-                                        ))}
-                                    </section>
-
                                     <section className="quick-actions">
                                         <h2>Quick Actions</h2>
-                                        <button type="button" onClick={() => onNavigate('file-case')}>⊕<span>File Case</span></button>
-                                        <button type="button">♙<span>Users</span></button>
-                                        <button type="button">▤<span>Logs</span></button>
-                                        <button type="button">⚙<span>System</span></button>
+                                        <button type="button" onClick={() => onNavigate('file-case')}>⊕ File New Case</button>
+                                        <button type="button" onClick={() => onNavigate('user-details')}>♙ Manage Users</button>
+                                        <button type="button" onClick={() => onNavigate('case-search')}>⌕ Search Cases</button>
                                     </section>
                                 </aside>
                             </div>
@@ -180,132 +164,11 @@ export default function AdminDashboardPage({ onNavigate }) {
                     )}
                 </section>
             </main>
-        </div>
-    )
-}
-
-function AdminSidebar({ onNavigate, onLogout }) {
-    const items = ['Dashboard', 'Case Management', 'Judges', 'Filings', 'Users', 'Reports']
-    return (
-        <aside className="admin-sidebar">
-            <button className="admin-logo" type="button" onClick={() => onNavigate('admin')}>
-                <span>▥</span>
-                <strong>E-Court Admin<small>High Court Division</small></strong>
-            </button>
-            <nav>
-                {items.map((item) => (
-                    <button className={item === 'Dashboard' ? 'active' : ''} type="button" key={item}>
-                        <span>{item === 'Dashboard' ? '▦' : item === 'Users' ? '♙' : item === 'Reports' ? '▣' : '⌁'}</span>
-                        {item}
-                    </button>
-                ))}
-            </nav>
-            <div className="admin-side-bottom">
-                <button type="button" onClick={() => onNavigate('file-case')}>＋ New Filing</button>
-                <button type="button">? Help Center</button>
-                <button type="button" onClick={onLogout}>⇱ Logout</button>
-            </div>
-        </aside>
-    )
-}
-
-function AdminTopbar() {
-    return (
-        <header className="admin-topbar">
-            <label className="admin-search">
-                <span>⌕</span>
-                <input placeholder="Search cases, judges, or filings..." />
-            </label>
-            <div className="admin-toolbar">
-                <button type="button">◎</button>
-                <button type="button">♧</button>
-                <button type="button">⚙</button>
-                <div className="admin-profile">
-                    <strong>Admin Profile</strong>
-                    <span>Super Admin</span>
-                </div>
-                <div className="admin-avatar">⚖</div>
-            </div>
-        </header>
-    )
-}
-
-function MetricCard({ title, value, accent, icon, warm = false }) {
-    return (
-        <article className="metric-card">
-            <div className={warm ? 'metric-icon warm' : 'metric-icon'}>{icon}</div>
-            <span>{accent}</span>
-            <strong>{title}</strong>
-            <p>{Number(value || 0).toLocaleString()}</p>
-        </article>
-    )
-}
-
-function StatusCard({ active, pending, closed }) {
-    const total = Math.max(active + pending + closed, 1)
-    return (
-        <article className="status-card admin-panel">
-            <h2>Status Distribution</h2>
-            <div className="status-donut" />
-            <ul>
-                <li><b className="blue-dot" /> Active ({Math.round((active / total) * 100)}%)</li>
-                <li><b className="amber-dot" /> Pending ({Math.round((pending / total) * 100)}%)</li>
-                <li><b className="red-dot" /> Closed ({Math.round((closed / total) * 100)}%)</li>
-            </ul>
-        </article>
-    )
-}
-
-function HealthCard() {
-    return (
-        <article className="health-card admin-panel">
-            <h2>System Health</h2>
-            <HealthRow label="Database Status" value="Stable" width="100%" good />
-            <HealthRow label="Storage Usage" value="82%" width="82%" />
-            <div className="api-dots"><span>API Endpoints</span><b /><b /><b /><i /></div>
-        </article>
-    )
-}
-
-function HealthRow({ label, value, width, good = false }) {
-    return (
-        <div className="health-row">
-            <div><span>{label}</span><strong className={good ? 'good' : ''}>{value}</strong></div>
-            <i><b style={{ width }} /></i>
-        </div>
-    )
-}
-
-function BarChart({ cases }) {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
-    const counts = months.map((month, index) => {
-        const monthIndex = index
-        return cases.filter((courtCase) => {
-            if (!courtCase.filedDate) return false
-            return new Date(courtCase.filedDate).getMonth() === monthIndex
-        }).length
-    })
-    const fallback = [35, 52, 48, 74, 82, 61]
-    const values = counts.some(Boolean) ? counts : fallback
-    const max = Math.max(...values, 1)
-
-    return (
-        <div className="admin-bars">
-            {months.map((month, index) => (
-                <div key={month}>
-                    <i style={{ height: `${Math.max((values[index] / max) * 88, 10)}%` }} />
-                    <span>{month}</span>
-                </div>
-            ))}
-        </div>
+        </DashboardLayout>
     )
 }
 
 function formatDate(value) {
     if (!value) return 'Not filed'
     return new Date(value).toLocaleDateString('en-IN', { month: 'short', day: '2-digit', year: 'numeric' })
-}
-
-function formatStatus(value) {
-    return String(value || 'NEW').replaceAll('_', ' ')
 }

@@ -4,9 +4,7 @@
 `E-Court` is a full-stack, role-aware digital case workflow system and public tracking platform built with **Spring Boot (Java)** for the backend and **React (Vite)** for the frontend. It is designed to modernize court and legal workflows by bringing together a secure internal portal for legal professionals and a transparent tracking layer for the public. 
 
 The application addresses the complexities of the legal system, which involves multiple user roles, frequent status transitions, document-heavy case records, hearing schedules, and the need for public transparency.
-
 ---
-
 ## What Features It Offers
 
 ### 1. Authentication & Security

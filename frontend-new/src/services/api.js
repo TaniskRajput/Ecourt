@@ -24,6 +24,8 @@ async function request(path, options = {}) {
     return data
 }
 
+// ── Auth ────────────────────────────────────────────────────────────────
+
 export async function login(username, password) {
     return request('/auth/login', {
         method: 'POST',
@@ -31,40 +33,14 @@ export async function login(username, password) {
     })
 }
 
-export async function register({ username, email, password, role }) {
+export async function register(payload) {
     return request('/auth/register', {
         method: 'POST',
-        body: JSON.stringify({ username, email, password, role }),
+        body: JSON.stringify(payload),
     })
 }
 
-export async function requestRegistrationOtp({ username, email, role }) {
-    return request('/auth/register/request-otp', {
-        method: 'POST',
-        body: JSON.stringify({ username, email, role }),
-    })
-}
-
-export async function verifyRegistrationOtp({ email, otp }) {
-    return request('/auth/register/verify-otp', {
-        method: 'POST',
-        body: JSON.stringify({ email, otp }),
-    })
-}
-
-export async function completeRegistration({ username, email, password, confirmPassword, verificationTicket, role }) {
-    return request('/auth/register/complete', {
-        method: 'POST',
-        body: JSON.stringify({ username, email, password, confirmPassword, verificationTicket, role }),
-    })
-}
-
-export async function beginGoogleAuth() {
-    return request('/auth/google', {
-        method: 'POST',
-        body: JSON.stringify({ credential: 'device-google-account' }),
-    })
-}
+// ── Cases ───────────────────────────────────────────────────────────────
 
 export async function fileCase(payload) {
     return request('/cases', {
@@ -85,11 +61,6 @@ export async function getMyCases() {
     return request('/cases/my')
 }
 
-export async function getAdminUsers(params = {}) {
-    const query = new URLSearchParams({ size: '100', ...params }).toString()
-    return request(`/admin/users?${query}`)
-}
-
 export async function searchCases(params = {}) {
     const query = new URLSearchParams({ size: '10', ...params }).toString()
     return request(`/cases/search?${query}`)
@@ -97,18 +68,6 @@ export async function searchCases(params = {}) {
 
 export async function getCaseByNumber(caseNumber) {
     return request(`/cases/${encodeURIComponent(caseNumber)}`)
-}
-
-export async function getCaseAudit(caseNumber) {
-    return request(`/cases/${encodeURIComponent(caseNumber)}/audit`)
-}
-
-export async function getCaseDocuments(caseNumber) {
-    return request(`/cases/${encodeURIComponent(caseNumber)}/documents`)
-}
-
-export async function getCaseHearings(caseNumber) {
-    return request(`/cases/${encodeURIComponent(caseNumber)}/hearings`)
 }
 
 export async function updateCaseStatus(caseNumber, status) {
@@ -124,23 +83,7 @@ export async function assignJudge(caseNumber, judgeUsername) {
     })
 }
 
-export async function updateUserRole(userId, role) {
-    return request(`/admin/users/${userId}/role`, {
-        method: 'PUT',
-        body: JSON.stringify({ role }),
-    })
-}
-
-export async function updateUserStatus(userId, active) {
-    return request(`/admin/users/${userId}/status`, {
-        method: 'PUT',
-        body: JSON.stringify({ active }),
-    })
-}
-
-export async function getNotifications() {
-    return request('/notifications')
-}
+// ── Documents ───────────────────────────────────────────────────────────
 
 export async function uploadCaseDocument(caseNumber, file) {
     const token = localStorage.getItem('jwt')
@@ -165,4 +108,142 @@ export async function uploadCaseDocument(caseNumber, file) {
     }
 
     return data
+}
+
+export async function getCaseDocuments(caseNumber) {
+    return request(`/cases/${encodeURIComponent(caseNumber)}/documents`)
+}
+
+export function getDocumentDownloadUrl(caseNumber, documentId) {
+    return `${API_URL}/cases/${encodeURIComponent(caseNumber)}/documents/${documentId}/download`
+}
+
+// ── Hearings ────────────────────────────────────────────────────────────
+
+export async function getCaseHearings(caseNumber) {
+    return request(`/cases/${encodeURIComponent(caseNumber)}/hearings`)
+}
+
+export async function addHearing(caseNumber, payload) {
+    return request(`/cases/${encodeURIComponent(caseNumber)}/hearings`, {
+        method: 'POST',
+        body: JSON.stringify(payload),
+    })
+}
+
+// ── Orders ──────────────────────────────────────────────────────────────
+
+export async function getCaseOrders(caseNumber) {
+    return request(`/cases/${encodeURIComponent(caseNumber)}/orders`)
+}
+
+export async function uploadOrder(caseNumber, file, orderType, title, orderDate) {
+    const token = localStorage.getItem('jwt')
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('orderType', orderType)
+    if (title) formData.append('title', title)
+    if (orderDate) formData.append('orderDate', orderDate)
+
+    const response = await fetch(`${API_URL}/cases/${encodeURIComponent(caseNumber)}/orders`, {
+        method: 'POST',
+        headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: formData,
+    })
+
+    const contentType = response.headers.get('content-type') || ''
+    const data = contentType.includes('application/json')
+        ? await response.json()
+        : { message: await response.text() }
+
+    if (!response.ok) {
+        throw new Error(data.message || data.error || data.detail || 'Order upload failed')
+    }
+
+    return data
+}
+
+// ── Audit ───────────────────────────────────────────────────────────────
+
+export async function getCaseAudit(caseNumber) {
+    return request(`/cases/${encodeURIComponent(caseNumber)}/audit`)
+}
+
+// ── Notifications ───────────────────────────────────────────────────────
+
+export async function getNotifications() {
+    return request('/notifications')
+}
+
+export async function markNotificationRead(notificationId) {
+    return request(`/notifications/${notificationId}/read`, { method: 'PUT' })
+}
+
+export async function markAllNotificationsRead() {
+    return request('/notifications/read-all', { method: 'PUT' })
+}
+
+// ── Admin ───────────────────────────────────────────────────────────────
+
+export async function getAdminUsers(params = {}) {
+    const query = new URLSearchParams({ size: '100', ...params }).toString()
+    return request(`/admin/users?${query}`)
+}
+
+export async function adminCreateUser(payload) {
+    return request('/admin/users', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+    })
+}
+
+export async function updateUserRole(userId, role) {
+    return request(`/admin/users/${userId}/role`, {
+        method: 'PUT',
+        body: JSON.stringify({ role }),
+    })
+}
+
+export async function updateUserStatus(userId, active) {
+    return request(`/admin/users/${userId}/status`, {
+        method: 'PUT',
+        body: JSON.stringify({ active }),
+    })
+}
+
+// ── User Profile ────────────────────────────────────────────────────────
+
+export async function getMyProfile() {
+    return request('/users/me')
+}
+
+export async function updateMyProfile(payload) {
+    return request('/users/me', {
+        method: 'PUT',
+        body: JSON.stringify(payload),
+    })
+}
+
+export async function changeMyPassword(oldPassword, newPassword) {
+    return request('/users/me/password', {
+        method: 'PUT',
+        body: JSON.stringify({ oldPassword, newPassword }),
+    })
+}
+
+// ── Public Case Tracking ────────────────────────────────────────────────
+
+export async function publicTrackCases(params = {}) {
+    const query = new URLSearchParams(params).toString()
+    return request(`/public/cases/track?${query}`)
+}
+
+export async function publicGetCaseDetail(caseNumber) {
+    return request(`/public/cases/${encodeURIComponent(caseNumber)}`)
+}
+
+export function publicGetOrderDownloadUrl(caseNumber, documentId) {
+    return `${API_URL}/public/cases/${encodeURIComponent(caseNumber)}/orders/${documentId}/download`
 }

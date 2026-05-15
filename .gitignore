@@ -2,6 +2,8 @@
 HELP.md
 HANDOFF.md
 WORKLOG.md
+.codex
+*.DISABLED
 
 # Java / Maven build output
 target/
@@ -46,13 +48,14 @@ build/
 # Node / React
 node_modules/
 frontend-react/node_modules/
-frontend-react/dist/
-frontend-react/dist-ssr/
-frontend-react/.vite/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 pnpm-debug.log*
+
+# Build outputs
+dist/
+build/
+frontend-react/dist/
+frontend-new/dist/
+src/main/resources/static/assets/
 
 # Local runtime files
 /data/
@@ -68,3 +71,10 @@ pnpm-debug.log*
 # OS files
 .DS_Store
 Thumbs.db
+
+# PID files
+*.pid
+frontend-new/*.pid
+
+# Local assets
+image.png
