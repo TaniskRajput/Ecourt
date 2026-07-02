@@ -74,7 +74,7 @@ class CourtCaseControllerIntegrationTest {
             }
             """))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.caseNumber").value(org.hamcrest.Matchers.startsWith("ECOURT-")))
+        .andExpect(jsonPath("$.caseNumber").value(org.hamcrest.Matchers.hasLength(17)))
         .andExpect(jsonPath("$.clientUsername").value("client1"))
         .andExpect(jsonPath("$.status").value("FILED"))
         .andExpect(jsonPath("$.documents").isArray());
@@ -548,7 +548,8 @@ class CourtCaseControllerIntegrationTest {
             {
               "clientUsername": "client1",
               "title": "Alpha Contract Matter",
-              "description": "Alpha description"
+              "description": "Alpha description",
+              "filingNumber": "0001"
             }
             """))
         .andExpect(status().isOk());
@@ -560,7 +561,8 @@ class CourtCaseControllerIntegrationTest {
             {
               "clientUsername": "client1",
               "title": "Beta Property Matter",
-              "description": "Beta description"
+              "description": "Beta description",
+              "filingNumber": "0002"
             }
             """))
         .andExpect(status().isOk())
