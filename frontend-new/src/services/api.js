@@ -1,5 +1,5 @@
 const configuredApiUrl = import.meta.env.VITE_API_URL?.trim()
-const API_URL = configuredApiUrl || 'http://127.0.0.1:8081'
+const API_URL = configuredApiUrl ?? ''
 
 async function request(path, options = {}) {
     const token = localStorage.getItem('jwt')
