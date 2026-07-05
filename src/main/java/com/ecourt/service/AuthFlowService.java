@@ -89,7 +89,7 @@ public class AuthFlowService {
                     "Registration details do not match the verified email session.");
         }
 
-        userService.createVerifiedUser(username, email, password, role, "LOCAL", null);
+        userService.createVerifiedUser(request, "LOCAL", null);
         verifiedOtp.setUsed(true);
         authOtpRepository.save(verifiedOtp);
         return "Registration completed successfully.";

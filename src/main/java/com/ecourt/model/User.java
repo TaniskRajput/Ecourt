@@ -86,6 +86,13 @@ public class User {
     @Column(updatable = false)
     private java.time.Instant createdAt;
 
+    @jakarta.persistence.PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = java.time.Instant.now();
+        }
+    }
+
     public Long getId() {
         return id;
     }

@@ -5068,6 +5068,18 @@ svg {
     top: 0;
     height: 100vh;
     z-index: 101;
+    overflow-y: auto;
+}
+
+.unified-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+.unified-sidebar::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 4px;
+}
+.unified-sidebar::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 .sidebar-brand {
@@ -5186,19 +5198,21 @@ svg {
 /* ── Sidebar User Card ──────────────────────────────────────────────── */
 
 .sidebar-user-card {
-    padding: 16px;
-    margin: 8px 16px;
-    border-top: 1px solid #e2e8f0;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px;
+    margin: 8px 16px 16px;
+    background: #ffffff;
     display: flex;
     align-items: center;
     gap: 12px;
     cursor: pointer;
-    border-radius: 10px;
-    transition: background 0.2s;
+    transition: all 0.2s ease;
 }
 
 .sidebar-user-card:hover {
-    background: #f1f5f9;
+    background: #f8fafc;
+    border-color: #cbd5e1;
 }
 
 .sidebar-user-avatar {
@@ -5235,6 +5249,187 @@ svg {
     border-radius: 10px;
     min-width: 20px;
     text-align: center;
+}
+
+/* ── Sidebar Quick Actions and Insights ──────────────────────────────── */
+
+.sidebar-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 24px 24px 8px;
+}
+
+.sidebar-quick-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 16px;
+}
+
+.sidebar-quick-actions button {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 10px 12px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.sidebar-quick-actions button:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.qa-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    margin-right: 12px;
+}
+
+.qa-icon-wrapper.blue-icon {
+    background: #eff6ff;
+    color: #2563eb;
+}
+
+.qa-icon-wrapper.purple-icon {
+    background: #f5f3ff;
+    color: #7c3aed;
+}
+
+.qa-icon-wrapper.green-icon {
+    background: #f0fdf4;
+    color: #16a34a;
+}
+
+.qa-label {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #334155;
+    flex: 1;
+}
+
+.qa-arrow {
+    font-size: 18px;
+    color: #94a3b8;
+    line-height: 1;
+}
+
+.sidebar-insights-container {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.insights-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.insights-title .green-dot {
+    color: #10b981;
+    font-size: 8px;
+}
+
+.insights-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+
+.insights-card-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.insights-card-value {
+    font-size: 20px;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.insights-card-hearing-date {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #0b2fbb;
+}
+
+.insights-card-hearing-loc {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+.sidebar-orange-dot {
+    width: 6px;
+    height: 6px;
+    background-color: #f97316;
+    border-radius: 50%;
+    margin-left: auto;
+    display: inline-block;
+}
+
+.sidebar-nav button svg {
+    margin-right: 0px;
+    transition: color 0.2s;
+}
+
+.sidebar-nav button.active svg {
+    color: #0b2fbb;
+}
+
+.sidebar-footer {
+    padding: 0 16px 24px;
+    border-top: 0;
+}
+
+.sidebar-footer button.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: transparent;
+    border: 0;
+    color: #ef4444 !important;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    width: fit-content;
+    border-radius: 8px;
+    transition: background 0.2s;
+    text-align: left;
+}
+
+.sidebar-footer button.logout-btn:hover {
+    background: #fef2f2;
 }
 
 /* ── Profile Page ───────────────────────────────────────────────────── */

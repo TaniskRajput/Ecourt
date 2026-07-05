@@ -1,9 +1,7 @@
 # E-Court Case Tracker
-
 A full-stack court case management and public tracking platform built with Spring Boot and React.
 
 `Ecourt` is designed as a role-aware digital case workflow system for clients, lawyers, judges, and administrators. It combines secure authentication, case lifecycle management, hearing history, court order handling, notifications, and a public-facing case tracking experience in one application.
-
 ---
 
 ## Why This Project Exists

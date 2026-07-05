@@ -10,7 +10,19 @@ export default function ProfilePage({ onNavigate }) {
 
     // Editable fields
     const [editing, setEditing] = useState(false)
-    const [form, setForm] = useState({ fullName: '', mobileNumber: '', address: '', aadhaarLast4: '' })
+    const [form, setForm] = useState({
+        fullName: '',
+        mobileNumber: '',
+        address: '',
+        aadhaarLast4: '',
+        state: '',
+        district: '',
+        preferredCourt: '',
+        barCouncilId: '',
+        enrollmentNumber: '',
+        practiceArea: '',
+        idProofType: '',
+    })
 
     // Password change
     const [showPassword, setShowPassword] = useState(false)
@@ -30,6 +42,13 @@ export default function ProfilePage({ onNavigate }) {
                     mobileNumber: data.mobileNumber || '',
                     address: data.address || '',
                     aadhaarLast4: data.aadhaarLast4 || '',
+                    state: data.state || '',
+                    district: data.district || '',
+                    preferredCourt: data.preferredCourt || '',
+                    barCouncilId: data.barCouncilId || '',
+                    enrollmentNumber: data.enrollmentNumber || '',
+                    practiceArea: data.practiceArea || '',
+                    idProofType: data.idProofType || '',
                 })
             } catch (err) {
                 setError(err.message || 'Unable to load profile.')
@@ -107,6 +126,7 @@ export default function ProfilePage({ onNavigate }) {
                                 <div><span>Email</span><strong>{profile.email}</strong></div>
                                 <div><span>Role</span><strong>{profile.role}</strong></div>
                                 {profile.aadhaarLast4 && <div><span>Aadhaar</span><strong>XXXX-XXXX-{profile.aadhaarLast4}</strong></div>}
+                                {profile.createdAt && <div><span>Member Since</span><strong>{new Date(profile.createdAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}</strong></div>}
                             </div>
                         </section>
 
@@ -120,7 +140,22 @@ export default function ProfilePage({ onNavigate }) {
                                     ) : (
                                         <div style={{ display: 'flex', gap: 8 }}>
                                             <button onClick={saveProfile} className="profile-save-btn">Save</button>
-                                            <button onClick={() => { setEditing(false); setForm({ fullName: profile.fullName || '', mobileNumber: profile.mobileNumber || '', address: profile.address || '', aadhaarLast4: profile.aadhaarLast4 || '' }) }}>Cancel</button>
+                                            <button onClick={() => {
+                                                setEditing(false);
+                                                setForm({
+                                                    fullName: profile.fullName || '',
+                                                    mobileNumber: profile.mobileNumber || '',
+                                                    address: profile.address || '',
+                                                    aadhaarLast4: profile.aadhaarLast4 || '',
+                                                    state: profile.state || '',
+                                                    district: profile.district || '',
+                                                    preferredCourt: profile.preferredCourt || '',
+                                                    barCouncilId: profile.barCouncilId || '',
+                                                    enrollmentNumber: profile.enrollmentNumber || '',
+                                                    practiceArea: profile.practiceArea || '',
+                                                    idProofType: profile.idProofType || '',
+                                                })
+                                            }}>Cancel</button>
                                         </div>
                                     )}
                                 </div>
@@ -165,6 +200,79 @@ export default function ProfilePage({ onNavigate }) {
                                             placeholder="1234"
                                         />
                                     </label>
+                                    <label>
+                                        <span>State</span>
+                                        <input
+                                            value={form.state}
+                                            onChange={(e) => updateField('state', e.target.value)}
+                                            disabled={!editing}
+                                            placeholder="Delhi"
+                                        />
+                                    </label>
+                                    <label>
+                                        <span>District</span>
+                                        <input
+                                            value={form.district}
+                                            onChange={(e) => updateField('district', e.target.value)}
+                                            disabled={!editing}
+                                            placeholder="New Delhi"
+                                        />
+                                    </label>
+                                    <label>
+                                        <span>Preferred Court</span>
+                                        <input
+                                            value={form.preferredCourt}
+                                            onChange={(e) => updateField('preferredCourt', e.target.value)}
+                                            disabled={!editing}
+                                            placeholder="Delhi High Court"
+                                        />
+                                    </label>
+                                    <label>
+                                        <span>ID Proof Type</span>
+                                        <select
+                                            value={form.idProofType}
+                                            onChange={(e) => updateField('idProofType', e.target.value)}
+                                            disabled={!editing}
+                                            style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid var(--border)', background: 'var(--bg-card)', color: 'var(--text)' }}
+                                        >
+                                            <option value="">Select ID Type</option>
+                                            <option value="Aadhaar">Aadhaar</option>
+                                            <option value="PAN">PAN</option>
+                                            <option value="Passport">Passport</option>
+                                            <option value="Voter ID">Voter ID</option>
+                                        </select>
+                                    </label>
+                                    <label>
+                                        <span>Practice Area</span>
+                                        <input
+                                            value={form.practiceArea}
+                                            onChange={(e) => updateField('practiceArea', e.target.value)}
+                                            disabled={!editing}
+                                            placeholder="Civil, Criminal, Tax"
+                                        />
+                                    </label>
+                                    {profile.role === 'LAWYER' && (
+                                        <>
+                                            <label>
+                                                <span>Bar Council ID</span>
+                                                <input
+                                                    value={form.barCouncilId}
+                                                    onChange={(e) => updateField('barCouncilId', e.target.value)}
+                                                    disabled={!editing}
+                                                    placeholder="D/1234/2024"
+                                                />
+                                            </label>
+                                            <label>
+                                                <span>Enrollment Number</span>
+                                                <input
+                                                    value={form.enrollmentNumber}
+                                                    onChange={(e) => updateField('enrollmentNumber', e.target.value)}
+                                                    disabled={!editing}
+                                                    placeholder="BCI-2024-0091"
+                                                />
+                                            </label>
+                                        </>
+                                    )}
                                 </div>
                             </section>
 

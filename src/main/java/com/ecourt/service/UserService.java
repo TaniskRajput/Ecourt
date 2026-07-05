@@ -238,7 +238,9 @@ public class UserService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         return new com.ecourt.dto.UserProfileResponse(
                 user.getUsername(), user.getEmail(), user.getRole(),
-                user.getFullName(), user.getMobileNumber(), user.getAddress(), user.getAadhaarLast4()
+                user.getFullName(), user.getMobileNumber(), user.getAddress(), user.getAadhaarLast4(),
+                user.getState(), user.getDistrict(), user.getPreferredCourt(), user.getBarCouncilId(),
+                user.getEnrollmentNumber(), user.getPracticeArea(), user.getIdProofType(), user.getCreatedAt()
         );
     }
 
@@ -260,12 +262,21 @@ public class UserService {
         if (request.getMobileNumber() != null) user.setMobileNumber(request.getMobileNumber().trim());
         if (request.getAddress() != null) user.setAddress(request.getAddress().trim());
         if (request.getAadhaarLast4() != null) user.setAadhaarLast4(request.getAadhaarLast4().trim());
+        if (request.getState() != null) user.setState(request.getState().trim());
+        if (request.getDistrict() != null) user.setDistrict(request.getDistrict().trim());
+        if (request.getPreferredCourt() != null) user.setPreferredCourt(request.getPreferredCourt().trim());
+        if (request.getBarCouncilId() != null) user.setBarCouncilId(request.getBarCouncilId().trim());
+        if (request.getEnrollmentNumber() != null) user.setEnrollmentNumber(request.getEnrollmentNumber().trim());
+        if (request.getPracticeArea() != null) user.setPracticeArea(request.getPracticeArea().trim());
+        if (request.getIdProofType() != null) user.setIdProofType(request.getIdProofType().trim());
         
         userRepository.save(user);
         
         return new com.ecourt.dto.UserProfileResponse(
                 user.getUsername(), user.getEmail(), user.getRole(),
-                user.getFullName(), user.getMobileNumber(), user.getAddress(), user.getAadhaarLast4()
+                user.getFullName(), user.getMobileNumber(), user.getAddress(), user.getAadhaarLast4(),
+                user.getState(), user.getDistrict(), user.getPreferredCourt(), user.getBarCouncilId(),
+                user.getEnrollmentNumber(), user.getPracticeArea(), user.getIdProofType(), user.getCreatedAt()
         );
     }
 
