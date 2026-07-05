@@ -1,8 +1,0 @@
-[phases.build]
-cmds = ["./mvnw clean package -DskipTests -q"]
-
-[phases.setup]
-nixPkgs = ["jdk21"]
-
-[start]
-cmd = "java -jar target/Ecourt-0.0.1-SNAPSHOT.jar"

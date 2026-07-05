@@ -55,7 +55,6 @@ dist/
 build/
 frontend-react/dist/
 frontend-new/dist/
-src/main/resources/static/assets/
 
 # Local runtime files
 /data/
